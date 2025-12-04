@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  Roofline Analysis
+  
+  #
+  
+
+
+
+
+
+  
+
+
+When an algorithm is run on hardware, there are three dominant constraints:
+
+How many floating-point operations the chip can perform per second (&quot;FLOPS/s&quot;)
+How many bytes per second the chip (or system) can move in memory or across an interconnect (&quot;bandwidth&quot;)
+How much memory you have in total (on-chip, off-chip, network) to hold data.
+
+A roofline model blends all of these to give upper and lower bounds on runtime: the time an operation takes cannot be less than the you&rsquo;d get if you were just limited by compute.
+More precisely,">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://neuron-science.github.io/docs/section-1/subsection-4/">
+  <meta property="og:site_name" content="Inference Optimization">
+  <meta property="og:title" content="1.4 Roofline Analysis">
+  <meta property="og:description" content="Roofline Analysis # When an algorithm is run on hardware, there are three dominant constraints:
+How many floating-point operations the chip can perform per second (&#34;FLOPS/s&#34;) How many bytes per second the chip (or system) can move in memory or across an interconnect (&#34;bandwidth&#34;) How much memory you have in total (on-chip, off-chip, network) to hold data. A roofline model blends all of these to give upper and lower bounds on runtime: the time an operation takes cannot be less than the you’d get if you were just limited by compute. More precisely,">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+<title>1.4 Roofline Analysis | Inference Optimization</title>
+<link rel="icon" href="../../../favicon.png" >
+<link rel="manifest" href="../../../manifest.json">
+<link rel="canonical" href="https://neuron-science.github.io/docs/section-1/subsection-4/">
+<link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
+  <script defer src="../../../fuse.min.js"></script>
+  <script defer src="../../../en.search.min.9d1d95b9e653c7bee1bc2763af794a73ca266784f4acee3a0d61aaa10baa6eae.js" integrity="sha256-nR2VueZTx77hvCdjr3lKc8omZ4T0rO46DWGqoQuqbq4=" crossorigin="anonymous"></script>
+<link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-1/subsection-4/index.xml" title="Inference Optimization" />
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr" class="book-kind-section book-type-docs book-layout-">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="../../../"><span>Inference Optimization</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/" class=""> Foundations of Generative Inference</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-1/" class="">1.1 Overview of Transformer Architecture</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-2/" class="">1.2 Llama family of models</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-3/" class="">1.3 Hardware Accelerators for Deep Learning</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-4/" class="active">1.4 Roofline Analysis</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-5/" class="">1.5 Measuring Inference Efficiency</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/" class="">Algorithmic and Modeling-level Inference Optimization</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-1/" class="">2.1 Efficient Attention Variants</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-2/" class="">2.2 Mixture of Experts</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-3/" class="">2.3 Model Quantization</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-4/" class="">2.4 Key-Value Caching</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-5/" class="">2.5 Speculative Decoding</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-6/" class="">2.6 Knowledge Distillation</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/" class="">Systems-Level Inference Optimization</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-1/" class="">3.1 Paged Attention</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-2/" class="">3.2 Continuous Batching</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-3/" class="">3.3 Chunked Prefill</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-4/" class="">3.4 Disaggregated Inference</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-5/" class="">3.5 Multi-LoRA serving</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-6/" class="">3.6 Compute Graph Optimization</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/" class="">Open-Source Tools, Frameworks, and Deployment Scenarios</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/subsection-1/" class="">Section 4.1</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="../../../svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.4 Roofline Analysis</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents"></nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><h1 id="roofline-analysis">
+  Roofline Analysis
+  
+  <a class="anchor" href="#roofline-analysis">#</a>
+  
+</h1>
+
+<link rel="stylesheet" href="../../../katex/katex.min.css" />
+<script defer src="../../../katex/katex.min.js"></script>
+
+  <script defer src="../../../katex/auto-render.min.js" onload="renderMathInElement(document.body, {
+  &#34;delimiters&#34;: [
+    {&#34;left&#34;: &#34;$$&#34;, &#34;right&#34;: &#34;$$&#34;, &#34;display&#34;: true},
+    {&#34;left&#34;: &#34;$&#34;, &#34;right&#34;: &#34;$&#34;, &#34;display&#34;: false},
+    {&#34;left&#34;: &#34;\\(&#34;, &#34;right&#34;: &#34;\\)&#34;, &#34;display&#34;: false},
+    {&#34;left&#34;: &#34;\\[&#34;, &#34;right&#34;: &#34;\\]&#34;, &#34;display&#34;: true}
+  ]
+}
+);"></script>
+
+
+<p>When an algorithm is run on hardware, there are three dominant constraints:</p>
+<ol>
+<li>How many floating-point operations the chip can perform per second (&quot;<strong>FLOPS/s</strong>&quot;)</li>
+<li>How many bytes per second the chip (or system) can move in memory or across an interconnect (&quot;<strong>bandwidth</strong>&quot;)</li>
+<li>How much memory you have in total (on-chip, off-chip, network) to hold data.</li>
+</ol>
+<p>A <strong>roofline model</strong> blends all of these to give upper and lower bounds on runtime: the time an operation takes cannot be less than the you&rsquo;d get if you were <em>just</em> limited by compute.
+More precisely,</p>
+<p>$$T_{\text{math}} = \frac{\text{Computation FLOPs}}{\text{Accelerator FLOPs/s}}, \hspace{3ex} T_{\text{comm}} = \frac{\text{Communication bytes}}{\text{Memory Bandwidth bytes/s}}$$</p>
+<p>Clearly, an upper bound on the latency of any operation is given by $T_{\text{math}} + T_{\text{comm}}$
+Moreover, usually, computation can be overlapped with communication.
+With a perfect overlap, we get a lower bound on the latency of any operation/algorithm to be $\text{max}\left(T_{\text{math}}, T_{\text{comm}}\right)$.</p>
+<p>If communication and computation overlap perfectly, then whenever $T_{\text{math}} &gt; T_{\text{comm}}$, the hardware stays fully utilized &ndash; a <strong>compute-bound</strong> regime.
+But if $T_{\text{math}} &lt; T_{\text{comm}}$, we enter a <strong>communication-bound</strong> regime, meaning some compute capacity goes unused while the system waits on data transfers.</p>
+<p>This is often formalized in terms of <strong>Accelerator intensity</strong>, which is a characteristic of the accelerator, and <strong>Computation intensity</strong>, which is a function of an operation/algorithm.
+These are defined as:</p>
+<p>$$\text{Accelerator intensity} = \frac{\text{Accelerator FLOPs/s}}{\text{Bandwidth bytes/s}}, \hspace{3ex} \text{Computation intensity} = \frac{\text{Computation FLOPs}}{\text{Communication bytes}}.$$</p>
+<p>If an operations has high computation intensity, it will tend to be compute-bound (i.e., you&rsquo;re spending lots of FLOPs per byte of data moved).
+If it has low intensity, it will tend to be communication or memory bound (you&rsquo;re moving a lot of data for each FLOP).</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/roofline_analysis/roofline_visualization.webp" 
+       alt="Sliding Window Attention Mechanism" 
+       style="width: 70%; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Visualization of roofline analysis (credits: How To Scale Your Model)
+  </p>
+</div>
+<p>The plot above visualizes a roofline analysis.
+The X-axis corresponds to the computation intensity of any operation/algorithm, whereas the Y-axis is the achieved FLOPs/s of the operation on the hardware.
+The <em>roofline</em> itself is defined by two main limiting lines:</p>
+<ul>
+<li>A <strong>memory/communication-bandwidth bound line</strong>: For low computation intensity, performance is limited by how fast data can be moved (bytes/second) rather than how fast floating-point operations can be done.</li>
+<li>A <strong>compute-bound</strong> line: At high computation intensity, performance is limited by the peak FLOPs/sec of the hardware.</li>
+</ul>
+<p>The intersection of these two types of limits defines a <em>knee</em> or critical intensity.
+In the figure above, two algorithms: Algo 1 and Algo 2, are plotted against two bandwidths (BW1 and BW2).
+The regions are color-coder (<strong>red</strong> = Bandwidth bound at both bandwidths, <strong>yellow</strong> = bandwidth bound only at the lower bandwidth, <strong>green</strong> = compute bound at both bandwidths).</p>
+<p>Here&rsquo;s how we can interpret the plot:</p>
+<ul>
+<li>If our algorithm lies to the left of the knee (i.e., low intensity), we are in the bandwidth/communication-bound regime. In this region, reducing bytes moved, increasing data reuse, improving memory locality, or boosting bandwidth, will improve performance more that increasing raw compute. The FLOPs/s achieved is significantly below the hardware peak.</li>
+<li>If our point lies to the right of the knee (i.e., high intensity), we are in the compute-bound regime. Here, we are hitting the hardware&rsquo;s peak FLOPs/s (or close to it). Further increasing arithmetic intensity or bandwidth helps only marginally, as we are essentially limited by compute. further gains require more compute capacity (or new precision formats, etc.)</li>
+<li>The slope of the left part of the plot (bandwidth-bound region) is linear in log-log space, i.e., performance icnreases with computation intensity (more FLOPs per byte = better). Once we hit the <em>knee</em>, the plot flattens because we cannot exceed peak compute.</li>
+</ul>
+<p>Such a visualization gives us a quick, intuitive way to answer: <strong>Will our algorithm be limited by data movement or compute?</strong> and <strong>What do we need to optimize to get more performance?</strong>. <u>Note</u>: In distributed setups, the <em>communicaiton</em> part of the roofline includes the inter-chop links, and thus the knee might shift (because inter-chip bandwidth is often lower than on-chip memory bandwidth). The roofline visualization extends to those cases too.</p>
+<h1 id="references">
+  References
+  
+  <a class="anchor" href="#references">#</a>
+  
+</h1>
+<ol>
+<li>All About Rooflines, How To Scale Your Model. <a href="">https://jax-ml.github.io/scaling-book/roofline/</a></li>
+</ol>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="../../../docs/section-1/subsection-3/" class="flex align-center book-icon">
+        <img src="../../../svg/backward.svg" class="book-icon" alt="Previous" title="1.3 Hardware Accelerators for Deep Learning" />
+        <span>1.3 Hardware Accelerators for Deep Learning</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="../../../docs/section-1/subsection-5/" class="flex align-center book-icon">
+        <span>1.5 Measuring Inference Efficiency</span>
+        <img src="../../../svg/forward.svg" class="book-icon" alt="Next" title="1.5 Measuring Inference Efficiency" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

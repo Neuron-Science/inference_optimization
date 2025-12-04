@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  2.6 Knowledge Distillation
+  
+  #
+  
+
+
+
+
+
+  
+
+
+Knowledge distillation (KD) refers to a principled way to transfer the capabilities of a large teacher model into a smaller, faster student model &ndash; often achieving substantial reductions in latency, memory footprint, and cost.
+In inference optimization pipelines, KD can often be used in conjunction with other model compression techniques like quantization.
+The following schematic captures the general idea of KD:">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://neuron-science.github.io/docs/section-2/subsection-6/">
+  <meta property="og:site_name" content="Inference Optimization">
+  <meta property="og:title" content="2.6 Knowledge Distillation">
+  <meta property="og:description" content="2.6 Knowledge Distillation # Knowledge distillation (KD) refers to a principled way to transfer the capabilities of a large teacher model into a smaller, faster student model – often achieving substantial reductions in latency, memory footprint, and cost. In inference optimization pipelines, KD can often be used in conjunction with other model compression techniques like quantization. The following schematic captures the general idea of KD:">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+<title>2.6 Knowledge Distillation | Inference Optimization</title>
+<link rel="icon" href="../../../favicon.png" >
+<link rel="manifest" href="../../../manifest.json">
+<link rel="canonical" href="https://neuron-science.github.io/docs/section-2/subsection-6/">
+<link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
+  <script defer src="../../../fuse.min.js"></script>
+  <script defer src="../../../en.search.min.9d1d95b9e653c7bee1bc2763af794a73ca266784f4acee3a0d61aaa10baa6eae.js" integrity="sha256-nR2VueZTx77hvCdjr3lKc8omZ4T0rO46DWGqoQuqbq4=" crossorigin="anonymous"></script>
+<link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-2/subsection-6/index.xml" title="Inference Optimization" />
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr" class="book-kind-section book-type-docs book-layout-">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="../../../"><span>Inference Optimization</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/" class=""> Foundations of Generative Inference</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-1/" class="">1.1 Overview of Transformer Architecture</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-2/" class="">1.2 Llama family of models</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-3/" class="">1.3 Hardware Accelerators for Deep Learning</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-4/" class="">1.4 Roofline Analysis</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-5/" class="">1.5 Measuring Inference Efficiency</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/" class="">Algorithmic and Modeling-level Inference Optimization</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-1/" class="">2.1 Efficient Attention Variants</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-2/" class="">2.2 Mixture of Experts</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-3/" class="">2.3 Model Quantization</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-4/" class="">2.4 Key-Value Caching</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-5/" class="">2.5 Speculative Decoding</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-6/" class="active">2.6 Knowledge Distillation</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/" class="">Systems-Level Inference Optimization</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-1/" class="">3.1 Paged Attention</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-2/" class="">3.2 Continuous Batching</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-3/" class="">3.3 Chunked Prefill</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-4/" class="">3.4 Disaggregated Inference</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-5/" class="">3.5 Multi-LoRA serving</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-6/" class="">3.6 Compute Graph Optimization</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/" class="">Open-Source Tools, Frameworks, and Deployment Scenarios</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/subsection-1/" class="">Section 4.1</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="../../../svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>2.6 Knowledge Distillation</h3>
+
+  <label for="toc-control">
+    
+    <img src="../../../svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#types-of-knowledge-distillation">Types of knowledge distillation</a>
+      <ul>
+        <li><a href="#logitsoft-label-distillation"><strong>Logit/Soft-label distillation</strong></a></li>
+        <li><a href="#sequence-level-distillation"><strong>Sequence-level distillation</strong></a></li>
+        <li><a href="#feature-levelintermediate-representation-distillation"><strong>Feature-level/Intermediate representation distillation</strong></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><h1 id="26-knowledge-distillation">
+  2.6 Knowledge Distillation
+  
+  <a class="anchor" href="#26-knowledge-distillation">#</a>
+  
+</h1>
+
+<link rel="stylesheet" href="../../../katex/katex.min.css" />
+<script defer src="../../../katex/katex.min.js"></script>
+
+  <script defer src="../../../katex/auto-render.min.js" onload="renderMathInElement(document.body, {
+  &#34;delimiters&#34;: [
+    {&#34;left&#34;: &#34;$$&#34;, &#34;right&#34;: &#34;$$&#34;, &#34;display&#34;: true},
+    {&#34;left&#34;: &#34;$&#34;, &#34;right&#34;: &#34;$&#34;, &#34;display&#34;: false},
+    {&#34;left&#34;: &#34;\\(&#34;, &#34;right&#34;: &#34;\\)&#34;, &#34;display&#34;: false},
+    {&#34;left&#34;: &#34;\\[&#34;, &#34;right&#34;: &#34;\\]&#34;, &#34;display&#34;: true}
+  ]
+}
+);"></script>
+
+
+<p>Knowledge distillation (KD) refers to a principled way to transfer the capabilities of a large <em>teacher</em> model into a smaller, faster <em>student</em> model &ndash; often achieving substantial reductions in latency, memory footprint, and cost.
+In inference optimization pipelines, KD can often be used in conjunction with other model compression techniques like quantization.
+The following schematic captures the general idea of KD:</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/knowledge_distillation/KD_schematic.png" 
+       alt="Knowledge distillation" 
+       style="width: 130mm; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Knowledge Distillation
+  </p>
+</div>
+<p>In the above figure, for each example $x$ in the dataset, the teacher generates a predictive distribution $p_t(y \vert x)$ over outputs $y$, and the student generates its own distribution $p_s(y \vert x)$.
+The distillation loss $\ell(p_t, p_s)$ trains the student to mimic the teacher.</p>
+<p>A smaller model distilled from a large teacher consistently outperforms the <em>same</em> model trained from scratch with the <em>same</em> data budget.
+This happens for several fundamental reasons &ndash; rooted in optimization, representational capacity, data distributions, and the nature of supervision signals, which are intuitively described below:</p>
+<ul>
+<li>The teacher provides a richer learning signal than one-hot labels. Since the soft distribution over labels is a much smoother optimization landscape, it allows the small student model to learn subtle patterns it could never discover from one-hot labels, when trained from scratch. Consequently, the effective sample complexity is reduced as the teacher provides supervisory information for every token, not just the correct one.</li>
+<li>Big models can learn higher-quality representations that small models can imitate but cannot discover. Rather than needing to infer long-range semantics or complex reasoning from raw text, the student only needs to approximate the teacher’s function, which is a simpler mapping than learning the function from scratch. It is often useful to consider the following analogy &ndash; <em>a college student can learn calculus from a professor in months, but would not reinvent calculus on their own even in years.</em></li>
+</ul>
+<h2 id="types-of-knowledge-distillation">
+  Types of knowledge distillation
+  
+  <a class="anchor" href="#types-of-knowledge-distillation">#</a>
+  
+</h2>
+<p>While KD can encompasses diverse strategies, there a three major categories used for LLMs, which are described below:</p>
+<h3 id="logitsoft-label-distillation">
+  <strong>Logit/Soft-label distillation</strong>
+  
+  <a class="anchor" href="#logitsoft-label-distillation">#</a>
+  
+</h3>
+<p>This is the classic form of KD where the student learns directly from the teacher&rsquo;s probability distribution over tokens (aka logits). Given an input $x$, let $z_t$ and $z_s$ be the <strong>logits</strong> of the teacher and student, respectively. <em>Logits</em> here refer to the raw, unnormalized scores before softmax. Then, $p_t = \sigma(z_t/T)$ and $p_s = \sigma(z_s/T)$ are the corresponding probability distributions over the the token, where $\sigma$ is the Softmax function, and $T$ is the <em>temperature</em> for sampling. For some $0 &lt; \alpha \le 1$, the distillation loss used by the student is:
+$$L_{\rm KD} = (1 - \alpha)L_{\rm CE}(z_s, y) + \alpha T^2L_{\rm KL}(p_t \parallel p_s).$$
+Here, $L_{\rm CE}$ is the cross-entropy loss between the student&rsquo;s logits and the ground truth labels $y$, and $L_{\rm KL}$ is the KL divergence between the teacher&rsquo;s and the student&rsquo;s logits. $\alpha$ blends the two types of loss. Note: $\alpha = 1$ refers to pure logit-level distillation.
+This type of KD ignores the teacher&rsquo;s intermediate computation, and only the logits from the teacher (which may be available through an API) suffice. This is the most common type of KD, and is primarily what <a href="https://arxiv.org/abs/2408.11796">Minitron</a> uses.</p>
+<h3 id="sequence-level-distillation">
+  <strong>Sequence-level distillation</strong>
+  
+  <a class="anchor" href="#sequence-level-distillation">#</a>
+  
+</h3>
+<p>In sequence-level KD, instead of (or in addition to) matching logits, the student is trained on <em>text sequences generated by the teacher</em> using a standard cross-entropy training loss. This is sometimes also referred to as <em>supervised-fine-tuning with synthetic data</em>. Given an input $x$, the teacher generates a compute output sequence:
+$$y_t = (y_{t,1}, y_{t,2}, \ldots, y_{t,L})$$
+of length $L$. the student is trained to predict this tacher generated sequence as if it were the ground-truth using the training objective:
+$$L_{\rm seq} = -\sum_{i=1}^{L}\log p_s(y_{t,i} \vert x, y_{t, &lt;i})$$
+Note that this uses teacher-generate labels instead of human-provided labels.</p>
+<p>Sequence-level KD is effective because human datasets, in general, often contain noise and stylistic variance. On the other hand, teacher outputs from a single model produces a coherent, consistent behavior pattern, giving the student clean suppervision. Moreover, teacher-generated outputs can be produced for large datasets cheaply (without human labeling), providing abundant training data.</p>
+<p>While logit-level KD transfers token-level distributions from the teacher to student, sequence-level KD transfers semantic structures such as reasoning traces and formatting preferences. This enables compressing models beyond logit fidelity since even though a small student cannot match the teacher&rsquo;s softmax landscapes for reasoning tasks, it <em>can</em> still imitate the teacher&rsquo;s reasoning patterns via generates sequences.</p>
+<p>Quite importantly, sequence-level KD is especially beneficial for closed models (e.g., GPT-5, Claude, Gemini, etc.) because unlike open models, they often do not allow access to logits, hidden states, or internal probabilities.</p>
+<h3 id="feature-levelintermediate-representation-distillation">
+  <strong>Feature-level/Intermediate representation distillation</strong>
+  
+  <a class="anchor" href="#feature-levelintermediate-representation-distillation">#</a>
+  
+</h3>
+<p>In feature-level KD, the student is trained to match the teacher&rsquo;s <em>hidden states</em>, attention maps, or intermediate embeddings. This can lead to dramatically stronger students, but at a significantly higher computational cost. For example, to match the attention-map, a Frobenius norm error loss like
+$$L_{\rm attn}=  \sum_{(l,m)} \lVert A_s^{(m)} - A_t^{(l)} \rVert_F^2$$
+may be used. Here, the attention scores of the $m^{\rm th}$ layer of the student is mapped to the $l^{\rm th}$ layer of the teacher.</p>
+<p>The intuition behind why feature-level KD is effective lies in the fact that LLMs build hierarchical neural representations. For instance, lower-layers learn lexical and morphological features, mid-layers learn syntax and symantics, wheareas higher-layers learn abstraction and world knowledge. While it is difficult for a small student to learn these tructures from scratch, it can learn to imitate them from the teacher.</p>
+<p>While very effective, it should be noted that feature-level KD is rare for distilling knowledge from large-scale LLMs because the computation and memory cost explode. To distill hidden states  for a sequence length $S$, hidden dimension $d$, and across $L$ layers, all hidden states must be stoed, which requires $O(LSd)$ memory, which blows up. Hence, logit-level KD and sequence-level KD are more popular for large scale LLMs. Feature-level KD is more common in vision models and smaller text models of relatively small size ($\leq 3{\rm B}$ params).</p>
+
+
+<h1 id="references">
+  References
+  
+  <a class="anchor" href="#references">#</a>
+  
+</h1>
+<ol>
+<li>Sreenivas et. al., LLM Pruning and Distillation in Practice: The Minitron Approach <a href="">https://arxiv.org/abs/2408.11796</a></li>
+<li>Hinton, Vinyals, Dean, Distilling the Knowledge in a Neural Network, NeurIPS 2014 <a href="">https://arxiv.org/abs/1503.02531</a></li>
+<li>Romero et. al., FitNets: Hints for Thin Deep Nets, ICLR 2015 <a href="">https://arxiv.org/abs/1412.6550</a></li>
+<li>Huang and Wang, Like What You Like: Knowledge Distill via Neuron Selectivity Transfer, 2017 <a href="">https://arxiv.org/abs/1707.01219</a></li>
+<li>Zagoruyko and Komadakis, Paying More Attention to Attention: Improving the Performance of Convolutional Neural Networks via Attention Transfer, ICLR 2017 <a href="">https://arxiv.org/abs/1612.03928</a></li>
+</ol>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="../../../docs/section-2/subsection-5/" class="flex align-center book-icon">
+        <img src="../../../svg/backward.svg" class="book-icon" alt="Previous" title="2.5 Speculative Decoding" />
+        <span>2.5 Speculative Decoding</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="../../../docs/section-3/" class="flex align-center book-icon">
+        <span>Systems-Level Inference Optimization</span>
+        <img src="../../../svg/forward.svg" class="book-icon" alt="Next" title="Systems-Level Inference Optimization" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#types-of-knowledge-distillation">Types of knowledge distillation</a>
+      <ul>
+        <li><a href="#logitsoft-label-distillation"><strong>Logit/Soft-label distillation</strong></a></li>
+        <li><a href="#sequence-level-distillation"><strong>Sequence-level distillation</strong></a></li>
+        <li><a href="#feature-levelintermediate-representation-distillation"><strong>Feature-level/Intermediate representation distillation</strong></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </div>
+</aside>
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

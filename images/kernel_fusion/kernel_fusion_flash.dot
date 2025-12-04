@@ -1,0 +1,53 @@
+digraph FlashAttention {
+    rankdir=BT;
+    node [fontname="Helvetica", fontsize=11];
+    edge [fontname="Helvetica", fontsize=10];
+    nodesep=0.4;
+    ranksep=0.5;
+
+    label="Flash Attention (With Fusion)";
+    labelloc="t";
+    fontsize=14;
+    fontname="Helvetica-Bold";
+
+    // HBM region - BOTTOM (slower memory) - light green like pm-memory.png
+    subgraph cluster_hbm {
+        label="HBM (Device Memory)";
+        style="filled,rounded";
+        fillcolor="#d4edda";
+        color="#388e3c";
+        fontsize=11;
+        fontcolor="#388e3c";
+        margin=15;
+
+        QKV [label="Q, K, V", shape=box, style="filled,rounded", fillcolor="#a8d5ba"];
+        O_out [label="O", shape=box, style="filled,rounded", fillcolor="#a8d5ba"];
+
+        QKV -> O_out [style=invis];
+        {rank=same; QKV; O_out;}
+    }
+
+    // On-chip region - TOP (fastest memory) - light yellow like pm-memory.png SBUF
+    subgraph cluster_onchip {
+        label="On-Chip (SRAM)";
+        style="filled,rounded";
+        fillcolor="#fff9c4";
+        color="#f9a825";
+        fontsize=11;
+        fontcolor="#f57f17";
+        margin=15;
+
+        op1 [label="S = Q × Kᵀ", shape=ellipse, style="filled", fillcolor="#ffecb3"];
+        S [label="S", shape=box, style="filled,rounded", fillcolor="#ffe082"];
+        op2 [label="P = softmax(S)", shape=ellipse, style="filled", fillcolor="#ffecb3"];
+        P [label="P", shape=box, style="filled,rounded", fillcolor="#ffe082"];
+        op3 [label="O = P × V", shape=ellipse, style="filled", fillcolor="#ffecb3"];
+
+        {rank=same; op1; S; op2; P; op3;}
+        op1 -> S -> op2 -> P -> op3;
+    }
+
+    // Only 2 HBM transfers
+    QKV -> op1 [label="load", color="black", style="bold"];
+    op3 -> O_out [label="store", color="black", style="bold"];
+}

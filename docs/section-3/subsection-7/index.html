@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  3.7 Kernel Fusion
+  
+  #
+  
+
+
+
+
+
+  
+
+
+
+  Memory Hierarchy
+  
+  #
+  
+
+Modern accelerators (GPUs, TPUs, AWS Trainium/Inferentia) employ a multi-level memory hierarchy, with memories organized from fastest/smallest to slowest/largest:
+
+Registers / On-chip SRAM (e.g., GPU shared memory, NeuronCore SBUF): Highest bandwidth (~20x higher than HBM), lowest latency, but limited capacity (tens of MB per compute unit)
+Device Memory / HBM: Large capacity (tens of GB), high bandwidth compared to CPU memory, but still orders of magnitude slower than on-chip SRAM
+Host Memory (CPU DRAM): Largest capacity, lowest bandwidth from accelerator&rsquo;s perspective
+
+The memory wall refers to the growing gap between compute throughput and memory bandwidth. While compute capabilities have scaled dramatically (e.g., a single AWS Trn2 NeuronCore delivers ~335 TFLOPs BF16), memory bandwidth has not kept pace.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://neuron-science.github.io/docs/section-3/subsection-7/">
+  <meta property="og:site_name" content="Inference Optimization">
+  <meta property="og:title" content="3.7 Kernel Fusion">
+  <meta property="og:description" content="3.7 Kernel Fusion # Memory Hierarchy # Modern accelerators (GPUs, TPUs, AWS Trainium/Inferentia) employ a multi-level memory hierarchy, with memories organized from fastest/smallest to slowest/largest:
+Registers / On-chip SRAM (e.g., GPU shared memory, NeuronCore SBUF): Highest bandwidth (~20x higher than HBM), lowest latency, but limited capacity (tens of MB per compute unit) Device Memory / HBM: Large capacity (tens of GB), high bandwidth compared to CPU memory, but still orders of magnitude slower than on-chip SRAM Host Memory (CPU DRAM): Largest capacity, lowest bandwidth from accelerator’s perspective The memory wall refers to the growing gap between compute throughput and memory bandwidth. While compute capabilities have scaled dramatically (e.g., a single AWS Trn2 NeuronCore delivers ~335 TFLOPs BF16), memory bandwidth has not kept pace.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+<title>3.7 Kernel Fusion | Inference Optimization</title>
+<link rel="icon" href="../../../favicon.png" >
+<link rel="manifest" href="../../../manifest.json">
+<link rel="canonical" href="https://neuron-science.github.io/docs/section-3/subsection-7/">
+<link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
+  <script defer src="../../../fuse.min.js"></script>
+  <script defer src="../../../en.search.min.9d1d95b9e653c7bee1bc2763af794a73ca266784f4acee3a0d61aaa10baa6eae.js" integrity="sha256-nR2VueZTx77hvCdjr3lKc8omZ4T0rO46DWGqoQuqbq4=" crossorigin="anonymous"></script>
+<link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-3/subsection-7/index.xml" title="Inference Optimization" />
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr" class="book-kind-section book-type-docs book-layout-">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="../../../"><span>Inference Optimization</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/" class=""> Foundations of Generative Inference</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-1/" class="">1.1 Overview of Transformer Architecture</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-2/" class="">1.2 Llama family of models</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-3/" class="">1.3 Hardware Accelerators for Deep Learning</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-4/" class="">1.4 Roofline Analysis</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-5/" class="">1.5 Measuring Inference Efficiency</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/" class="">Algorithmic and Modeling-level Inference Optimization</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-1/" class="">2.1 Efficient Attention Variants</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-2/" class="">2.2 Mixture of Experts</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-3/" class="">2.3 Model Quantization</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-4/" class="">2.4 Key-Value Caching</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-5/" class="">2.5 Speculative Decoding</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-6/" class="">2.6 Knowledge Distillation</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/" class="">Systems-Level Inference Optimization</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-1/" class="">3.1 Paged Attention</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-2/" class="">3.2 Continuous Batching</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-3/" class="">3.3 Chunked Prefill</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-4/" class="">3.4 Disaggregated Inference</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-5/" class="">3.5 Multi-LoRA serving</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-6/" class="">3.6 Compute Graph Optimization</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-7/" class="active">3.7 Kernel Fusion</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/" class="">Open-Source Tools, Frameworks, and Deployment Scenarios</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/subsection-1/" class="">Section 4.1</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="../../../svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>3.7 Kernel Fusion</h3>
+
+  <label for="toc-control">
+    
+    <img src="../../../svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#memory-hierarchy"><strong>Memory Hierarchy</strong></a>
+      <ul>
+        <li><a href="#example-neuroncore-aws-trainium-programming-model"><strong>Example: NeuronCore (AWS Trainium) Programming Model</strong></a></li>
+      </ul>
+    </li>
+    <li><a href="#arithmetic-intensity"><strong>Arithmetic Intensity</strong></a></li>
+    <li><a href="#what-is-kernel-fusion"><strong>What is Kernel Fusion?</strong></a></li>
+    <li><a href="#fusion-techniques"><strong>Fusion Techniques</strong></a>
+      <ul>
+        <li><a href="#operator-fusion"><strong>Operator Fusion</strong></a></li>
+        <li><a href="#tiling"><strong>Tiling</strong></a></li>
+      </ul>
+    </li>
+    <li><a href="#flash-attention-and-mathematical-fusion"><strong>Flash Attention and Mathematical Fusion</strong></a>
+      <ul>
+        <li><a href="#why-standard-fusion-fails-for-attention"><strong>Why Standard Fusion Fails for Attention</strong></a></li>
+        <li><a href="#online-softmax-the-mathematical-transform"><strong>Online Softmax: The Mathematical Transform</strong></a></li>
+        <li><a href="#flash-attention-fused-attention-kernel"><strong>Flash Attention: Fused Attention Kernel</strong></a></li>
+        <li><a href="#performance-analysis"><strong>Performance Analysis</strong></a></li>
+      </ul>
+    </li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><h1 id="37-kernel-fusion">
+  3.7 Kernel Fusion
+  
+  <a class="anchor" href="#37-kernel-fusion">#</a>
+  
+</h1>
+
+<link rel="stylesheet" href="../../../katex/katex.min.css" />
+<script defer src="../../../katex/katex.min.js"></script>
+
+  <script defer src="../../../katex/auto-render.min.js" onload="renderMathInElement(document.body, {
+  &#34;delimiters&#34;: [
+    {&#34;left&#34;: &#34;$$&#34;, &#34;right&#34;: &#34;$$&#34;, &#34;display&#34;: true},
+    {&#34;left&#34;: &#34;$&#34;, &#34;right&#34;: &#34;$&#34;, &#34;display&#34;: false},
+    {&#34;left&#34;: &#34;\\(&#34;, &#34;right&#34;: &#34;\\)&#34;, &#34;display&#34;: false},
+    {&#34;left&#34;: &#34;\\[&#34;, &#34;right&#34;: &#34;\\]&#34;, &#34;display&#34;: true}
+  ]
+}
+);"></script>
+
+
+<h2 id="memory-hierarchy">
+  <strong>Memory Hierarchy</strong>
+  
+  <a class="anchor" href="#memory-hierarchy">#</a>
+  
+</h2>
+<p>Modern accelerators (GPUs, TPUs, AWS Trainium/Inferentia) employ a multi-level memory hierarchy, with memories organized from fastest/smallest to slowest/largest:</p>
+<ol>
+<li><strong>Registers / On-chip SRAM</strong> (e.g., GPU shared memory, NeuronCore SBUF): Highest bandwidth (~20x higher than HBM), lowest latency, but limited capacity (tens of MB per compute unit)</li>
+<li><strong>Device Memory / HBM</strong>: Large capacity (tens of GB), high bandwidth compared to CPU memory, but still orders of magnitude slower than on-chip SRAM</li>
+<li><strong>Host Memory (CPU DRAM)</strong>: Largest capacity, lowest bandwidth from accelerator&rsquo;s perspective</li>
+</ol>
+<p>The <strong>memory wall</strong> refers to the growing gap between compute throughput and memory bandwidth. While compute capabilities have scaled dramatically (e.g., a single AWS Trn2 NeuronCore delivers ~335 TFLOPs BF16), memory bandwidth has not kept pace.</p>
+<h3 id="example-neuroncore-aws-trainium-programming-model">
+  <strong>Example: NeuronCore (AWS Trainium) Programming Model</strong>
+  
+  <a class="anchor" href="#example-neuroncore-aws-trainium-programming-model">#</a>
+  
+</h3>
+<p>AWS Trainium&rsquo;s NeuronCore architecture provides a concrete example of software-managed memory hierarchy. Unlike GPUs with hardware-managed caches, NKI (Neuron Kernel Interface) requires programmers to explicitly control data movement between HBM and on-device memory buffers.</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/memory_hierarchy/pm-memory.png"
+       alt="NeuronCore Memory Hierarchy"
+       style="width: 70%; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    NeuronCore memory hierarchy showing capacity and bandwidth at each level
+  </p>
+</div>
+<p>NeuronCore exposes a 4-level memory hierarchy:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Memory Level</th>
+          <th>Capacity</th>
+          <th>Bandwidth</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>PSUM</strong> (on-chip)</td>
+          <td>~2 MB</td>
+          <td>~10 TB/sec</td>
+      </tr>
+      <tr>
+          <td><strong>SBUF</strong> (on-chip)</td>
+          <td>~25 MB</td>
+          <td>~10 TB/sec</td>
+      </tr>
+      <tr>
+          <td><strong>HBM</strong> (device)</td>
+          <td>~50 GB</td>
+          <td>~0.5 TB/sec per NC</td>
+      </tr>
+      <tr>
+          <td><strong>Host DRAM</strong></td>
+          <td>~1 TB</td>
+          <td>~16 GB/sec</td>
+      </tr>
+  </tbody>
+</table>
+<p>The key observation: on-chip SBUF provides <strong>20x higher bandwidth</strong> than HBM (10 TB/s vs 0.5 TB/s). With no hardware cache to automatically manage data movement, the programmer must explicitly manage data transfers between memory tiers (shown as &ldquo;Refill&rdquo; and &ldquo;Spill&rdquo; in the diagram). This explicit memory model makes kernel fusion essential: fusing multiple operations keeps intermediate data in fast SBUF instead of incurring expensive HBM round-trips between each operation.</p>
+<h2 id="arithmetic-intensity">
+  <strong>Arithmetic Intensity</strong>
+  
+  <a class="anchor" href="#arithmetic-intensity">#</a>
+  
+</h2>
+<p>Due to the memory wall, many deep learning operations are <strong>memory-bound</strong> rather than compute-bound — the accelerator spends more time waiting for data than performing arithmetic. <strong>Arithmetic intensity</strong> measures how much computation is performed per byte of memory transferred:</p>
+<p>$$\text{Arithmetic Intensity} = \frac{\text{FLOPs}}{\text{Bytes Transferred}}$$</p>
+<p>The units are FLOPs/byte. This metric determines whether an operation is <strong>compute-bound</strong> or <strong>memory-bound</strong> via the roofline model. Every accelerator has a <strong>ridge point</strong> defined by:</p>
+<p>$$\text{Ridge Point} = \frac{\text{Peak Compute (FLOPs/s)}}{\text{Peak Bandwidth (Bytes/s)}}$$</p>
+<p>For example, an AWS Trn2 NeuronCore has ~335 TFLOPs (BF16) and ~1.45 TB/s HBM bandwidth, giving a ridge point of ~230 FLOPs/byte. Operations with arithmetic intensity below this threshold are memory-bound; those above are compute-bound. Most LLM inference operations—especially during the decode phase where batch sizes are small—have low arithmetic intensity and are memory-bound. This is why kernel fusion is critical: by keeping intermediate data in fast on-chip memory, we reduce memory traffic and shift operations closer to being compute-bound.</p>
+<h2 id="what-is-kernel-fusion">
+  <strong>What is Kernel Fusion?</strong>
+  
+  <a class="anchor" href="#what-is-kernel-fusion">#</a>
+  
+</h2>
+<p>Kernel fusion is a compiler/runtime optimization that <strong>combines multiple operations into a single kernel</strong> to minimize memory traffic between the accelerator&rsquo;s on-chip memory and device memory (HBM).</p>
+<p>Without fusion, each operation in a computation graph:</p>
+<ol>
+<li>Reads input tensors from HBM to on-chip memory</li>
+<li>Performs computation</li>
+<li>Writes output tensors back to HBM</li>
+</ol>
+<p>With fusion, intermediate results are kept in fast on-chip memory (SRAM/registers), eliminating redundant HBM round-trips. This is particularly impactful because:</p>
+<ul>
+<li>On-chip SRAM provides ~20x higher bandwidth than HBM</li>
+<li>Reducing HBM accesses directly improves performance for memory-bound operations</li>
+<li>Fused kernels can leverage <strong>tiling</strong> to process large tensors in cache-friendly blocks</li>
+</ul>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/kernel_fusion/kernel_fusion_standard.png"
+       alt="Standard Attention Without Fusion"
+       style="width: 90%; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Standard attention without fusion: each operation (S = Q × Kᵀ, P = softmax(S), O = P × V) requires loading inputs from HBM and storing outputs back to HBM, resulting in multiple expensive memory round-trips.
+  </p>
+</div>
+<p><strong>Arithmetic intensity of standard attention.</strong> For sequence length $N$, head dimension $d$, and FP16 precision (2 bytes per element), we can compute the memory traffic for each step:</p>
+<ol>
+<li>$S = QK^T$: Read $Q$ ($2Nd$ bytes), read $K$ ($2Nd$ bytes), write $S$ ($2N^2$ bytes)</li>
+<li>$P = \mathrm{softmax}(S)$: Read $S$ ($2N^2$ bytes), write $P$ ($2N^2$ bytes)</li>
+<li>$O = PV$: Read $P$ ($2N^2$ bytes), read $V$ ($2Nd$ bytes), write $O$ ($2Nd$ bytes)</li>
+</ol>
+<p>Total memory traffic: $8Nd + 8N^2$ bytes. The two matrix multiplications contribute $4N^2d$ FLOPs, while softmax adds $\sim 5N^2$ FLOPs. This gives:</p>
+<p>$$\text{Arithmetic Intensity} = \frac{4N^2d}{8Nd + 8N^2} = \frac{Nd}{2(d + N)}$$</p>
+<p>For $N = 4096$ and $d = 128$: arithmetic intensity $\approx 62$ FLOPs/byte — well below Trn2&rsquo;s ridge point of ~230 FLOPs/byte. Standard attention is <strong>memory-bound</strong>, making it an ideal candidate for kernel fusion.</p>
+<h2 id="fusion-techniques">
+  <strong>Fusion Techniques</strong>
+  
+  <a class="anchor" href="#fusion-techniques">#</a>
+  
+</h2>
+<h3 id="operator-fusion">
+  <strong>Operator Fusion</strong>
+  
+  <a class="anchor" href="#operator-fusion">#</a>
+  
+</h3>
+<p>On NeuronCore, each operation (matmul, activation, normalization) is typically implemented as a separate NKI kernel. Each kernel reads inputs from HBM into SBUF, computes, and writes outputs back to HBM. For a sequence of $k$ operations on a tensor of size $n$ bytes, this means $2kn$ bytes of HBM traffic — each intermediate result is spilled to HBM and then refilled.</p>
+<p><strong>Operator fusion</strong> combines multiple operations into a single kernel. The fused kernel loads inputs once, performs all computations while keeping intermediates in SBUF, and writes only the final output. This reduces HBM traffic to $2n$ bytes — a $k\times$ reduction.</p>
+<p><strong>Example</strong>: Consider computing $y = \mathrm{GELU}(Wx + b)$. Without fusion:</p>
+<ol>
+<li>Kernel 1: Refill $W, x$ → compute $z = Wx$ → spill $z$ to HBM</li>
+<li>Kernel 2: Refill $z, b$ → compute $z&rsquo; = z + b$ → spill $z&rsquo;$ to HBM</li>
+<li>Kernel 3: Refill $z&rsquo;$ → compute $y = \mathrm{GELU}(z&rsquo;)$ → spill $y$ to HBM</li>
+</ol>
+<p>With fusion, a single kernel computes $y = \mathrm{GELU}(Wx + b)$ directly: refill $W, x, b$ once, compute everything with $z, z&rsquo;$ in SBUF, spill $y$ once. Memory traffic drops from $6n$ to $2n$ bytes.</p>
+<p>The key constraint: <strong>all intermediate data must fit in SBUF</strong>. This works well when intermediates are the same size as inputs (element-wise ops, reductions), but fails when operations expand data size.</p>
+<h3 id="tiling">
+  <strong>Tiling</strong>
+  
+  <a class="anchor" href="#tiling">#</a>
+  
+</h3>
+<p>When intermediate data exceeds SBUF capacity, <strong>tiling</strong> partitions tensors into blocks that fit in SBUF, applying fusion within each tile.</p>
+<p><strong>Example</strong>: For $C = g(f(A))$ where $B = f(A)$ is too large for SBUF:</p>
+<ul>
+<li><strong>Unfused</strong>: Compute all of $B$, spill to HBM, then compute all of $C$ by refilling $B$</li>
+<li><strong>Tiled</strong>: For each tile $i$: refill $A_i$ → compute $B_i$ in SBUF → compute $C_i$ → spill $C_i$</li>
+</ul>
+<p>The intermediate $B_i$ never touches HBM. This achieves the same $k\times$ memory traffic reduction as operator fusion, but requires that $C_i$ depends only on $A_i$ (the computation must be <strong>tileable</strong>).</p>
+<h2 id="flash-attention-and-mathematical-fusion">
+  <strong>Flash Attention and Mathematical Fusion</strong>
+  
+  <a class="anchor" href="#flash-attention-and-mathematical-fusion">#</a>
+  
+</h2>
+<h3 id="why-standard-fusion-fails-for-attention">
+  <strong>Why Standard Fusion Fails for Attention</strong>
+  
+  <a class="anchor" href="#why-standard-fusion-fails-for-attention">#</a>
+  
+</h3>
+<p>Standard self-attention computes:
+$$S = QK^T, \quad P = \mathrm{softmax}(S), \quad O = PV$$</p>
+<p>Without fusion, each step requires HBM round-trips:</p>
+<ol>
+<li>Load $Q, K$ from HBM → compute $S$ → store $S$ to HBM</li>
+<li>Load $S$ from HBM → compute $P$ → store $P$ to HBM</li>
+<li>Load $P, V$ from HBM → compute $O$ → store $O$ to HBM</li>
+</ol>
+<p>The attention matrix $S$ has size $N \times N$. For sequence length $N = 8192$, this is 67M elements per head — far exceeding SBUF capacity (~25 MB). Can we tile to avoid materializing the full matrix?</p>
+<p><strong>The softmax barrier.</strong> Consider computing one row of output $o_i = \sum_j p_{ij} v_j$ where $p_{ij} = [\mathrm{softmax}(s_i)]_j$. If we tile over $K$ and $V$ (processing columns in blocks), we compute partial scores $s_{ij}$ for $j \in B_k$ in each block. But softmax couples all columns:</p>
+<p>$$[\mathrm{softmax}(s_i)]_j = \frac{e^{s_{ij}}}{\sum_{k=1}^{N} e^{s_{ik}}}$$</p>
+<p>The denominator requires <strong>all $N$ scores</strong> in the row. We cannot compute any $p_{ij}$ until we have seen every $s_{ik}$.</p>
+<p><strong>Numerical stability makes it worse.</strong> Naive softmax overflows when scores are large. The numerically stable version subtracts the row maximum:</p>
+<p>$$m_i = \max_j s_{ij}, \quad \ell_i = \sum_{j=1}^{N} e^{s_{ij} - m_i}, \quad p_{ij} = \frac{e^{s_{ij} - m_i}}{\ell_i}$$</p>
+<p>This requires <strong>two passes</strong>: first to find $m_i$, then to compute exponentials and sum. Both $m_i$ and $\ell_i$ depend on all $N$ elements, so we must materialize the entire row of $S$ before computing any element of $P$.</p>
+<p><strong>The fusion blocker.</strong> This creates a dependency chain that prevents tiling:</p>
+<ul>
+<li>Cannot compute $p_{ij}$ without knowing $m_i$ (need full row of $S$)</li>
+<li>Cannot compute $m_i$ without all $s_{ij}$ (need to finish $S = QK^T$ first)</li>
+</ul>
+<p>Result: we must write the full $N \times N$ matrix $S$ to HBM, then read it back for softmax. Standard fusion and tiling cannot break this logical dependency.</p>
+<h3 id="online-softmax-the-mathematical-transform">
+  <strong>Online Softmax: The Mathematical Transform</strong>
+  
+  <a class="anchor" href="#online-softmax-the-mathematical-transform">#</a>
+  
+</h3>
+<p>The key innovation is <strong>online softmax</strong> — a mathematically equivalent reformulation that computes numerically stable softmax incrementally in a single pass, removing the fusion blocker.</p>
+<p>Recall the <strong>numerically stable softmax</strong> requires two passes:
+$$m = \max_j s_j, \quad \ell = \sum_j e^{s_j - m}, \quad [\mathrm{softmax}(s)]_j = \frac{e^{s_j - m}}{\ell}$$</p>
+<p><strong>Online softmax</strong> processes elements in blocks, maintaining running statistics $(m, \ell)$ that can be updated incrementally while preserving numerical stability.</p>
+<p><strong>Derivation</strong>: Suppose we have processed blocks $1, \ldots, i$ with running max $m^{(i)}$ and running sum $\ell^{(i)} = \sum_{j=1}^{i} \sum_{k \in B_j} e^{s_k - m^{(i)}}$. When we encounter block $i+1$ with elements $\lbrace s_k \rbrace_{k \in B_{i+1}}$:</p>
+<ol>
+<li>
+<p><strong>Update max</strong>:
+$$m^{(i+1)} = \max(m^{(i)}, \max_{k \in B_{i+1}} s_k)$$</p>
+</li>
+<li>
+<p><strong>Update sum</strong>: The previous sum $\ell^{(i)}$ was computed with offset $m^{(i)}$, but we need all terms to use the new offset $m^{(i+1)}$ for numerical stability. Using $e^{s_k - m^{(i)}} = e^{s_k - m^{(i+1)}} \cdot e^{m^{(i+1)} - m^{(i)}}$, we rescale:
+$$\ell^{(i+1)} = e^{m^{(i)} - m^{(i+1)}} \cdot \ell^{(i)} + \sum_{k \in B_{i+1}} e^{s_k - m^{(i+1)}}$$</p>
+</li>
+</ol>
+<p>The rescaling factor $e^{m^{(i)} - m^{(i+1)}} \leq 1$ (since $m^{(i+1)} \geq m^{(i)}$) ensures all exponents remain non-positive, maintaining numerical stability throughout.</p>
+<p><strong>Correctness</strong>: After processing all blocks, $\ell^{(\mathrm{final})} = \sum_k e^{s_k - m^{(\mathrm{final})}}$, which is exactly the denominator needed for numerically stable softmax.</p>
+<p><strong>Extending to attention output</strong>: For $o = \sum_k [\mathrm{softmax}(s)]_k \cdot v_k$, we maintain a running (unnormalized) output:
+$$o^{(i)} = \sum_{j=1}^{i} \sum_{k \in B_j} e^{s_k - m^{(i)}} \cdot v_k$$</p>
+<p>When processing block $i+1$, rescale the previous output to use the new max and add new contributions:
+$$o^{(i+1)} = e^{m^{(i)} - m^{(i+1)}} \cdot o^{(i)} + \sum_{k \in B_{i+1}} e^{s_k - m^{(i+1)}} \cdot v_k$$</p>
+<p>After all blocks: $o^{(\mathrm{final})} / \ell^{(\mathrm{final})} = \sum_k [\mathrm{softmax}(s)]_k \cdot v_k$ — mathematically identical to standard attention, but computed in a single pass with guaranteed numerical stability.</p>
+<h3 id="flash-attention-fused-attention-kernel">
+  <strong>Flash Attention: Fused Attention Kernel</strong>
+  
+  <a class="anchor" href="#flash-attention-fused-attention-kernel">#</a>
+  
+</h3>
+<p>Flash Attention combines online softmax with tiling to fuse all attention operations into a single kernel:</p>
+<div style="border: 2px solid #333; border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; background: #fafafa;">
+<p style="font-weight: bold; font-size: 1.1em; margin-top: 0; margin-bottom: 1rem; border-bottom: 1px solid #ccc; padding-bottom: 0.5rem;">Algorithm: Flash Attention</p>
+<p><strong>Input:</strong> $Q, K, V \in \mathbb{R}^{N \times d}$, block sizes $B_r, B_c$ where $B_r \cdot d + B_c \cdot d + B_r \cdot B_c \leq M$<br>
+<strong>Output:</strong> $O = \mathrm{softmax}(QK^T)V$</p>
+<ol>
+<li>Divide $Q$ into row blocks $Q_1, \ldots, Q_{N/B_r}$ of size $B_r \times d$</li>
+<li>Divide $K, V$ into row blocks of size $B_c \times d$</li>
+<li><strong>for</strong> $i = 1$ to $N/B_r$ <strong>do</strong></li>
+<li> Initialize: $m_i \leftarrow -\infty$, $\ell_i \leftarrow 0$, $O_i \leftarrow 0$</li>
+<li> <strong>for</strong> $j = 1$ to $N/B_c$ <strong>do</strong></li>
+<li>  Load $Q_i, K_j, V_j$ from HBM to SBUF</li>
+<li>  Compute $S_{ij} \leftarrow Q_i K_j^T$</li>
+<li>  Compute $\tilde{m}<em>{ij} \leftarrow \mathrm{rowmax}(S</em>{ij})$,   $m_i^{\mathrm{new}} \leftarrow \max(m_i, \tilde{m}_{ij})$</li>
+<li>  Compute $\tilde{P}<em>{ij} \leftarrow \exp(S</em>{ij} - m_i^{\mathrm{new}})$</li>
+<li>  Update $\ell_i \leftarrow e^{m_i - m_i^{\mathrm{new}}} \ell_i + \mathrm{rowsum}(\tilde{P}_{ij})$</li>
+<li>  Update $O_i \leftarrow e^{m_i - m_i^{\mathrm{new}}} O_i + \tilde{P}_{ij} V_j$</li>
+<li>  Set $m_i \leftarrow m_i^{\mathrm{new}}$</li>
+<li> <strong>end for</strong></li>
+<li> Write $O_i \leftarrow O_i / \ell_i$ to HBM</li>
+<li><strong>end for</strong></li>
+<li><strong>return</strong> $O$</li>
+</ol>
+</div>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/kernel_fusion/kernel_fusion_flash.png"
+       alt="Flash Attention With Fusion"
+       style="width: 90%; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Flash Attention fuses all operations into a single kernel: Q, K, V are refilled once from HBM, intermediate results S and P stay in fast on-chip SBUF, and only the final output O is spilled back to HBM.
+  </p>
+</div>
+<h3 id="performance-analysis">
+  <strong>Performance Analysis</strong>
+  
+  <a class="anchor" href="#performance-analysis">#</a>
+  
+</h3>
+<p><strong>IO Complexity of Standard Attention</strong>: Reading $Q, K, V$ costs $O(Nd)$. Materializing and reading back the $N \times N$ matrices $S$ and $P$ costs $O(N^2)$. Total: $O(Nd + N^2)$.</p>
+<p><strong>IO Complexity of Flash Attention</strong>: We count HBM accesses for each tensor:</p>
+<ul>
+<li><strong>$Q$</strong>: Each block $Q_i$ ($B_r \times d$ elements) is loaded once per outer loop iteration → $(N/B_r) \cdot B_r d = Nd$ total</li>
+<li><strong>$K, V$</strong>: Each block $K_j, V_j$ ($B_c \times d$ elements) is loaded once per inner loop, repeated for all outer iterations → $(N/B_r) \cdot (N/B_c) \cdot B_c d = N^2 d / B_r$ each</li>
+<li><strong>$O$</strong>: Each block $O_i$ is written once → $Nd$ total</li>
+</ul>
+<p>Total HBM accesses: $Nd + 2 \cdot \frac{N^2 d}{B_r} + Nd = O\left(Nd + \frac{N^2 d}{B_r}\right)$</p>
+<p>From the SRAM constraint $B_r \cdot d + B_c \cdot d + B_r \cdot B_c \leq M$, we have $B_r = O(M/d)$. Substituting:</p>
+<p>$$\text{Flash Attention IO} = O\left(Nd + \frac{N^2 d}{M/d}\right) = O\left(Nd + \frac{N^2 d^2}{M}\right)$$</p>
+<p>For long sequences where $N^2 d^2 / M \gg Nd$, this simplifies to $O(N^2 d^2 / M)$ — a factor of $M/d^2$ improvement over standard attention&rsquo;s $O(N^2)$ term.</p>
+<p><strong>Memory</strong>: Standard attention requires $O(N^2)$ memory to store $S$ and $P$. Flash Attention avoids materializing these matrices, requiring only $O(Nd)$ for inputs/outputs — enabling much longer sequences.</p>
+<h2 id="references">
+  References
+  
+  <a class="anchor" href="#references">#</a>
+  
+</h2>
+<ol>
+<li>Dao, T., Fu, D. Y., Ermon, S., Rudra, A., &amp; Ré, C. (2022). FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness. <em>NeurIPS 2022</em>. <a href="https://arxiv.org/abs/2205.14135">https://arxiv.org/abs/2205.14135</a></li>
+<li>AWS Neuron Documentation. Neuron Kernel Interface (NKI) Programming Guide. <a href="https://awsdocs-neuron.readthedocs-hosted.com/en/latest/general/nki/index.html">https://awsdocs-neuron.readthedocs-hosted.com/en/latest/general/nki/index.html</a></li>
+</ol>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="../../../docs/section-3/subsection-6/" class="flex align-center book-icon">
+        <img src="../../../svg/backward.svg" class="book-icon" alt="Previous" title="3.6 Compute Graph Optimization" />
+        <span>3.6 Compute Graph Optimization</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="../../../docs/section-4/" class="flex align-center book-icon">
+        <span>Open-Source Tools, Frameworks, and Deployment Scenarios</span>
+        <img src="../../../svg/forward.svg" class="book-icon" alt="Next" title="Open-Source Tools, Frameworks, and Deployment Scenarios" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#memory-hierarchy"><strong>Memory Hierarchy</strong></a>
+      <ul>
+        <li><a href="#example-neuroncore-aws-trainium-programming-model"><strong>Example: NeuronCore (AWS Trainium) Programming Model</strong></a></li>
+      </ul>
+    </li>
+    <li><a href="#arithmetic-intensity"><strong>Arithmetic Intensity</strong></a></li>
+    <li><a href="#what-is-kernel-fusion"><strong>What is Kernel Fusion?</strong></a></li>
+    <li><a href="#fusion-techniques"><strong>Fusion Techniques</strong></a>
+      <ul>
+        <li><a href="#operator-fusion"><strong>Operator Fusion</strong></a></li>
+        <li><a href="#tiling"><strong>Tiling</strong></a></li>
+      </ul>
+    </li>
+    <li><a href="#flash-attention-and-mathematical-fusion"><strong>Flash Attention and Mathematical Fusion</strong></a>
+      <ul>
+        <li><a href="#why-standard-fusion-fails-for-attention"><strong>Why Standard Fusion Fails for Attention</strong></a></li>
+        <li><a href="#online-softmax-the-mathematical-transform"><strong>Online Softmax: The Mathematical Transform</strong></a></li>
+        <li><a href="#flash-attention-fused-attention-kernel"><strong>Flash Attention: Fused Attention Kernel</strong></a></li>
+        <li><a href="#performance-analysis"><strong>Performance Analysis</strong></a></li>
+      </ul>
+    </li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+
+
+
+  </div>
+</aside>
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

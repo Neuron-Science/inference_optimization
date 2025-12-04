@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  2.1 Efficient Attention Variants
+  
+  #
+  
+
+
+
+
+
+  
+
+
+At the heart of the success of transformer architectures, lies the attention mechanism, which allows models to capture long-range dependencies and complex interactions across inputs.
+However, standard self-atention scales quadratically with sequence length, making it prohibitively expensive for large-scale or realtime applications.
+This has spurred a wave of research into efficient attention mechanisms &ndash; techniques that reduce the computational and memory overhead without sacrificing accuracy.
+Some of them are highlighted here.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://neuron-science.github.io/docs/section-2/subsection-1/">
+  <meta property="og:site_name" content="Inference Optimization">
+  <meta property="og:title" content="2.1 Efficient Attention Variants">
+  <meta property="og:description" content="2.1 Efficient Attention Variants # At the heart of the success of transformer architectures, lies the attention mechanism, which allows models to capture long-range dependencies and complex interactions across inputs. However, standard self-atention scales quadratically with sequence length, making it prohibitively expensive for large-scale or realtime applications. This has spurred a wave of research into efficient attention mechanisms – techniques that reduce the computational and memory overhead without sacrificing accuracy. Some of them are highlighted here.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+<title>2.1 Efficient Attention Variants | Inference Optimization</title>
+<link rel="icon" href="../../../favicon.png" >
+<link rel="manifest" href="../../../manifest.json">
+<link rel="canonical" href="https://neuron-science.github.io/docs/section-2/subsection-1/">
+<link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
+  <script defer src="../../../fuse.min.js"></script>
+  <script defer src="../../../en.search.min.9d1d95b9e653c7bee1bc2763af794a73ca266784f4acee3a0d61aaa10baa6eae.js" integrity="sha256-nR2VueZTx77hvCdjr3lKc8omZ4T0rO46DWGqoQuqbq4=" crossorigin="anonymous"></script>
+<link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-2/subsection-1/index.xml" title="Inference Optimization" />
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr" class="book-kind-section book-type-docs book-layout-">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="../../../"><span>Inference Optimization</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/" class=""> Foundations of Generative Inference</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-1/" class="">1.1 Overview of Transformer Architecture</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-2/" class="">1.2 Llama family of models</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-3/" class="">1.3 Hardware Accelerators for Deep Learning</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-4/" class="">1.4 Roofline Analysis</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-5/" class="">1.5 Measuring Inference Efficiency</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/" class="">Algorithmic and Modeling-level Inference Optimization</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-1/" class="active">2.1 Efficient Attention Variants</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-2/" class="">2.2 Mixture of Experts</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-3/" class="">2.3 Model Quantization</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-4/" class="">2.4 Key-Value Caching</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-5/" class="">2.5 Speculative Decoding</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-6/" class="">2.6 Knowledge Distillation</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/" class="">Systems-Level Inference Optimization</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-1/" class="">3.1 Paged Attention</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-2/" class="">3.2 Continuous Batching</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-3/" class="">3.3 Chunked Prefill</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-4/" class="">3.4 Disaggregated Inference</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-5/" class="">3.5 Multi-LoRA serving</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-6/" class="">3.6 Compute Graph Optimization</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/" class="">Open-Source Tools, Frameworks, and Deployment Scenarios</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/subsection-1/" class="">Section 4.1</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="../../../svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>2.1 Efficient Attention Variants</h3>
+
+  <label for="toc-control">
+    
+    <img src="../../../svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#multi-head-attention-mha"><strong>Multi Head Attention (MHA)</strong></a></li>
+    <li><a href="#grouped-query-attention-gqa"><strong>Grouped Query Attention (GQA)</strong></a></li>
+    <li><a href="#sliding-window-attention-swa"><strong>Sliding Window Attention (SWA)</strong></a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><h1 id="21-efficient-attention-variants">
+  2.1 Efficient Attention Variants
+  
+  <a class="anchor" href="#21-efficient-attention-variants">#</a>
+  
+</h1>
+
+<link rel="stylesheet" href="../../../katex/katex.min.css" />
+<script defer src="../../../katex/katex.min.js"></script>
+
+  <script defer src="../../../katex/auto-render.min.js" onload="renderMathInElement(document.body, {
+  &#34;delimiters&#34;: [
+    {&#34;left&#34;: &#34;$$&#34;, &#34;right&#34;: &#34;$$&#34;, &#34;display&#34;: true},
+    {&#34;left&#34;: &#34;$&#34;, &#34;right&#34;: &#34;$&#34;, &#34;display&#34;: false},
+    {&#34;left&#34;: &#34;\\(&#34;, &#34;right&#34;: &#34;\\)&#34;, &#34;display&#34;: false},
+    {&#34;left&#34;: &#34;\\[&#34;, &#34;right&#34;: &#34;\\]&#34;, &#34;display&#34;: true}
+  ]
+}
+);"></script>
+
+
+<p>At the heart of the success of transformer architectures, lies the attention mechanism, which allows models to capture long-range dependencies and complex interactions across inputs.
+However, standard self-atention scales quadratically with sequence length, making it prohibitively expensive for large-scale or realtime applications.
+This has spurred a wave of research into efficient attention mechanisms &ndash; techniques that reduce the computational and memory overhead without sacrificing accuracy.
+Some of them are highlighted here.</p>
+<h2 id="multi-head-attention-mha">
+  <strong>Multi Head Attention (MHA)</strong>
+  
+  <a class="anchor" href="#multi-head-attention-mha">#</a>
+  
+</h2>
+<p>MHA is a core optimization, in which instead of computing a single attention distribution over the input sequence, the model&rsquo;s hidden dimension is split into multiple <strong>heads</strong>.
+Each head learns its own set of query, key, and value projection, and the model computes scaled dot-product attention independently for each head, resulting in multiple attenton outputs.
+These outputs are then concatenated and linearly projected back to the model&rsquo;s original dimension.</p>
+<p>Suppose the input to the attention layer is a sequence of hidden states,</p>
+<p>$$X \in \mathbb{R}^{T \times d_{\text{model}}},$$</p>
+<p>where $T$ is the sequence length, and $d_{\text{model}}$ is the embedding dimension.
+For each head $h \in {1, \ldots, H}$ (where $H$ is the number of attention heads), we compute separate query, key, and value matrices via learned linear projections:</p>
+<p>$$Q_h = XW_h^Q, \hspace{3ex} K_h = XW_h^K, \hspace{2ex} V_h = XW_h^V$$</p>
+<p>where $W_h^Q, W_h^K, W_h^V \in \mathbb{R}^{d_{\text{model}} \times d_k}$.
+Here, $d_k = d_{\text{model}}/H$ is the dimension per head.</p>
+<p>Each head performs scaled dot-product attention:</p>
+<p>$$O_h \triangleq \text{Attention}(Q_h, K_h, V_h) = \text{softmax}\left(\frac{Q_hK_h^\top}{\sqrt{d_k}}\right)V_h \in \mathbb{R}^{T \times d_k}.$$</p>
+<p>The outputs from all heads are concatenated to get:</p>
+<p>$$O = \text{Concat}(O_1, O_2, \ldots, O_H) \in \mathbb{R}^{T \times d_{\text{model}}}$$</p>
+<p>A final linear projection matrix $W^O \in \mathbb{R}^{d_{\text{model}} \times d_{\text{model}}}$ yields the final output:</p>
+<p>$$\text{MHA}(X) = OW^O$$</p>
+<p>This parallel attention structure has two key benefits:</p>
+<ol>
+<li>It increases the models&rsquo; representation capacity without increasing computational complexity as much as a single very large attention would,</li>
+<li>It allows the model to capture richer contextual information because different heads can specialize in attenting to different positions or patterns in the sequence. For example, one head might learn to track subject-verb agreement, while another focuses on long-range dependencies.</li>
+</ol>
+<p>The final output provides a more expressive representation that downstream layers can use effectively.</p>
+<h2 id="grouped-query-attention-gqa">
+  <strong>Grouped Query Attention (GQA)</strong>
+  
+  <a class="anchor" href="#grouped-query-attention-gqa">#</a>
+  
+</h2>
+<p>Where standard MHA has one set of key/value projections per query head, GPQ reduces the number of key/value heads to save memory and bandwidth during inference, while keeping the same number of query heads for expressivity.
+Let $G$ be the total number of key/value heads (with $G &lt; H$, i.e., the number of query heads).
+Denote by $d_q = d_{\text{model}}/ H$ and $d_{kv} = d_{\text{model}}/G$ be the dimension per query head and per KV head, respectively.</p>
+<p>For each head $h = 1, \ldots, H$, the query is given by $Q_h = XW_h^Q$, where $W_h^Q \in \mathbb{R}^{d_{\text{model}} \times d_q}$.</p>
+<p>For keys and values (fewer heads), for $g = 1, \ldots G$ and $W_g^K, W_g^V \in \mathbb{R}^{d_{\text{model}} \times d_{kv}}$, we have,</p>
+<p>$$K_g = XW_g^K \hspace{2ex} \text{and} \hspace{2ex} V_g = XW_g^V.$$</p>
+<p>Each query head $h$ is assigned to one key/value head $g$.
+For example, if $r = H/G$ (an integer), then $g = \left\lfloor \frac{h}{r} \right\rfloor$.
+This means $r$ query heads share the same key/value pair.
+Subsequently, for each query head $h$, we attend to the key/value head $g$ it&rsquo;s mapped to, to get:</p>
+<p>$$O_h \triangleq \text{Attention}(Q_h, K_g, V_g) = \text{softmax}\left(\frac{Q_hK_g^\top}{\sqrt{d_q}}\right)V_g \in \mathbb{R}^{T \times d_q}.$$</p>
+<p>As in standard MHA,</p>
+<p>$$\text{GQA}(X) = OW^O, \hspace{2ex} W^O \in \mathbb{R}^{d_{\text{model}} \times d_{\text{model}}}, \hspace{2ex} O = \text{Concat}(O_1, O_2, \ldots, O_H) \in \mathbb{R}^{T \times d_{\text{model}}}.$$</p>
+<p>With GQA, the KV cache size is given by,</p>
+<p>$$\text{batchsize } * \text{ seqlen } * \text{ (embed-dim / nheads) } * \text{ nlayers } * \hspace{1px} 2 \hspace{1px} * \text{ precision } * \text{ nKVheads }$$</p>
+<p>GQA offers a balance between efficiency and expressivity in transformer architectures.
+By allowing many query heads to share a smaller number of KV heads, GQA drastically reduce the memory footprint and bandwidth cost of KV caching during autoregressive inference &ndash; often by a factor of $H/G$, where $H$ is the number of query heads and $G$ is the number of KV heads.
+This reduction leads to faster decoding, lower latency, and better scalability to longer context lengths.
+In practice, this enables deploying larger or more capable models under the same memory budget, making GQA a key ingredient in efficient long-context language models like Llama 2 and Llama 3.</p>
+<h2 id="sliding-window-attention-swa">
+  <strong>Sliding Window Attention (SWA)</strong>
+  
+  <a class="anchor" href="#sliding-window-attention-swa">#</a>
+  
+</h2>
+<p>In standard full attention, each token attend to <strong>every other token</strong> in the sequence.
+This results in quadratic complexity, i.e., $\mathrm{O}(N^2)$, where $N$ is the sequence length.
+SLiding window Attention (SWA) changes this by <strong>restricting the attention span</strong>.
+In SWA, each token only attends to tokens within a fixed window of size $w$ around it (e.g., for casual SWA, this corresponds to the previous $w$ tokens).
+This reduces the computational complexity to $\mathrm{O}(Nw)$, instead of $\mathrm{O}(N^2)$, which is particularly useful for long contexts such as long documents or streaming scenarios, without blowing up GPU memory.
+With SWA, the KV cache size is given by,</p>
+<p>$$\text{batchsize } * \text{ W } * \text{ (embed-dim / nheads) } * \text{ nlayers } * \hspace{1px} 2 \hspace{1px} * \text{ precision } * \text{ nKVheads. }$$</p>
+<p>That is, SWA reduces the KV cache size by a factor of $\text{W / seqlen}$</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/efficient_attention_variants/swa-attention-mechanism.webp" 
+       alt="Sliding Window Attention Mechanism" 
+       style="width: 70%; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Comparison of standard attention vs sliding window attention (credits: Sebastian Raschka)
+  </p>
+</div>
+
+
+<h2 id="references">
+  References
+  
+  <a class="anchor" href="#references">#</a>
+  
+</h2>
+<ol>
+<li>Sliding Window Attention (SWA) <a href="">https://sebastianraschka.com/llms-from-scratch/ch04/06_swa/</a></li>
+</ol>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="../../../docs/section-2/" class="flex align-center book-icon">
+        <img src="../../../svg/backward.svg" class="book-icon" alt="Previous" title="Algorithmic and Modeling-level Inference Optimization" />
+        <span>Algorithmic and Modeling-level Inference Optimization</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="../../../docs/section-2/subsection-2/" class="flex align-center book-icon">
+        <span>2.2 Mixture of Experts</span>
+        <img src="../../../svg/forward.svg" class="book-icon" alt="Next" title="2.2 Mixture of Experts" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#multi-head-attention-mha"><strong>Multi Head Attention (MHA)</strong></a></li>
+    <li><a href="#grouped-query-attention-gqa"><strong>Grouped Query Attention (GQA)</strong></a></li>
+    <li><a href="#sliding-window-attention-swa"><strong>Sliding Window Attention (SWA)</strong></a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+
+
+
+  </div>
+</aside>
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

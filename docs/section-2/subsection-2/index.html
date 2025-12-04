@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  2.2 Mixture of Experts
+  
+  #
+  
+
+
+
+
+
+  
+
+
+Scaling Laws for modern LLMs dictate that increasing the model size benefits generalization.
+A dense model with $N$ parameters executes all parameters per forward pass &ndash; making inference linearly more expensive as models scale in size.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://neuron-science.github.io/docs/section-2/subsection-2/">
+  <meta property="og:site_name" content="Inference Optimization">
+  <meta property="og:title" content="2.2 Mixture of Experts">
+  <meta property="og:description" content="2.2 Mixture of Experts # Scaling Laws for modern LLMs dictate that increasing the model size benefits generalization. A dense model with $N$ parameters executes all parameters per forward pass – making inference linearly more expensive as models scale in size.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+<title>2.2 Mixture of Experts | Inference Optimization</title>
+<link rel="icon" href="../../../favicon.png" >
+<link rel="manifest" href="../../../manifest.json">
+<link rel="canonical" href="https://neuron-science.github.io/docs/section-2/subsection-2/">
+<link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
+  <script defer src="../../../fuse.min.js"></script>
+  <script defer src="../../../en.search.min.9d1d95b9e653c7bee1bc2763af794a73ca266784f4acee3a0d61aaa10baa6eae.js" integrity="sha256-nR2VueZTx77hvCdjr3lKc8omZ4T0rO46DWGqoQuqbq4=" crossorigin="anonymous"></script>
+<link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-2/subsection-2/index.xml" title="Inference Optimization" />
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr" class="book-kind-section book-type-docs book-layout-">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="../../../"><span>Inference Optimization</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/" class=""> Foundations of Generative Inference</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-1/" class="">1.1 Overview of Transformer Architecture</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-2/" class="">1.2 Llama family of models</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-3/" class="">1.3 Hardware Accelerators for Deep Learning</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-4/" class="">1.4 Roofline Analysis</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-5/" class="">1.5 Measuring Inference Efficiency</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/" class="">Algorithmic and Modeling-level Inference Optimization</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-1/" class="">2.1 Efficient Attention Variants</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-2/" class="active">2.2 Mixture of Experts</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-3/" class="">2.3 Model Quantization</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-4/" class="">2.4 Key-Value Caching</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-5/" class="">2.5 Speculative Decoding</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-6/" class="">2.6 Knowledge Distillation</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/" class="">Systems-Level Inference Optimization</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-1/" class="">3.1 Paged Attention</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-2/" class="">3.2 Continuous Batching</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-3/" class="">3.3 Chunked Prefill</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-4/" class="">3.4 Disaggregated Inference</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-5/" class="">3.5 Multi-LoRA serving</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-6/" class="">3.6 Compute Graph Optimization</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/" class="">Open-Source Tools, Frameworks, and Deployment Scenarios</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/subsection-1/" class="">Section 4.1</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="../../../svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>2.2 Mixture of Experts</h3>
+
+  <label for="toc-control">
+    
+    <img src="../../../svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#moe-architecture-overview">MoE architecture overview</a>
+      <ul>
+        <li><a href="#routing">Routing</a></li>
+      </ul>
+    </li>
+    <li><a href="#why-moe-improves-inference-efficiency">Why MoE improves inference efficiency</a></li>
+    <li><a href="#moe-inference-optimization">MoE inference optimization</a>
+      <ul>
+        <li><a href="#parallelism">Parallelism</a></li>
+        <li><a href="#expert-compute-optimizations">Expert-compute optimizations</a></li>
+      </ul>
+    </li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><h1 id="22-mixture-of-experts">
+  2.2 Mixture of Experts
+  
+  <a class="anchor" href="#22-mixture-of-experts">#</a>
+  
+</h1>
+
+<link rel="stylesheet" href="../../../katex/katex.min.css" />
+<script defer src="../../../katex/katex.min.js"></script>
+
+  <script defer src="../../../katex/auto-render.min.js" onload="renderMathInElement(document.body, {
+  &#34;delimiters&#34;: [
+    {&#34;left&#34;: &#34;$$&#34;, &#34;right&#34;: &#34;$$&#34;, &#34;display&#34;: true},
+    {&#34;left&#34;: &#34;$&#34;, &#34;right&#34;: &#34;$&#34;, &#34;display&#34;: false},
+    {&#34;left&#34;: &#34;\\(&#34;, &#34;right&#34;: &#34;\\)&#34;, &#34;display&#34;: false},
+    {&#34;left&#34;: &#34;\\[&#34;, &#34;right&#34;: &#34;\\]&#34;, &#34;display&#34;: true}
+  ]
+}
+);"></script>
+
+
+<p>Scaling Laws for modern LLMs dictate that increasing the model size benefits generalization.
+A dense model with $N$ parameters executes <strong>all</strong> parameters per forward pass &ndash; making inference linearly more expensive as models scale in size.</p>
+<p>The <strong>Mixture-of-Experts (MoE)</strong> architecture decoduples <em>model size</em> from <em>compute</em> by activating only a small, routed subset of parameters per token.
+A model might store $1\text{T}$ parameters, yet compute on only $10 - 20\text{B}$ per token.
+This provides:</p>
+<ul>
+<li>Higher parameter count $\implies$ Better quality of output</li>
+<li>Lower per-token FLOPs $\implies$ Cheaper inference</li>
+<li>Better scaling with parallel hadrware (experts can be sharded across devices)</li>
+</ul>
+<p>This trade-off makes MoEs fundamentally appealing for high-throughput inference.</p>
+<h2 id="moe-architecture-overview">
+  MoE architecture overview
+  
+  <a class="anchor" href="#moe-architecture-overview">#</a>
+  
+</h2>
+<p>An MoE layer replaces the standard feedforward network (FFN) block in a transformer.
+Instead of one FFN layer, we have $E$ experts, each of which is an independent MLP.
+This is demonstrated below:</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/mixture_of_experts/MoE_architecture.png" 
+       alt="Sliding Window Attention Mechanism" 
+       style="width: 70%; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    MoE layers replace standard FFN layers. MHA modules are remain unchanged (credits: Lepikhin et. al.)
+  </p>
+</div>
+<p>In the figure above, every alternate transformer block has an MoE layer.</p>
+<h3 id="routing">
+  Routing
+  
+  <a class="anchor" href="#routing">#</a>
+  
+</h3>
+<p>For each input token representation $h \in \mathbb{R}^d$, a lightweight gating function first computes the scores:</p>
+<p>$$g = W_gh, \quad \text{where} \quad W_g \in \mathbb{R}^{E \times d}.$$</p>
+<p>Next, it selects the top-$k$ experts (typically $k = 1$ of $k = 2$), and routes the token&rsquo;s hidden state to those experts.
+Formally,</p>
+<p>$$G(h) = \text{Softmax}\left(\text{TopK}(g,k)\right).$$</p>
+<p>Here, $\text{TopK}(g,k) = g_i, \text{if } g_i \text{ is in the top-k elements}, -\infty \text{ otherwise}$.
+Subsequently,</p>
+<p>$$\text{MoE}(h) = \sum_{i = 1}^nG(h)_i E_i(h), \text{ where } E_i(h) \text{ is the output of expert } i.$$</p>
+<p>Note that each selected expert proceses on the tokens routed to it.
+Experts operate in parallel across acelerator shards.
+The outputs are combined using the gating weights.
+The above computation is visualized below:</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/mixture_of_experts/MoE_gating.png" 
+       alt="Sliding Window Attention Mechanism" 
+       style="width: 70%; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    MoE layer computation (credits: Fedus et. al.)
+  </p>
+</div>
+<h2 id="why-moe-improves-inference-efficiency">
+  Why MoE improves inference efficiency
+  
+  <a class="anchor" href="#why-moe-improves-inference-efficiency">#</a>
+  
+</h2>
+<p>A transformer FFN (dense or expert MLP) typically consists of three linear layers: <strong>Gate projection</strong> $W_{\text{gate}} \in \mathbb{R}^{d \times f}$, <strong>Up projection</strong> $(W_{\text{up}} \in \mathbb{R}^{d \times f})$ (sometimes fused with the gate matrix), and <strong>Down projection</strong> $(W_{\text{down}} \in \mathbb{R}^{f \times d})$/.
+These projections expand the hidden dimension from $d$ to a larger dimension $f$, apply a non-linear activation (e.g., SiLU or GELU), then contract back.
+The <strong>expansion ratio</strong> $(r)$, i.e., $f/d$ refers to how much the hidden dimension expands inside the FFN relative to the model dimension.</p>
+<p>Since the FFN cost is dominated by the matmuls $d \times f$ (gate, up) and $f \times d$ (down), the compute FLOPs scales as $\mathrm{O}\left(3rd^2\right)$.
+For an MoE with $E$ experts, top-$k$ routing has $\mathrm{O}\left(3krd^2\right)$ FLOPs per expert.
+Since we invoke a fixed number of experts ($k$ per token &ndash; for e.g., $k = 1$), the compute per token stays constant, even as $E$ increases, allowing models size to scale without scalig compute.
+In other words, the number of activated parameters during inferences tays fixed, even though the total model size can scale up.</p>
+<p><strong>Memory trade-off</strong>: Since al lexperts&rsquo; weights need to be stored, this increases VRAM usage as expected due to increasing model size.</p>
+<h2 id="moe-inference-optimization">
+  MoE inference optimization
+  
+  <a class="anchor" href="#moe-inference-optimization">#</a>
+  
+</h2>
+<h3 id="parallelism">
+  Parallelism
+  
+  <a class="anchor" href="#parallelism">#</a>
+  
+</h3>
+<p>MOE layers introduce a unique structure: a large bank of independent FFN <em>experts</em> &ndash; only a few of which activate per token, and hence they introduce a new dimension of parallelism.
+The two main strategies to parallelize MoE computation are &ndash; <strong>tensor parallelism</strong> and <strong>expert parallelism</strong>.
+Understanding when each is appropriate is essential for building efficient MoE inference systems.</p>
+<p><strong>Tensor parallelism</strong> (TP) splits the weights matrices inside an expert across multiple devices.
+Each device holds a slice of the weight matrices, and all devices jointly compute the expert&rsquo;s output.
+TP enables very large experts, i.e., when $d$ and $f$ are large, and larger GEMMs are spread across multiple devices, enabling higher tensor-core utiliziation.
+However, TP also requires <em>collective communication</em> (all-reduce, reduce-scatter) to compute the final MoE layer output.
+These collectives are latency-sensitive, and if the inter-device interconnect does not have a high-enough bandwidth, these collectives can be memory-bandwidth bound, severely undermining any improvement in GEMM throughput.</p>
+<p><strong>Expert parallelism</strong> (EP) partitions the experts themselves across devices, and is usually preferred when the number of experts is large.
+Each device holds a subset of experts, but holds all parameters for those experts.
+To do a forward pass through an MoE layer with EP, tokens enter the MoE layer on their originating device.
+Then, the gate selects expert IDs for each token, and the tokens are sent (<strong>all-to-all</strong>) to devices that own the chosen experts.
+Subsequently, each device computes its local experts&rsquo; MLPs without further splitting, and the token outputs are returned (<strong>all-to-all</strong>) back to their original devices.
+routing tokens to their selected experts on other devices requires efficient inter-device communication, and is often the performance bottleneck.</p>
+<p>Roughly stated, EP is preferred for a <em>large number of small experts</em> (e.g., DeepSeek-MoE), whereas TP is preferred for a <em>small number of large experts</em> (e.g., Llama-4).
+Depending on requirements, it is also possible to combine EP + TP together in a hybrid 2D parallelism strategy. In any case, strategies to minimize the inter-device communication latency invariably helps optimize the inference latency.</p>
+<h3 id="expert-compute-optimizations">
+  Expert-compute optimizations
+  
+  <a class="anchor" href="#expert-compute-optimizations">#</a>
+  
+</h3>
+<p>While MoE does reduce the <em>compute per token</em> in terms of FLOPs, it introduces many small, fragmented computations that can be inefficient by default.
+For instance, each expert performs gate projection, up project, non-linear activation, and down projection.
+Naively, this yields <em>multiple small kernels</em>, each with separate memory loads/stores, kernel launch overhead, and poor likelihood of hitting high tensor-core occupancy.
+<strong>FusedMoE</strong> kernels, which ar eused by popular LLM serving frameworks like vLLM, use a single fused kernels that implements $\text{SwiGLU}\left(W_{\text{up}}h, W_{\text{gate}}h\right)$ followed by $W_{\text{down}}$ in <strong>one</strong> kernel invocation.
+This reduces the kernel launch overhead, enables intermediate activates to be stored on SRAM avoiding redundant HBM reads/writes, and improves the tensor-core utilization.</p>
+<p><strong>Expert-weight quantization</strong>: Moreover, since expert weights have a high memory footprint, and loading them from HBM is often the bottleneck, several recent models have opted to quantize the expert weights to low-precision formats.
+For example, expert weights in GPT-OSS (from OpenAI) are quantized to MXFP4, Kimi-K2 Thinking (from MoonshotAI) has INT4 expert weights.
+These weights are natively quantized, and the effects of quantization error are mitigated using quantization-aware-training.
+The quantized weights are dequantized on-the-fly to a higher precision (such as BF16) inside fused kernels for compute.</p>
+<p>To summarize, MoE architectures offer an attractive path to scaling model capacity without proportionally increasing inference cost.
+But achieving this theoretical efficiency in practice requires far more than sparsely activating experts: it hinges on carefully engineering the dataflow, minimizing the overhead of routing, and exploiting the right mix of expert and tensor parallelism.
+When these optimizations align with hardware topology and memory bandwidth constraints, MoE models can deliver dense-model quality at a fraction of the compute per token.
+Ultimately, MoEs exemplify the broader theme of inference optimization, i.e., performance emerges not only from algorithmic design, but from thoughtful co-design of model structure, parallelism strategy, communication patterns, and low-level kernels.</p>
+
+
+<h2 id="references">
+  References
+  
+  <a class="anchor" href="#references">#</a>
+  
+</h2>
+<ol>
+<li>Mixture of Experts Explained, HuggingFace blog, Dec 2023 <a href="">https://huggingface.co/blog/moe</a></li>
+<li>Lepikhin et. al., GShard: Scaling Giant Models with Conditional Computation and Automatic Sharding, 2020 <a href="">https://arxiv.org/abs/2006.16668</a></li>
+<li>Fedus, Dean and Zoph, A Review of Sparse Expert Models in Deep Learning, 2022 <a href="">https://arxiv.org/abs/2209.01667</a></li>
+</ol>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="../../../docs/section-2/subsection-1/" class="flex align-center book-icon">
+        <img src="../../../svg/backward.svg" class="book-icon" alt="Previous" title="2.1 Efficient Attention Variants" />
+        <span>2.1 Efficient Attention Variants</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="../../../docs/section-2/subsection-3/" class="flex align-center book-icon">
+        <span>2.3 Model Quantization</span>
+        <img src="../../../svg/forward.svg" class="book-icon" alt="Next" title="2.3 Model Quantization" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#moe-architecture-overview">MoE architecture overview</a>
+      <ul>
+        <li><a href="#routing">Routing</a></li>
+      </ul>
+    </li>
+    <li><a href="#why-moe-improves-inference-efficiency">Why MoE improves inference efficiency</a></li>
+    <li><a href="#moe-inference-optimization">MoE inference optimization</a>
+      <ul>
+        <li><a href="#parallelism">Parallelism</a></li>
+        <li><a href="#expert-compute-optimizations">Expert-compute optimizations</a></li>
+      </ul>
+    </li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+
+
+
+  </div>
+</aside>
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

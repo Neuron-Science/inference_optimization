@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  Overview of Transformer Architecture
+  
+  #
+  
+
+
+
+
+
+  
+
+
+The transformer architecture has become the foundational backbone of modern generative AI, unifying models across language, vision, and multimodal domains.
+At its core, a transformer replaces the sequential computation of earlier neural network architectures with parallel attention mechanisms that allow every token to directly interact with every other token.
+This design not only captures long-range dependencies with ease, but also scales efficiently with larger models and datasets, enabling today’s breakthroughs in large language models (LLMs), diffusion models, vision-language systems, etc.
+In this section, we outline the key components of the transformer—its attention layers, feed-forward sublayers, normalization and residual pathways—and describe how they come together to form deep, scalable networks optimized for both training and inference.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://neuron-science.github.io/docs/section-1/subsection-1/">
+  <meta property="og:site_name" content="Inference Optimization">
+  <meta property="og:title" content="1.1 Overview of Transformer Architecture">
+  <meta property="og:description" content="Overview of Transformer Architecture # The transformer architecture has become the foundational backbone of modern generative AI, unifying models across language, vision, and multimodal domains. At its core, a transformer replaces the sequential computation of earlier neural network architectures with parallel attention mechanisms that allow every token to directly interact with every other token. This design not only captures long-range dependencies with ease, but also scales efficiently with larger models and datasets, enabling today’s breakthroughs in large language models (LLMs), diffusion models, vision-language systems, etc. In this section, we outline the key components of the transformer—its attention layers, feed-forward sublayers, normalization and residual pathways—and describe how they come together to form deep, scalable networks optimized for both training and inference.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+<title>1.1 Overview of Transformer Architecture | Inference Optimization</title>
+<link rel="icon" href="../../../favicon.png" >
+<link rel="manifest" href="../../../manifest.json">
+<link rel="canonical" href="https://neuron-science.github.io/docs/section-1/subsection-1/">
+<link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
+  <script defer src="../../../fuse.min.js"></script>
+  <script defer src="../../../en.search.min.9d1d95b9e653c7bee1bc2763af794a73ca266784f4acee3a0d61aaa10baa6eae.js" integrity="sha256-nR2VueZTx77hvCdjr3lKc8omZ4T0rO46DWGqoQuqbq4=" crossorigin="anonymous"></script>
+<link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-1/subsection-1/index.xml" title="Inference Optimization" />
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr" class="book-kind-section book-type-docs book-layout-">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="../../../"><span>Inference Optimization</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/" class=""> Foundations of Generative Inference</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-1/" class="active">1.1 Overview of Transformer Architecture</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-2/" class="">1.2 Llama family of models</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-3/" class="">1.3 Hardware Accelerators for Deep Learning</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-4/" class="">1.4 Roofline Analysis</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-5/" class="">1.5 Measuring Inference Efficiency</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/" class="">Algorithmic and Modeling-level Inference Optimization</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-1/" class="">2.1 Efficient Attention Variants</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-2/" class="">2.2 Mixture of Experts</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-3/" class="">2.3 Model Quantization</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-4/" class="">2.4 Key-Value Caching</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-5/" class="">2.5 Speculative Decoding</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-6/" class="">2.6 Knowledge Distillation</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/" class="">Systems-Level Inference Optimization</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-1/" class="">3.1 Paged Attention</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-2/" class="">3.2 Continuous Batching</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-3/" class="">3.3 Chunked Prefill</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-4/" class="">3.4 Disaggregated Inference</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-5/" class="">3.5 Multi-LoRA serving</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-6/" class="">3.6 Compute Graph Optimization</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/" class="">Open-Source Tools, Frameworks, and Deployment Scenarios</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/subsection-1/" class="">Section 4.1</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="../../../svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>1.1 Overview of Transformer Architecture</h3>
+
+  <label for="toc-control">
+    
+    <img src="../../../svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#self-attention-mechanism"><strong>Self-Attention Mechanism</strong></a>
+      <ul>
+        <li><a href="#scaled-dot-product-attention"><strong>Scaled Dot-Product Attention</strong></a></li>
+        <li><a href="#causal-self-attention-masked-self-attention"><strong>Causal Self Attention (Masked Self-Attention)</strong></a></li>
+        <li><a href="#multi-head-attention-mha"><strong>Multi Head Attention (MHA)</strong></a></li>
+      </ul>
+    </li>
+    <li><a href="#positional-encoding"><strong>Positional Encoding</strong></a></li>
+    <li><a href="#feed-forward-network-ffn"><strong>Feed-Forward Network (FFN)</strong></a></li>
+    <li><a href="#layer-normalization-layernorm"><strong>Layer Normalization (LayerNorm)</strong></a></li>
+    <li><a href="#overview-of-inference-computations"><strong>Overview of Inference Computations</strong></a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><h1 id="overview-of-transformer-architecture">
+  Overview of Transformer Architecture
+  
+  <a class="anchor" href="#overview-of-transformer-architecture">#</a>
+  
+</h1>
+
+<link rel="stylesheet" href="../../../katex/katex.min.css" />
+<script defer src="../../../katex/katex.min.js"></script>
+
+  <script defer src="../../../katex/auto-render.min.js" onload="renderMathInElement(document.body, {
+  &#34;delimiters&#34;: [
+    {&#34;left&#34;: &#34;$$&#34;, &#34;right&#34;: &#34;$$&#34;, &#34;display&#34;: true},
+    {&#34;left&#34;: &#34;$&#34;, &#34;right&#34;: &#34;$&#34;, &#34;display&#34;: false},
+    {&#34;left&#34;: &#34;\\(&#34;, &#34;right&#34;: &#34;\\)&#34;, &#34;display&#34;: false},
+    {&#34;left&#34;: &#34;\\[&#34;, &#34;right&#34;: &#34;\\]&#34;, &#34;display&#34;: true}
+  ]
+}
+);"></script>
+
+
+<p>The transformer architecture has become the foundational backbone of modern generative AI, unifying models across language, vision, and multimodal domains.
+At its core, a transformer replaces the sequential computation of earlier neural network architectures with parallel attention mechanisms that allow every token to directly interact with every other token.
+This design not only captures long-range dependencies with ease, but also scales efficiently with larger models and datasets, enabling today’s breakthroughs in large language models (LLMs), diffusion models, vision-language systems, etc.
+In this section, we outline the key components of the transformer—its attention layers, feed-forward sublayers, normalization and residual pathways—and describe how they come together to form deep, scalable networks optimized for both training and inference.</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/overview_transformer/transformer_overview.png" 
+       alt="Sliding Window Attention Mechanism" 
+       style="width: 70%; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    The transformer architecture (Vaswani et. al., 2017)
+  </p>
+</div>
+<p>The transformer architecture was proposed in the paper <a href="https://arxiv.org/abs/1706.03762">Attention is All You Need, 2017</a>.
+Traditionally, it consists of an encoding component, a decoding component, and connections between them.
+The encoding and decoding components are comprised of a stack of encoders and decoders, respectively &ndash; each of which has an identical architecture (albeit not the same weights).
+Historically, the wide variety of language models are broadly categorized based on the presence of encoding and decoding components as follows:</p>
+<ul>
+<li>
+<p><strong>Encoder-only models</strong> like <a href="https://arxiv.org/abs/1810.04805">BERT</a> and <a href="https://arxiv.org/abs/1907.11692">RoBERTa</a>, consist only of the encoder component. They process inputs bidirectionally, and the output of encoder-only models is a sequence of contextualized embeddings, making them ideal for discrimative tasks like classification, retrieval, and token-level tagging. Typical sizes of these models ranged from 300M to 1B parameters. These models rarely exceeded a few billion parameters because their primary use cases do not benefit significantly from extreme scale.</p>
+</li>
+<li>
+<p><strong>Encoder-Decoder models</strong> refer to the original transformer architecture proposed by Vaswani et al., in which both encoding and decoding components are present. Models like <a href="https://arxiv.org/abs/1910.10683">T5</a> and <a href="https://arxiv.org/abs/1910.13461">BART</a> were designed to understand an input sequence and then generate a related output. They were meant for conditional generation tasks such as machine translation, summarization and instruction following. Typical model sizes ranged from 60M to 11B parameters, and training larger models became prohibitively expensive because both encoder and decoder must scale together.</p>
+</li>
+<li>
+<p><strong>Decoder-only models</strong> encompass the most popular and prominent architectures of models like GPT-3/4/5, Llama, Mistral, and Claude, used in chatbots and assistants. Their primary purpose is to generate text autoregressively, predicting the next token conditioned on all previous ones, making them well suited for open-ended generation. Modern decoder-only LLMs can perform nearly all tasks that encoder-only and encoder-decoder models were originally designed for, i.e., classification, retrieval, translation, summarization, question-answering, reasoning, etc. The primary reason behind this lies in the <strong>scale</strong>, i.e., the sizes of the models and the datasets on which they were trained (typically, they can go all the way up to 2T parameters).</p>
+</li>
+</ul>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/overview_transformer/decoder_only_model.png" 
+       alt="Sliding Window Attention Mechanism" 
+       style="width: 70%; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Decoder-only models for autoregressive text generation 
+  </p>
+</div>
+<p>Compared to encoder-decoder and encoder-only models, decoder-only architectures are much simpler to scale up in size using a variety of optimization techniques (parallelization, KV caching, etc.). As a result, even though they use a causal mask for autoregressive next-token prediction, they demonstrate an implicit understanding of tasks that traditionally required bidirectional understanding. In other words, even tasks that seem discriminative (classification, retrieval, etc.) can be reframed as <em>Generate the label</em>, <em>Extract the relevant phrase</em>, <em>Answer the question</em>, etc.</p>
+<p>Each transformer block consists of:</p>
+<ul>
+<li>Self-Attention block</li>
+<li>Positional-encoding</li>
+<li>Feed-forward network</li>
+<li>Layer Normalization</li>
+</ul>
+<h2 id="self-attention-mechanism">
+  <strong>Self-Attention Mechanism</strong>
+  
+  <a class="anchor" href="#self-attention-mechanism">#</a>
+  
+</h2>
+<p>The core idea of self-attention is to calculate an <strong>output vector</strong> (aka embedding/representation) for every token in the input sequence. The token whose representation is being computed is referred to as a <strong>query</strong>, and every other token in the sequence has an associated <strong>key</strong> and a <strong>value</strong> vector. The output vector is obtained by computing a weighted sum of all values in the input sequence, where the weight assigned to each value is determined by a <strong>compatibility function</strong> between the value&rsquo;s associated key and the specific query being processed. This allows the model t capture <em>dependencies</em> between all elements in a sequence.</p>
+<p>The input to the self-attention layer consists of the out put embeddings from the previous later, which are transformed into three distinct vectors for each token $i$:</p>
+<ol>
+<li><strong>Query</strong> $(Q_i)$: Represents what the token is looking for.</li>
+<li><strong>Key</strong> $(K_i)$: Represents what the token offers to the other tokens.</li>
+<li><strong>Value</strong> $(V_i)$: The actual content information that is aggregated.</li>
+</ol>
+<p>The self-attention output for token $i$ is calculated by:
+$${\rm Attention} (Q_i, K, V) = \sum_{j} \alpha_{ij}V_j,$$
+where $\alpha_{ij}$ is the attention weight from token $i$ to token $j$.</p>
+<h3 id="scaled-dot-product-attention">
+  <strong>Scaled Dot-Product Attention</strong>
+  
+  <a class="anchor" href="#scaled-dot-product-attention">#</a>
+  
+</h3>
+<p>The most common form of self-attention is the Scaled Dot-Product Attention (SDPA). In this, first, the input sequence of embeddings, $X \in \mathbb{R}^{n \times d}$ (each row corresponds to a token), where $n$ is the sequence length and $d$ is the embedding dimension, is transformed into the Query, Key, and Value matrices $(Q, K, V)$ using three learned linear projection matrices $(W^Q, W^K, W^V)$ as follows:
+$$Q = XW^Q, \quad K = XW^K, \quad \text{and} \hspace{2ex} V = XW^V.$$
+Here, $W^Q \in \mathbb{R}^{d \times d_k}$, $W^K \in \mathbb{R}^{d \times d_k}$ and $W^V \in \mathbb{R}^{d \times d_v}$. Consequently, the output dimensions of these linear projections are $Q \in \mathbb{R}^{n \times d_k}$, $K \in \mathbb{R}^{n \times d_k}$ and $V \in \mathbb{R}^{n \times d_v}$. Typically, $d_k = d_v = d/h$, where $h$ is the number of attention heads (for Multi-head Attention, as we will see later in Section 2).</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/transformer_overview/self-attention-matrix-calculation.png" 
+       alt="Linear Projections in Self Attention" 
+       style="width: 70%; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Linear projections to compute Q, K and V. Every row in the X matrix corresponds to a token in the input sequence (credits: The Illustrated Transformer, Jay Alammar)
+  </p>
+</div>
+<p>The compatibility score between all queries and keys is calculated using a dot product $QK^\top \in \mathbb{R}^{n \times n}$. These scores are then scaled by dividing by $\sqrt{d_k}$ to counteract the effect of large dot-product values, and subsequently passed through a row-wise softmax function to obtain the fnal attention weights $A \in \mathbb{R}^{n \times n}$. Mathematically,
+$$A = {\rm softmax}\left(\frac{QK^\top}{\sqrt{d_k}}\right).$$
+Note that these weights are normalized probability distributions, ensuring each row sums to $1$. The final output matrix is a weighted sum of the Value matrix $V$, using the attention weights $A$, i.e.,
+$${\rm Attention}(Q, K, V) = {\rm softmax}\left(\frac{QK^\top}{\sqrt{d_k}}\right)V \in \mathbb{R}^{n \times d_v}$$</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/transformer_overview/sdpa_attention.png" 
+       alt="Scaled Dot-Product Attention (SDPA) visualization" 
+       style="width: auto; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Scaled Dot-Product Attention (SDPA) (credits: The Illustrated Transformer, Jay Alammar)
+  </p>
+</div>
+<h3 id="causal-self-attention-masked-self-attention">
+  <strong>Causal Self Attention (Masked Self-Attention)</strong>
+  
+  <a class="anchor" href="#causal-self-attention-masked-self-attention">#</a>
+  
+</h3>
+<p>this is the most crucial vairation of self-attention used exclusively in the <strong>decoder</strong> blocks of models for autoregressive generation tasks (i.e., generating one token at a time). <em>Causality</em> comes from the fact that in autoregressive generation, the prediction for the current token $i$ must <strong>only</strong> depend on the preceding tokens $(1,2, \ldots, i-1)$ and <strong>not</strong> on any subsequent tokens $(i+1, i+2, \ldots, n)$.</p>
+<p>Causal self-attention is implemented by applying a <strong>mask</strong> to the $\frac{QK^\top}{\sqrt{d_k}}$ matrix before the softmax step. Mathematically,
+$$A = {\rm softmax}\left(\frac{QK^\top}{\sqrt{d_k}} + M\right).$$
+Here, the mask $M \in \mathbb{R}^{n \times n}$ is an upper -triangular matrix of $-\inf$, i.e., $M_{ij} = 0$ for $j \leq i$ and $M_{ij} = \inf$ for $j &gt; i$. Note that when the mask is added to the scaled scores, it sets the scores for all future tokens to $-\inf$. Subsequently, when the softmax is applied, $e^{-\inf} = 0$, effectively ensuring that the attention weights $A_{ij}$ for $j &gt; i$ (future tokens) are <strong>zero</strong>. In other words, the output for token $i$ only aggregates information only from $V_1, V_2, \ldots V_i$.</p>
+<h3 id="multi-head-attention-mha">
+  <strong>Multi Head Attention (MHA)</strong>
+  
+  <a class="anchor" href="#multi-head-attention-mha">#</a>
+  
+</h3>
+<p>MHA is a core optimization, in which instead of computing a single attention distribution over the input sequence, the model&rsquo;s hidden dimension is split into multiple <strong>heads</strong>.
+Each head learns its own set of query, key, and value projection, and the model computes scaled dot-product attention independently for each head, resulting in multiple attenton outputs.
+These outputs are then concatenated and linearly projected back to the model&rsquo;s original dimension.</p>
+<p>Suppose the input to the attention layer is a sequence of hidden states,</p>
+<p>$$X \in \mathbb{R}^{T \times d_{\text{model}}},$$</p>
+<p>where $T$ is the sequence length, and $d_{\text{model}}$ is the embedding dimension.
+For each head $h \in {1, \ldots, H}$ (where $H$ is the number of attention heads), we compute separate query, key, and value matrices via learned linear projections:</p>
+<p>$$Q_h = XW_h^Q, \hspace{3ex} K_h = XW_h^K, \hspace{2ex} V_h = XW_h^V$$</p>
+<p>where $W_h^Q, W_h^K, W_h^V \in \mathbb{R}^{d_{\text{model}} \times d_k}$.
+Here, $d_k = d_{\text{model}}/H$ is the dimension per head.</p>
+<p>Each head performs scaled dot-product attention:</p>
+<p>$$O_h \triangleq \text{Attention}(Q_h, K_h, V_h) = \text{softmax}\left(\frac{Q_hK_h^\top}{\sqrt{d_k}}\right)V_h \in \mathbb{R}^{T \times d_k}.$$</p>
+<p>The outputs from all heads are concatenated to get:</p>
+<p>$$O = \text{Concat}(O_1, O_2, \ldots, O_H) \in \mathbb{R}^{T \times d_{\text{model}}}$$</p>
+<p>A final linear projection matrix $W^O \in \mathbb{R}^{d_{\text{model}} \times d_{\text{model}}}$ yields the final output:</p>
+<p>$$\text{MHA}(X) = OW^O$$</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/transformer_overview/mha.png" 
+       alt="Multi-Head Attention" 
+       style="width: 70%; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Multi-Head Attention (MHA)
+  </p>
+</div>
+<h2 id="positional-encoding">
+  <strong>Positional Encoding</strong>
+  
+  <a class="anchor" href="#positional-encoding">#</a>
+  
+</h2>
+<p>Positional encodings are a method used to inject information about the relative or absolute position of tokens into the input sequence, enabling the model to utilize token order. Modern LLMs like the (Llama family of models) encode <strong>relative positional information</strong> directly into the attention mechanism, using methods like <strong>Rotary Positional Embedding (RoPE)</strong>.</p>
+<p>While the original transformers paper used absolute positional information in the encoding, the primary goal of RoPE is to endow the self-attention mechanism with the desriable property of <em>length generalization</em>, meaning the model&rsquo;s ability to handle sequences longer than those seen during training.</p>
+<p>RoPE works by applying a rotation matrix $R_{\theta,m}$ to the $Q$ and $K$ vectors based on their token index $m$, i.e.,
+$$Q_m^\prime = R_{\theta,m}Q_m \quad \text{and} \quad K_n^\prime = R_{\theta,n}K_n,$$
+where $m$ and $n$ are the positions of the current query and key, respectively. The rotation matrix is given by,</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/transformer_overview/RoPE_encoding.png" 
+       alt="RoPE encoding" 
+       style="width: auto; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Rotary Positional Embeddings (RoPE)
+  </p>
+</div>
+<p>The rotation is performed pair-wise on the dimensions of the embedding vector (<a href="https://arxiv.org/abs/2104.09864">RoFormer, 2021</a>) as shown above, and the frequencies $\theta$ for rotation are fixed, pre-defined values.</p>
+<p>The magic of RoPE lies in how it affects the dot product. The goal is to make the attention score (i.e., the dot product $Q_m^\prime (K_n^\prime)^\top$) depend only on the <strong>relative distance</strong>, $m-n$. In other words, the RoPE encodings satisfy:
+$$\left\langle R_{\theta,m}Q_m, R_{\theta,n}K_n \right\rangle = \left\langle R_{\theta,m-n}Q_m, K_n \right\rangle.$$
+This mathematically enforces the desried <em>relative position dependency</em> directly into the attention mechanism. RoPE is particularly beneficial for casual self-attention, as it naturally handles the increasing relative distance when the sequence grows as more and more tokens are generated autoregressively. Note that RoPE is an <em>in-place transformation</em> that directly integrates relative positional information into the attention score computation (unlike traditional methods that add a positional vector to the input token embeddings before the first attention layer).</p>
+<p><strong>Inference optimization for RoPE</strong>: Since the rotation matrix calculation involves trigonometric functions, it can be computationally heavy if calculated repeatedly. A common optimization to speed up training/inference is to pre-calculate and cache the ${\rm sin}(m\theta_i)$ and ${\rm cos}(m\theta_i)$ vectors for all positions $m$ up to the maximum length. Then, rotation is simply a element-wise multiplication and addition using the pre-cached values, avoiding redundant trigonometric function calls.</p>
+<p>Moreoever, since computing RoPE encodings involves specific element-wise operations like slicing the $Q$/$K$ vector, rotating and putting it back, it can be further sped up using fused kernels that combines these sequential operations, reducing the number of memory accesses between the compute cores and HBM.</p>
+<h2 id="feed-forward-network-ffn">
+  <strong>Feed-Forward Network (FFN)</strong>
+  
+  <a class="anchor" href="#feed-forward-network-ffn">#</a>
+  
+</h2>
+<p>The feed-forward network (FFN) is the second major sublayer in every transformer block, following the self-attention mechanism. It is responsible for transforming the attention-refined featres independently for each poisition in the sequence, allowing the model to learn complex non-linear relatonships. The FFN acts <strong>position-wise</strong>, meaning the exact same. FFN is applied to every single token&rsquo;s embedding vector independently and identically. It does not mix information across different position, unlike the self-attention layer. The FFN typically consists of two linear transformation with a non-linear activation in between:</p>
+<ul>
+<li>Expansion layer (up-projection): Increases the dimension of the embedding</li>
+<li>Activation function: Introduces non-linearity</li>
+<li>Contraction layer (down-projection): Returns the dimension to the original size.</li>
+</ul>
+<p>While the original transformer used ReLU as the activation function many modern LLMs like Llama have adopted a more sophisticated gating mechanism within the FFN, most commonly using the <strong>SwiGLU</strong> activation function. SwiGLU uses three matrices: two for the expansion phase, and one for the contraction phase. For an input $x$, it is mathematically defined as:
+$${\rm SwiGLU}(x, W_{up}, W_{gate}, W_{down}) = ((xW_{up}) \odot ({\rm SiLU}(xW_{gate})))W_{down},$$
+where $W_{up}, W_{gate} \in \mathbb{R}^{d \times d_{\rm ff}}$, $W_{down} \in \mathbb{R}^{d_{\rm ff} \times d}$, $\odot$ denotes the element-wise Hadamard product, and $\rm SiLU$ is the <em>sigmoid linear unit</em> activation function.</p>
+<p>The gated path via $\rm SiLU$ acts as a dynamic filter, determining which information from the linear path, i.e., $xW_{up}$ is allowed to pass through to the next layer and how strongly. Typically, $d_{\rm ff}$ <em>four times</em> the model&rsquo;s embedding dimension $d$. The $\rm SiLU$ function is a smooth, non-monotonic activation often used in place of ReLU, and is defined as:
+$${\rm SiLU}(z) = z\cdot \sigma(z),$$
+where $\sigma(z) = \frac{1}{1 + e^{-z}}$ is the standard sigmoid function.</p>
+<p><strong>Inference optimization for FFN</strong>: The FFN layer receives output from the attention sublayer. In the complete transformer block, the FFN is integrated using a residual connection and a Layernorm step, i.e.,
+$$Y = {\rm LayerNorm}(X_{\rm attn} + {\rm FFN}(X_{\rm attn}))$$.
+The FFN layer is a significant computatioanly intensive part of the transformer block during inference, due to the large matrix multiplications it performs. Due to their large memory footprint, quantizing the weights of the FFN layers to low-precision formats like FP8 is pretty common. Moreover, since the SwiGLU calculation involves several sequential element-wise operations, they can be fused tohether into a single, unified kernel, reducing launch overheads. More recently, the FFN layer has been replaced by Mixture-of-Experts (MoE) layers, which we will look in details later.</p>
+<h2 id="layer-normalization-layernorm">
+  <strong>Layer Normalization (LayerNorm)</strong>
+  
+  <a class="anchor" href="#layer-normalization-layernorm">#</a>
+  
+</h2>
+<p>In general, LayerNorm is a technique used to normalize the activations. of the neurons across the features (hidden dimensions). For a given input vector $x = (x_1, \ldots, x_d)$ from a layer&rsquo;s output, LayerNorm calculates the normalized output $y$ as follows:</p>
+<ul>
+<li>First, the mean $\mu$ and variance $\sigma^2$ are calculated across all $d$ features as $\mu = \frac{1}{d}\sum_{i=1}^{d}x_i$ and $\sigma^2 = \frac{1}{d}\sum_{i=1}^{d}(x_i - \mu)^2$.</li>
+<li>Next, each element $x_i$ is normalized using the calculated mean and variance as $\hat{x}_i = \frac{x_i - \mu}{\sqrt{\sigma^2 + \epsilon}}$, where $\epsilon$ is a small constant (like $10^{-5}$) added for numerical stability to prevent division by zero in case the variance is zero. The output $\hat{x}_i$ now has a mean of zero and a variance of one across the hidden dimension.</li>
+<li>The normalized output $\hat{x}_i$ is then scaled by a learnable parameter $\gamma$ and shifted by another learnable parameter $\beta$. These two parameters allow the model to rescale the normalized values as $y_i = \gamma_i \hat{x}_i + \beta_i$, providing a unique scale $(\gamma_i)$ and shift $(\beta_i)$ factor for each feature dimension $i$. The scale $(\gamma)$ and shift $(\beta)$ parameters are vectors of size $d$, and are learned during the training process via backpropagation.</li>
+</ul>
+<p>In the standard transformer layer, LayerNorm is typically placed in a <em>Post-Norm</em> configuration, i.e., as part of the structure:
+$$H = {\rm LayerNorm}(X + {\rm SubLayer}(X)),$$
+where $X$ is the input to the SubLayer (either Self-Attention of Feed-Forward Network). The final output $H$ is the result of applying LayerNorm to the sum of the input $X$ and the sublayer&rsquo;s output (also known as <em>Residual Connection</em>).</p>
+<p><strong>Inference optimization for LayerNorm</strong>: Layernorm poses a bottleneck during inference primarily for two reasons:</p>
+<ol>
+<li>Since it is a row-wise operation, meaning it calculates the mean and variance idnependently for each row/token in the sequence, the input data must be read from the main memory, processed, and written back. Unlike large matrix multiplication (like $QK^\top$), which reuse the same input data multiple time (i.e., high arithmetic intensity), LayerNorm has very little data reuse, making it a memory-bandwidth bound operation.</li>
+<li>Moreover, the normalization formula involves calculating the mean, variance, square root, and division. The mathematical operations are complex to implement efficiently on hardware, particularly when using standard, high-precision floating-point arithmetic.</li>
+</ol>
+<p>The most common optimization to overcome this bottleneck is to use kernel fusion, i.e., the sequence of mathematical operationsthat constitue Layernorm are fused into a single kernel, drastically reducing the need to repeatedly read intermediate results from memory and write them back, improving compute core utilization. Furthermore, computation of non-linear functions are sped up using approximation techniques like look-up tables (LUTs), piecewise-linear approximations, etc.</p>
+<h2 id="overview-of-inference-computations">
+  <strong>Overview of Inference Computations</strong>
+  
+  <a class="anchor" href="#overview-of-inference-computations">#</a>
+  
+</h2>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/transformer_overview/prefill_and_decoding.png" 
+       alt="Prefill and Decoding" 
+       style="width: 80%; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Prefill and Decoding stages in Autoregressive decoding
+  </p>
+</div>
+<p>Autoregressive inference for LLMs is the process of generating an output continuation ($Y$) from an input prompt ($X$), and is fundamentally divided into two distinct computational phases: the <strong>Prefill</strong> Stage and the <strong>Decoding</strong> Stage. Understanding this division is essential because the computational and memory bottlenecks differ significantly between the two.</p>
+<ol>
+<li>
+<p><strong>Prefill Stage (Prompt Processing)</strong>
+This stage processes the entire input sequence $X$ to prepare the model for generation.</p>
+<ul>
+<li><strong>Input</strong>: The entire prompt sequence $X = {x_1, x_2, \dots, x_L}$.</li>
+<li><strong>Computation</strong>: The model performs a full forward pass, calculating the self-attention for all $L$ tokens simultaneously.</li>
+<li><strong>Computational Cost</strong>: The primary cost is in the self-attention mechanism, which scales quadratically with the length of the input sequence $L$, denoted as $O(L^2)$. This is the most computationally expensive part of the entire inference process for long prompts.</li>
+<li><strong>Output</strong>: The model generates the probability distribution for the first output token, $y_1$. Crucially, it also computes and stores the Key ($K$) and Value ($V$) vectors for every input token in a memory buffer called the KV-Cache.</li>
+</ul>
+ <div style="text-align: center; margin: 2rem 0;">
+   <img src="../../../images/transformer_overview/prefill.png" 
+       alt="Prefill" 
+       style="width: 80%; height: auto; object-fit: contain;" />
+   <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+   Prefill processes the entire prompt, generates the first token, and populates the KV cache
+   </p>
+ </div>
+</li>
+<li>
+<p><strong>Decoding Stage (Token Generation)</strong>
+After the first token is generated at the end of prefill, this stage iteratively generates the output sequence $Y$ one token at a time.</p>
+<ul>
+<li><strong>Input</strong>: The last generated token ($y_{t-1}$) and the previously computed $K$ and $V$ vectors (the KV-Cache).</li>
+<li><strong>Computation</strong>: The model performs a single-step forward pass (one token). Since the $K$ and $V$ vectors for all prior tokens are already cached, the attention calculation only needs to consider the new token against the existing KV-Cache.</li>
+<li><strong>Computational Cost</strong>: This stage is memory-bound, as the model spends most of its time fetching the growing KV-Cache from memory rather than performing complex arithmetic.</li>
+<li><strong>Output</strong>: A new token $y_t$ is generated, and its corresponding $K$ and $V$ vectors are appended to the KV-Cache. This step repeats until $n$ tokens are generated or a stopping condition is met.</li>
+</ul>
+<div style="text-align: center; margin: 2rem 0;">
+   <img src="../../../images/transformer_overview/decoding.png" 
+       alt="Decoding" 
+       style="width: 80%; height: auto; object-fit: contain;" />
+   <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+   Autoregressive decoding generates the subsequent tokens, one-at-a-time and keeps appending to the KV cache
+   </p>
+ </div>
+</li>
+</ol>
+<p>To optimize the prefill stage, focus is generally on speeding up matrix multiplication and attention calculations (e.g., FlashAttention). On the other hand, optimizing decoding stage focuses on managing the large KV-cache memory footprint (e.g., PagedAttention and GQA).</p>
+
+
+<h1 id="references">
+  References
+  
+  <a class="anchor" href="#references">#</a>
+  
+</h1>
+<ol>
+<li>Vaswani et al., 2017, Attention is All you Need <a href="">https://arxiv.org/abs/1706.03762</a></li>
+<li>The Illustrated Transformer, Jay Alammar <a href="">https://jalammar.github.io/illustrated-transformer/</a></li>
+<li>Raffel et al., 2019, Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer <a href="">https://arxiv.org/abs/1910.10683</a></li>
+<li>Sebastian Raschka, Blogpost: Understanding and Coding the Self-Attention Mechanism of Large Language Models From Scratch, 2023 <a href="">https://sebastianraschka.com/blog/2023/self-attention-from-scratch.html</a></li>
+<li>Lewis et al., 2019, BART: Denoising Sequence-to-Sequence Pre-training for Natural Language Generation, Translation, and Comprehension <a href="">https://arxiv.org/abs/1910.13461</a></li>
+<li>Devlin et al., 2018, BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding <a href="">https://arxiv.org/abs/1810.04805</a></li>
+<li>Liu et al., 2019, RoBERTa: A Robustly Optimized BERT Pretraining Approach, <a href="">https://arxiv.org/abs/1907.11692</a></li>
+<li>Su et. al., RoFormer: Enhanced Transformer with Rotary Position Embedding, 2021 <a href="">https://arxiv.org/abs/2104.09864</a></li>
+<li>LayerNorm, NKI API Docs, <a href="">https://awsdocs-neuron.readthedocs-hosted.com/en/latest/nki/tutorials/layernorm.html</a></li>
+</ol>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="../../../docs/section-1/" class="flex align-center book-icon">
+        <img src="../../../svg/backward.svg" class="book-icon" alt="Previous" title=" Foundations of Generative Inference" />
+        <span> Foundations of Generative Inference</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="../../../docs/section-1/subsection-2/" class="flex align-center book-icon">
+        <span>1.2 Llama family of models</span>
+        <img src="../../../svg/forward.svg" class="book-icon" alt="Next" title="1.2 Llama family of models" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#self-attention-mechanism"><strong>Self-Attention Mechanism</strong></a>
+      <ul>
+        <li><a href="#scaled-dot-product-attention"><strong>Scaled Dot-Product Attention</strong></a></li>
+        <li><a href="#causal-self-attention-masked-self-attention"><strong>Causal Self Attention (Masked Self-Attention)</strong></a></li>
+        <li><a href="#multi-head-attention-mha"><strong>Multi Head Attention (MHA)</strong></a></li>
+      </ul>
+    </li>
+    <li><a href="#positional-encoding"><strong>Positional Encoding</strong></a></li>
+    <li><a href="#feed-forward-network-ffn"><strong>Feed-Forward Network (FFN)</strong></a></li>
+    <li><a href="#layer-normalization-layernorm"><strong>Layer Normalization (LayerNorm)</strong></a></li>
+    <li><a href="#overview-of-inference-computations"><strong>Overview of Inference Computations</strong></a></li>
+  </ul>
+</nav>
+
+
+
+  </div>
+</aside>
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

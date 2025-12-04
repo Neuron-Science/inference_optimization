@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  2.3 Model Quantization
+  
+  #
+  
+
+
+
+
+
+  
+
+
+
+  Quantization basics
+  
+  #
+  
+
+Compressing the weights of the model via quantization has been one of the fundamental ways of reducing storage requirements for the model. Quantization can mathematically be defined as a mapping from a high precision (floating-point) representation to a lower precision representation. This process reduces the number of bits required to store and compute with each parameter, enabling models to be deployed on resource constrained devices and significantly accelerating inference.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://neuron-science.github.io/docs/section-2/subsection-3/">
+  <meta property="og:site_name" content="Inference Optimization">
+  <meta property="og:title" content="2.3 Model Quantization">
+  <meta property="og:description" content="2.3 Model Quantization # Quantization basics # Compressing the weights of the model via quantization has been one of the fundamental ways of reducing storage requirements for the model. Quantization can mathematically be defined as a mapping from a high precision (floating-point) representation to a lower precision representation. This process reduces the number of bits required to store and compute with each parameter, enabling models to be deployed on resource constrained devices and significantly accelerating inference.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+<title>2.3 Model Quantization | Inference Optimization</title>
+<link rel="icon" href="../../../favicon.png" >
+<link rel="manifest" href="../../../manifest.json">
+<link rel="canonical" href="https://neuron-science.github.io/docs/section-2/subsection-3/">
+<link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
+  <script defer src="../../../fuse.min.js"></script>
+  <script defer src="../../../en.search.min.9d1d95b9e653c7bee1bc2763af794a73ca266784f4acee3a0d61aaa10baa6eae.js" integrity="sha256-nR2VueZTx77hvCdjr3lKc8omZ4T0rO46DWGqoQuqbq4=" crossorigin="anonymous"></script>
+<link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-2/subsection-3/index.xml" title="Inference Optimization" />
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr" class="book-kind-section book-type-docs book-layout-">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="../../../"><span>Inference Optimization</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/" class=""> Foundations of Generative Inference</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-1/" class="">1.1 Overview of Transformer Architecture</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-2/" class="">1.2 Llama family of models</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-3/" class="">1.3 Hardware Accelerators for Deep Learning</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-4/" class="">1.4 Roofline Analysis</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-5/" class="">1.5 Measuring Inference Efficiency</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/" class="">Algorithmic and Modeling-level Inference Optimization</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-1/" class="">2.1 Efficient Attention Variants</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-2/" class="">2.2 Mixture of Experts</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-3/" class="active">2.3 Model Quantization</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-4/" class="">2.4 Key-Value Caching</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-5/" class="">2.5 Speculative Decoding</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-6/" class="">2.6 Knowledge Distillation</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/" class="">Systems-Level Inference Optimization</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-1/" class="">3.1 Paged Attention</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-2/" class="">3.2 Continuous Batching</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-3/" class="">3.3 Chunked Prefill</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-4/" class="">3.4 Disaggregated Inference</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-5/" class="">3.5 Multi-LoRA serving</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-6/" class="">3.6 Compute Graph Optimization</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/" class="">Open-Source Tools, Frameworks, and Deployment Scenarios</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/subsection-1/" class="">Section 4.1</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="../../../svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>2.3 Model Quantization</h3>
+
+  <label for="toc-control">
+    
+    <img src="../../../svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#quantization-basics"><strong>Quantization basics</strong></a>
+      <ul>
+        <li><a href="#data-types">Data types</a></li>
+      </ul>
+    </li>
+    <li><a href="#sources-and-impact-of-quantization-error"><strong>Sources and impact of quantization error</strong></a>
+      <ul>
+        <li><a href="#reduced-dynamic-range-overflow-and-underflow">Reduced dynamic range: overflow and underflow</a></li>
+        <li><a href="#reduced-precision-rounding-errors-and-numerical-instability">Reduced precision: rounding errors and numerical instability</a></li>
+        <li><a href="#impact-on-inference-quality">Impact on inference quality</a></li>
+        <li><a href="#importance-of-controlling-quantization-error">Importance of controlling quantization error</a></li>
+      </ul>
+    </li>
+    <li><a href="#techniques-to-reduce-quantization-error"><strong>Techniques to reduce quantization error</strong></a></li>
+    <li><a href="#how-to-quantize-a-model"><strong>How to quantize a model?</strong></a></li>
+    <li><a href="#performance-benefits-storage-and-speedup"><strong>Performance benefits (storage and speedup)</strong></a>
+      <ul>
+        <li><a href="#matrix-multiply-matmul-backbone-of-llm-computation">Matrix multiply (Matmul): backbone of LLM computation</a></li>
+        <li><a href="#not-all-matmuls-are-equal">Not all matmuls are equal</a></li>
+      </ul>
+    </li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><h1 id="23-model-quantization">
+  2.3 Model Quantization
+  
+  <a class="anchor" href="#23-model-quantization">#</a>
+  
+</h1>
+
+<link rel="stylesheet" href="../../../katex/katex.min.css" />
+<script defer src="../../../katex/katex.min.js"></script>
+
+  <script defer src="../../../katex/auto-render.min.js" onload="renderMathInElement(document.body, {
+  &#34;delimiters&#34;: [
+    {&#34;left&#34;: &#34;$$&#34;, &#34;right&#34;: &#34;$$&#34;, &#34;display&#34;: true},
+    {&#34;left&#34;: &#34;$&#34;, &#34;right&#34;: &#34;$&#34;, &#34;display&#34;: false},
+    {&#34;left&#34;: &#34;\\(&#34;, &#34;right&#34;: &#34;\\)&#34;, &#34;display&#34;: false},
+    {&#34;left&#34;: &#34;\\[&#34;, &#34;right&#34;: &#34;\\]&#34;, &#34;display&#34;: true}
+  ]
+}
+);"></script>
+
+
+<h2 id="quantization-basics">
+  <strong>Quantization basics</strong>
+  
+  <a class="anchor" href="#quantization-basics">#</a>
+  
+</h2>
+<p>Compressing the weights of the model via quantization has been one of the fundamental ways of reducing storage requirements for the model. Quantization can mathematically be defined as a mapping from a high precision (floating-point) representation to a lower precision representation. This process reduces the number of bits required to store and compute with each parameter, enabling models to be deployed on resource constrained devices and significantly accelerating inference.</p>
+<p>Formally, let $S$ be the set of source representation (e.g., FP32, FP16, BF16 and so on) and $T$ be the set of target representation (e.g., INT8, INT4, FP8 and so on), where both $S$ and $T$ are discrete sets with finite codebooks. Typically, $|S| &raquo; |T|$, meaning the source representation has a significantly richer codebook that can represent more distinct values than the target representation. Quantization is then defined as a function:</p>
+<p>$$Q: S \rightarrow T$$</p>
+<p>that maps each value from the source representation to a value in the target representation. For a given parameter $x \in S$, the quantized value is $x_q = Q(x) \in T$.</p>
+<p>For numerical representations, this mapping is commonly implemented using an affine transformation:</p>
+<p>$$x_q = Q(x) = \text{round}(x/\Delta) - z$$</p>
+<p>where:</p>
+<ul>
+<li>$\Delta \in \mathbb{R}^+$ is the <strong>scale factor</strong> that determines the quantization step size</li>
+<li>$z \in T$ is the <strong>zero point</strong> that shifts the quantization range (used in asymmetric quantization)</li>
+<li>$\text{round}(\cdot)$ maps to the nearest value in the target codebook $T$</li>
+</ul>
+<p>The target representation typically uses $b$ bits per value, so $|T| = 2^b$. For instance, INT8 uses 8 bits with $T = \{-128, -127, &hellip;, 127\}$ for signed integers. The dequantization process reconstructs an approximation in the source representation (or a compatible representation):</p>
+<p>$$\hat{x} = \Delta \cdot (x_q + z)$$</p>
+<p>where $\hat{x} \approx x$ is the dequantized value. The quantization error $\epsilon = |x - \hat{x}|$ represents the information loss introduced by mapping from the richer codebook $S$ to the more limited codebook $T$.</p>
+<h3 id="data-types">
+  Data types
+  
+  <a class="anchor" href="#data-types">#</a>
+  
+</h3>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/model_quantization/data_types_updated.png" 
+       alt="Various data types" 
+       style="width: 70%; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Typical data type bit representations.
+  </p>
+</div>
+<p>In the context of LLM inference, floating point representations are commonly employed. Floating-point numbers follow the IEEE 754 standard and are represented using three components:</p>
+<p>$$x = (-1)^{\text{sign}} \times (1 + \text{mantissa}) \times 2^{(\text{exponent} - \text{bias})}$$</p>
+<p>where:</p>
+<ul>
+<li><strong>Sign bit</strong> (1 bit): Determines if the number is positive (0) or negative (1)</li>
+<li><strong>Exponent bits</strong> ($e$ bits): Encodes the power of 2, stored with a bias to allow both positive and negative exponents</li>
+<li><strong>Mantissa bits</strong> ($m$ bits): Also called the significand or fraction, represents the precision of the number</li>
+</ul>
+<p>Common floating-point formats include:</p>
+<ul>
+<li><strong>FP32</strong> (32 bits): 1 sign + 8 exponent + 23 mantissa, bias = 127, range ≈ $\pm 3.4 \times 10^{38}$</li>
+<li><strong>FP16</strong> (16 bits): 1 sign + 5 exponent + 10 mantissa, bias = 15, range ≈ $\pm 6.5 \times 10^{4}$</li>
+<li><strong>BF16</strong> (16 bits): 1 sign + 8 exponent + 7 mantissa, bias = 127, range ≈ $\pm 3.4 \times 10^{38}$</li>
+<li><strong>FP8 E4M3</strong> (8 bits): 1 sign + 4 exponent + 3 mantissa, bias = 7, range ≈ $\pm 448$</li>
+<li><strong>FP8 E5M2</strong> (8 bits): 1 sign + 5 exponent + 2 mantissa, bias = 15, range ≈ $\pm 5.7 \times 10^{4}$</li>
+</ul>
+<p>The mantissa is stored in normalized form, where the leading bit is implicitly 1 (i.e., $1.\text{mantissa}$), except for subnormal numbers. More exponent bits provide greater dynamic range, while more mantissa bits provide greater precision.</p>
+<p>Let us see the floating point conversion in action; to illustrate quantization between floating-point formats, consider converting the value <strong>6.625</strong> from FP32 to FP8 E4M3 format.</p>
+<p><strong>FP32 representation</strong> (1 sign bit, 8 exponent bits, 23 mantissa bits):</p>
+<ul>
+<li>Binary representation: $6.625_{10} = 110.101_2$</li>
+<li>Normalized form: $1.10101_2 \times 2^2$</li>
+<li>Sign bit: $0$ (positive)</li>
+<li>Exponent: $2 + 127 = 129 = 10000001_2$ (bias of 127)</li>
+<li>Mantissa: $10101000000000000000000_2$ (23 bits, storing fractional part $.10101$)</li>
+<li><strong>Full FP32</strong>: <code>0 10000001 10101000000000000000000</code></li>
+</ul>
+<p><strong>FP8 E4M3 representation</strong> (1 sign bit, 4 exponent bits, 3 mantissa bits):</p>
+<ul>
+<li>Sign bit: $0$ (positive)</li>
+<li>Exponent: $2 + 7 = 9 = 1001_2$ (bias of 7 for E4M3)</li>
+<li>Mantissa: Must round $.10101$ to 3 bits → $.101_2$ (round to nearest)
+<ul>
+<li>The 4th and 5th bits are $01$, which is less than half ($10$), so we round down</li>
+</ul>
+</li>
+<li><strong>Full FP8</strong>: <code>0 1001 101</code></li>
+</ul>
+<p><strong>Result</strong>: The FP8 E4M3 value represents $1.101_2 \times 2^2 = 1.625 \times 4 = 6.5$</p>
+<p><strong>Quantization error</strong>: $\epsilon = |6.625 - 6.5| = 0.125$</p>
+<p>This example demonstrates how the limited mantissa precision in FP8 (3 bits vs. 23 bits) introduces quantization error. The representation is reduced from 32bits to 8bits, compressing the value by 4× but with precision loss.</p>
+<h2 id="sources-and-impact-of-quantization-error">
+  <strong>Sources and impact of quantization error</strong>
+  
+  <a class="anchor" href="#sources-and-impact-of-quantization-error">#</a>
+  
+</h2>
+<p>Quantization error arises from two fundamental limitations when mapping from a richer representation $S$ to a more constrained representation $T$: <strong>reduced dynamic range</strong> and <strong>reduced precision</strong>. Understanding these error sources is critical for successful model quantization, as uncontrolled quantization error can lead to catastrophic model failure or subtle performance degradation during inference.</p>
+<h3 id="reduced-dynamic-range-overflow-and-underflow">
+  Reduced dynamic range: overflow and underflow
+  
+  <a class="anchor" href="#reduced-dynamic-range-overflow-and-underflow">#</a>
+  
+</h3>
+<p>The dynamic range of a numerical format determines the span of values it can represent, from the smallest non-zero value to the largest finite value. When quantizing to a format with reduced dynamic range, values outside the representable range must be clipped, leading to <strong>overflow</strong> and <strong>underflow</strong> errors.</p>
+<p><strong>Overflow</strong> occurs when $|x| &gt; \max(T)$, where the value exceeds the maximum representable value in the target format:
+$$Q(x) = \begin{cases}
+\max(T) &amp; \text{if } x &gt; \max(T) \
+\min(T) &amp; \text{if } x &lt; \min(T)
+\end{cases}$$</p>
+<p>For example, FP8 E4M3 has a maximum value of 448, while FP32 can represent values up to $\sim 3.4 \times 10^{38}$. A weight value of 500 in FP32 would be clipped to 448 in FP8 E4M3, causing saturation.</p>
+<p><strong>Underflow</strong> occurs when $0 &lt; |x| &lt; \min(|T|)$, where the value is smaller than the smallest representable non-zero value:
+$$Q(x) \approx 0$$</p>
+<p>This is particularly problematic for activations with long-tail distributions, where small but important values are rounded to zero, effectively eliminating their contribution to subsequent computations.</p>
+<p><strong>Outliers and activation spikes</strong>: Neural network weights and activations often contain outliers—rare but large magnitude values. These outliers are especially problematic during inference quantization:</p>
+<ul>
+<li>If the quantization range is set to accommodate outliers, the majority of values are quantized with poor resolution</li>
+<li>If the range is set to capture the typical distribution, outliers saturate, potentially causing severe accuracy degradation</li>
+</ul>
+<p>A single outlier channel in a transformer attention layer can dominate the quantization range, forcing all other channels to use a coarser quantization grid. Research has shown that just 0.1% of outlier features can account for significant quantization error in large language models, particularly in specific attention heads and feed-forward layers.</p>
+<h3 id="reduced-precision-rounding-errors-and-numerical-instability">
+  Reduced precision: rounding errors and numerical instability
+  
+  <a class="anchor" href="#reduced-precision-rounding-errors-and-numerical-instability">#</a>
+  
+</h3>
+<p>Even when values fall within the representable range, limited mantissa bits cause <strong>precision loss</strong>, where distinct values in $S$ map to the same value in $T$:
+$$Q(x_1) = Q(x_2) = x_q \text{ for } x_1 \neq x_2$$</p>
+<p>This quantization-induced loss of information manifests in several ways during inference:</p>
+<p><strong>Accumulation of rounding errors</strong>: Each quantized operation introduces rounding error, and these errors accumulate as activations flow through the network.
+In transformer models with 32, 48, or more layers, even small per-layer errors can compound into significant output degradation.</p>
+<p><strong>Numerical instability in critical operations</strong>: Operations like normalization (LayerNorm, RMSNorm) and attention softmax are particularly sensitive to precision loss:
+$$\text{softmax}(x_i) = \frac{e^{x_i}}{\sum_j e^{x_j}}$$</p>
+<p>When computed in low precision, the exponential function can amplify small quantization errors, and the normalization denominator may lose precision, leading to NaN or inf values. The attention mechanism&rsquo;s dot-product can also overflow when sequence lengths are large, as it computes $QK^T$ where values can grow with $\sqrt{d_k}$.</p>
+<p><strong>Loss of discriminative ability</strong>: In classification or next-token prediction tasks, the model&rsquo;s logits may lose the precision needed to distinguish between similar options. If the quantization step size is larger than the difference between competing logits, the model may produce incorrect predictions. This is especially problematic for language models where probability distributions over large vocabularies require fine-grained discrimination.</p>
+<h3 id="impact-on-inference-quality">
+  Impact on inference quality
+  
+  <a class="anchor" href="#impact-on-inference-quality">#</a>
+  
+</h3>
+<p>The cumulative effect of quantization error propagates through the network during inference, with deeper layers experiencing compounded errors. For large language models, this can manifest as:</p>
+<ul>
+<li><strong>Perplexity degradation</strong>: Increased perplexity on language modeling tasks, indicating worse prediction quality and less confident probability distributions</li>
+<li><strong>Task accuracy drop</strong>: Reduced performance on downstream tasks like question answering, summarization, classification, or reasoning</li>
+<li><strong>Generation quality issues</strong>: Incoherent text, repetition, grammatical errors, factual inconsistencies, or hallucinations during text generation</li>
+<li><strong>Latency unpredictability</strong>: Numerical instabilities may cause divergent behavior, leading to variable or increased generation times</li>
+<li><strong>Complete failure modes</strong>: In extreme cases, the quantized model may produce garbage outputs, get stuck in loops, or encounter numerical errors (NaN/inf)</li>
+</ul>
+<p>The severity of these issues depends on the target bit-width, the quantization scheme, and the model architecture.</p>
+<h3 id="importance-of-controlling-quantization-error">
+  Importance of controlling quantization error
+  
+  <a class="anchor" href="#importance-of-controlling-quantization-error">#</a>
+  
+</h3>
+<p>Effective quantization requires carefully managing the trade-off between compression and accuracy. Key strategies for inference quantization include:</p>
+<ol>
+<li><strong>Mixed-precision quantization</strong>: Using higher precision for sensitive layers (e.g., first/last layers, attention, layer norms) and lower precision for less sensitive components</li>
+<li><strong>Outlier management</strong>: Handling outliers through techniques like per-channel quantization, group quantization, or explicit outlier extraction and separate handling</li>
+<li><strong>Granularity selection</strong>: Choosing the appropriate level of quantization (per-tensor, per-channel, per-group) to balance accuracy and efficiency</li>
+</ol>
+<p>The goal is not to eliminate quantization error—which is impossible—but to ensure it remains small enough that model behavior is preserved within acceptable tolerances. For LLM deployment, this typically means maintaining perplexity within 1-2% of the full-precision baseline while achieving 2-4× memory compression and computational speedup.</p>
+<p>In the following sections, we will explore specific quantization schemes and techniques that address these challenges, enabling practical deployment of large language models.</p>
+<h2 id="techniques-to-reduce-quantization-error">
+  <strong>Techniques to reduce quantization error</strong>
+  
+  <a class="anchor" href="#techniques-to-reduce-quantization-error">#</a>
+  
+</h2>
+<p>Reducing model quantization errors to enable low precision deployment of LLMs is a very active research area.</p>
+<p><strong>Scaling for dynamic range adjustment</strong> Due to the smaller dynamic range of low precision data types the parameters are often scaled to fit in a particular range and then quantized afterwards. The granularity of this scaling is an important variable in determining the quantization error. Previous approaches have used tensor-wise, channel-wise scalings while more recently the granularity is further increased by decreasing the block size down to 16 or 32.</p>
+<p><strong>Tensor-wise and channel-wise scaling</strong> In the tensor-wise approach whole of a tensor is scaled to within the target range, whereas, for the channel-wise scaling the scaling would be along the output channel dimension. The less granular approaches are easier to implement and results in less memory overhead due to the low amount of scales. However, the outliers would have a larger influence on the model; especially outlier within a group may result in underflow of small values in that particular block.</p>
+<p><strong>Micro-scaling formats</strong> Micro-scaling formats (MX) are proposed for a better control of outliers. These formats extend the concept of group-wise quantization by applying it at a very fine granularity with a standardized block structure. MX formats use individual scale factors for small blocks of elements (typically 16-32 elements):</p>
+<p>$$x_q^{(i)} = Q\left(\frac{x^{(i)}}{s_{\lfloor i/B \rfloor}}\right)$$</p>
+<p>where $B$ is the block size and $s_j$ is the shared scale factor for block $j$. The MX formats are supported in latest accelerators such as Blackwell GPUs and AWS Trainium 3.</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/model_quantization/FP8-MXFP8-scaling.png" 
+       alt="Tensor-wise vs MX format scaling factors" 
+       style="width: 70%; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Tensor-wise vs MX format scaling factors (source docs.nvidia.com).
+  </p>
+</div>
+<p><strong>Random Hadamard transformation</strong> is a preprocessing technique that redistributes the dynamic range of tensors, making them more uniform and easier to quantize. The Hadamard matrix $H_n$ is an orthogonal matrix with entries $\pm 1$:</p>
+<p>$$H_n H_n^T = n \cdot I_n$$</p>
+<p>For a weight matrix $W$, the transformation applies:</p>
+<p>$$W&rsquo; = D_1 H_d W H_d D_2$$</p>
+<p>where $H_d$ is a Hadamard matrix and $D_1, D_2$ are random diagonal scaling matrices with entries $\pm 1$. Hadamard transforms are orthogonal and spread information uniformly. A single outlier value gets distributed across multiple positions, reducing peak magnitudes. The transformation makes the distribution of values more uniform, better utilizing the quantization codebook. Can be efficiently computed in using the Fast Walsh-Hadamard Transform. By applying the same rotation to inputs and outputs of adjacent layers, the rotations can be absorbed into the weight matrices without changing the model&rsquo;s mathematical function.</p>
+<h2 id="how-to-quantize-a-model">
+  <strong>How to quantize a model?</strong>
+  
+  <a class="anchor" href="#how-to-quantize-a-model">#</a>
+  
+</h2>
+<p>There are several ways of converting a high precision model to lower precisions. These approaches differ in when quantization is applied, whether calibration data is required, and what computational resources are needed.</p>
+<p><strong>Post-training quantization</strong> is the most common approach for inference optimization, where a pre-trained full-precision model is quantized without any additional training or fine-tuning. PTQ is attractive because it requires no access to the original training data or training pipeline and iss computationally inexpensive. The PTQ process typically involves a pass through a small calibration dataset to fine-tune the model for quantization. PTQ may include advanced methods like SpinQuant, Quip, GPTQ that optimize quantization parameters or apply layer-wise fine-tuning to minimize error. The PTQ methods often employ advanced techniques such as RHT to control the quantization error.</p>
+<p><strong>One-shot quantization</strong> can be seen as a subset of PTQ that quantizes the model without requiring any calibration data. It relies solely on the weight statistics themselves to determine quantization parameters. This approach enables immediate quantization of any model without data collection, is useful when calibration data is unavailable or privacy-sensitive, may perform poorly for aggressive quantization (4-bit or lower) or activation quantization. One-shot methods are commonly used for quick deployment scenarios where a small accuracy drop is acceptable in exchange for maximum simplicity. They serve as a baseline for more sophisticated PTQ approaches.</p>
+<p><strong>Quantization-aware training</strong> simulates quantization during the training or fine-tuning process, allowing the model to adapt to quantization constraints. During forward passes, weights and activations are quantized, but gradients are computed using straight-through estimators (STE) or other function approximations to enable backpropagation. QAT typically achieves the best accuracy, especially for aggressive quantization (4-bit or lower), but has significant drawbacks for LLM deployment:</p>
+<ul>
+<li><strong>Computational cost</strong>: Requires full model training or fine-tuning, which can take days or weeks on large clusters</li>
+<li><strong>Data requirements</strong>: Needs access to large-scale training data, which may be unavailable or proprietary</li>
+<li><strong>Flexibility</strong>: Less flexible for exploring different quantization configurations post-deployment</li>
+</ul>
+<p>For these reasons, QAT is less commonly used in LLM inference scenarios, where PTQ methods have proven surprisingly effective. However, QAT remains valuable when maximum accuracy at very low bit-widths is critical, or when quantization is planned from the start of model development.</p>
+<p><strong>Note</strong>: While this tutorial focuses on inference, understanding QAT is valuable as some publicly released models may have been prepared using QAT techniques.</p>
+<h2 id="performance-benefits-storage-and-speedup">
+  <strong>Performance benefits (storage and speedup)</strong>
+  
+  <a class="anchor" href="#performance-benefits-storage-and-speedup">#</a>
+  
+</h2>
+<p>Quantization provides two primary performance benefits for LLM deployment: <strong>reduced memory footprint</strong> and <strong>increased inference throughput</strong>. Reduced memory footprint is straight-forward due to the lower bit representations used. Increased inference throughput depends on hardware support.</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/model_quantization/performance-ease-of-use.png" 
+       alt="Performance vs. ease of use of different data types" 
+       style="width: 70%; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Performance vs. ease of use of different data types.
+  </p>
+</div>
+<ul>
+<li><strong>Weight-only quantization</strong>: Only model weights are quantized, while activations remain in higher precision (FP16/BF16). This reduces memory footprint and bandwidth but provides limited computational speedup.</li>
+<li><strong>Weight-activation quantization</strong>: Both weights and activations are quantized, enabling greater speedup, but requires more careful calibration to maintain accuracy.</li>
+</ul>
+<h3 id="matrix-multiply-matmul-backbone-of-llm-computation">
+  Matrix multiply (Matmul): backbone of LLM computation
+  
+  <a class="anchor" href="#matrix-multiply-matmul-backbone-of-llm-computation">#</a>
+  
+</h3>
+<p>The speed of inference is often determined by the speed of matrix multiply operations. Recent hardware support matrix multiplications of as low as 4 bit floating point representations. Low precision matrix-multiply accumulate (MMA) operations on (supported) hardware are generally faster compared to high precision ones due to occupying less space on the hardware (i.e. given a fixed area of the chip one can fit more low-precision matmul circuitry). For instance, it is estimated that FP4 matmul is twice faster than FP8 matmul which is twice faster than BF16 matmul on the supported Nvidia chips (e.g. Blackwell).</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/model_quantization/dense_matmul.png" 
+       alt="" 
+       style="width: 70%; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Dense matmul visiualization (Mishra et al.).
+  </p>
+</div>
+<p>Different hardware providers use different approaches for MMA. In particular, Nvidia uses flexible tensor cores, whereas, Google TPUs and AWS Trainium use less flexible but high utility systolic arrays.</p>
+<h3 id="not-all-matmuls-are-equal">
+  Not all matmuls are equal
+  
+  <a class="anchor" href="#not-all-matmuls-are-equal">#</a>
+  
+</h3>
+<p>Moden LLM architectures are based on transformers that include many different components. Some of these components are more sensitive to low precision operations, these include matmuls in core attention (QK, PV), softmax, input-output embedding. In contrast, MLP layers seem to be relatively robust to quantization while also dominating the FLOP for common sequence length selections.</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/model_quantization/flops_full.png" 
+       alt="" 
+       style="width: 70%; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Flop distribution across different operations (source: adamcasson.com).
+  </p>
+</div>
+<p>However, during inference the sequence length may become so large that FLOP can start to be dominated by the core attention matmuls.</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/model_quantization/flops_seq.png" 
+       alt="" 
+       style="width: 70%; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Flop distribution with increased sequence length (source: adamcasson.com).
+  </p>
+</div>
+<p>Recently, quantizing the attention gained more attention, resulting in works that try to use 4/8-bit precision for core attention. This works include FlashAttention3, SageAttention3 and so on. This is an important future direction for model quantization research.</p>
+<h2 id="references">
+  References
+  
+  <a class="anchor" href="#references">#</a>
+  
+</h2>
+<ol>
+<li>Mishra, Asit, et al. &ldquo;Accelerating sparse deep neural networks.&rdquo; arXiv preprint arXiv:2104.08378 (2021).</li>
+<li>Zhang, Jintao, et al. &ldquo;Sageattention3: Microscaling fp4 attention for inference and an exploration of 8-bit training.&rdquo; arXiv preprint arXiv:2505.11594 (2025).</li>
+<li>Shah, Jay, et al. &ldquo;Flashattention-3: Fast and accurate attention with asynchrony and low-precision.&rdquo; Advances in Neural Information Processing Systems 37 (2024): 68658-68685.</li>
+<li>Casson, Adam. &ldquo;Transformer FLOPs.&rdquo; <a href="https://www.adamcasson.com/posts/transformer-flops">https://www.adamcasson.com/posts/transformer-flops</a></li>
+</ol>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="../../../docs/section-2/subsection-2/" class="flex align-center book-icon">
+        <img src="../../../svg/backward.svg" class="book-icon" alt="Previous" title="2.2 Mixture of Experts" />
+        <span>2.2 Mixture of Experts</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="../../../docs/section-2/subsection-4/" class="flex align-center book-icon">
+        <span>2.4 Key-Value Caching</span>
+        <img src="../../../svg/forward.svg" class="book-icon" alt="Next" title="2.4 Key-Value Caching" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#quantization-basics"><strong>Quantization basics</strong></a>
+      <ul>
+        <li><a href="#data-types">Data types</a></li>
+      </ul>
+    </li>
+    <li><a href="#sources-and-impact-of-quantization-error"><strong>Sources and impact of quantization error</strong></a>
+      <ul>
+        <li><a href="#reduced-dynamic-range-overflow-and-underflow">Reduced dynamic range: overflow and underflow</a></li>
+        <li><a href="#reduced-precision-rounding-errors-and-numerical-instability">Reduced precision: rounding errors and numerical instability</a></li>
+        <li><a href="#impact-on-inference-quality">Impact on inference quality</a></li>
+        <li><a href="#importance-of-controlling-quantization-error">Importance of controlling quantization error</a></li>
+      </ul>
+    </li>
+    <li><a href="#techniques-to-reduce-quantization-error"><strong>Techniques to reduce quantization error</strong></a></li>
+    <li><a href="#how-to-quantize-a-model"><strong>How to quantize a model?</strong></a></li>
+    <li><a href="#performance-benefits-storage-and-speedup"><strong>Performance benefits (storage and speedup)</strong></a>
+      <ul>
+        <li><a href="#matrix-multiply-matmul-backbone-of-llm-computation">Matrix multiply (Matmul): backbone of LLM computation</a></li>
+        <li><a href="#not-all-matmuls-are-equal">Not all matmuls are equal</a></li>
+      </ul>
+    </li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+
+
+
+  </div>
+</aside>
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

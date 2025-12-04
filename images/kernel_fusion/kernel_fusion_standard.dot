@@ -1,0 +1,63 @@
+digraph StandardAttention {
+    rankdir=BT;
+    node [fontname="Helvetica", fontsize=11];
+    edge [fontname="Helvetica", fontsize=10];
+    nodesep=0.5;
+    ranksep=0.6;
+
+    label="Standard Attention (Without Fusion)";
+    labelloc="t";
+    fontsize=14;
+    fontname="Helvetica-Bold";
+
+    // HBM region - BOTTOM (slower memory) - light green like pm-memory.png
+    subgraph cluster_hbm {
+        label="HBM (Device Memory)";
+        style="filled,rounded";
+        fillcolor="#d4edda";
+        color="#388e3c";
+        fontsize=11;
+        fontcolor="#388e3c";
+        margin=15;
+
+        Q [label="Q", shape=box, style="filled,rounded", fillcolor="#a8d5ba"];
+        K [label="K", shape=box, style="filled,rounded", fillcolor="#a8d5ba"];
+        S_hbm [label="S", shape=box, style="filled,rounded", fillcolor="#a8d5ba"];
+        P_hbm [label="P", shape=box, style="filled,rounded", fillcolor="#a8d5ba"];
+        V [label="V", shape=box, style="filled,rounded", fillcolor="#a8d5ba"];
+        O [label="O", shape=box, style="filled,rounded", fillcolor="#a8d5ba"];
+
+        Q -> K -> S_hbm -> P_hbm -> V -> O [style=invis];
+        {rank=same; Q; K; S_hbm; P_hbm; V; O;}
+    }
+
+    // On-chip region - TOP (fastest memory) - light yellow like pm-memory.png SBUF
+    subgraph cluster_onchip {
+        label="On-Chip (SRAM)";
+        style="filled,rounded";
+        fillcolor="#fff9c4";
+        color="#f9a825";
+        fontsize=11;
+        fontcolor="#f57f17";
+        margin=15;
+
+        op1 [label="S = Q × Kᵀ", shape=ellipse, style="filled", fillcolor="#ffecb3"];
+        op2 [label="P = softmax(S)", shape=ellipse, style="filled", fillcolor="#ffecb3"];
+        op3 [label="O = P × V", shape=ellipse, style="filled", fillcolor="#ffecb3"];
+
+        op1 -> op2 -> op3 [style=invis];
+        {rank=same; op1; op2; op3;}
+    }
+
+    // Data flow arrows (BT layout: HBM at bottom, On-Chip at top)
+    Q -> op1 [label="load", color="black"];
+    K -> op1 [label="load", color="black"];
+    op1 -> S_hbm [label="store", color="black"];
+
+    S_hbm -> op2 [label="load", color="black"];
+    op2 -> P_hbm [label="store", color="black"];
+
+    P_hbm -> op3 [label="load", color="black"];
+    V -> op3 [label="load", color="black"];
+    op3 -> O [label="store", color="black"];
+}

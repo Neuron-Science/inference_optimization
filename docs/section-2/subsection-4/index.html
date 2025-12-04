@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  2.4 Key-Value (KV) Caching
+  
+  #
+  
+
+
+
+
+
+  
+
+
+A key optimization for accelerating autoregressive inference in large language models is Key–Value (KV) caching.
+Transformer-based LLM inference happens in two stages: prefill phase, when the prompt is processed, and decoding phase, when tokens are generated one-by-one.
+During prefill, each transformer layer computes attention keys K and values V for every input token.
+Without caching, the model would need to recompute the entire attention stack from scratch at every decoding step—an operation whose cost scales quadratically with the sequence length and quickly prohibits real-time inference.
+KV caching avoids this waste by storing the computed K and V tensors in memory, so that during decoding, the model only needs to compute attention for new tokens and can reuse the cached representations for all past tokens, avoiding redundant computations.
+The result is a drastic improvement in per-token latency and a shift in the performance bottleneck from compute to memory bandwidth.
+More specifically, the quadratic scaling of the attention layer is transformed into a linear scaling at the cost of increased memory utilization.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://neuron-science.github.io/docs/section-2/subsection-4/">
+  <meta property="og:site_name" content="Inference Optimization">
+  <meta property="og:title" content="2.4 Key-Value Caching">
+  <meta property="og:description" content="2.4 Key-Value (KV) Caching # A key optimization for accelerating autoregressive inference in large language models is Key–Value (KV) caching. Transformer-based LLM inference happens in two stages: prefill phase, when the prompt is processed, and decoding phase, when tokens are generated one-by-one. During prefill, each transformer layer computes attention keys K and values V for every input token. Without caching, the model would need to recompute the entire attention stack from scratch at every decoding step—an operation whose cost scales quadratically with the sequence length and quickly prohibits real-time inference. KV caching avoids this waste by storing the computed K and V tensors in memory, so that during decoding, the model only needs to compute attention for new tokens and can reuse the cached representations for all past tokens, avoiding redundant computations. The result is a drastic improvement in per-token latency and a shift in the performance bottleneck from compute to memory bandwidth. More specifically, the quadratic scaling of the attention layer is transformed into a linear scaling at the cost of increased memory utilization.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+<title>2.4 Key-Value Caching | Inference Optimization</title>
+<link rel="icon" href="../../../favicon.png" >
+<link rel="manifest" href="../../../manifest.json">
+<link rel="canonical" href="https://neuron-science.github.io/docs/section-2/subsection-4/">
+<link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
+  <script defer src="../../../fuse.min.js"></script>
+  <script defer src="../../../en.search.min.9d1d95b9e653c7bee1bc2763af794a73ca266784f4acee3a0d61aaa10baa6eae.js" integrity="sha256-nR2VueZTx77hvCdjr3lKc8omZ4T0rO46DWGqoQuqbq4=" crossorigin="anonymous"></script>
+<link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-2/subsection-4/index.xml" title="Inference Optimization" />
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr" class="book-kind-section book-type-docs book-layout-">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="../../../"><span>Inference Optimization</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/" class=""> Foundations of Generative Inference</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-1/" class="">1.1 Overview of Transformer Architecture</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-2/" class="">1.2 Llama family of models</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-3/" class="">1.3 Hardware Accelerators for Deep Learning</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-4/" class="">1.4 Roofline Analysis</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-5/" class="">1.5 Measuring Inference Efficiency</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/" class="">Algorithmic and Modeling-level Inference Optimization</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-1/" class="">2.1 Efficient Attention Variants</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-2/" class="">2.2 Mixture of Experts</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-3/" class="">2.3 Model Quantization</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-4/" class="active">2.4 Key-Value Caching</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-5/" class="">2.5 Speculative Decoding</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-6/" class="">2.6 Knowledge Distillation</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/" class="">Systems-Level Inference Optimization</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-1/" class="">3.1 Paged Attention</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-2/" class="">3.2 Continuous Batching</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-3/" class="">3.3 Chunked Prefill</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-4/" class="">3.4 Disaggregated Inference</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-5/" class="">3.5 Multi-LoRA serving</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-6/" class="">3.6 Compute Graph Optimization</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/" class="">Open-Source Tools, Frameworks, and Deployment Scenarios</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/subsection-1/" class="">Section 4.1</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="../../../svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>2.4 Key-Value Caching</h3>
+
+  <label for="toc-control">
+    
+    <img src="../../../svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#causal-attention-enables-computation-reuse">Causal attention enables computation reuse</a></li>
+    <li><a href="#computation-complexity-with-and-without-kv-cache">Computation complexity with and without KV cache</a></li>
+    <li><a href="#memory-footprint-of-kv-cache">Memory footprint of KV cache</a></li>
+    <li><a href="#prefill-vs-decoding">Prefill vs. Decoding</a></li>
+    <li><a href="#connections-with-efficient-attention-mha-vs-gqa">Connections with efficient attention: MHA vs. GQA</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><h1 id="24-key-value-kv-caching">
+  2.4 Key-Value (KV) Caching
+  
+  <a class="anchor" href="#24-key-value-kv-caching">#</a>
+  
+</h1>
+
+<link rel="stylesheet" href="../../../katex/katex.min.css" />
+<script defer src="../../../katex/katex.min.js"></script>
+
+  <script defer src="../../../katex/auto-render.min.js" onload="renderMathInElement(document.body, {
+  &#34;delimiters&#34;: [
+    {&#34;left&#34;: &#34;$$&#34;, &#34;right&#34;: &#34;$$&#34;, &#34;display&#34;: true},
+    {&#34;left&#34;: &#34;$&#34;, &#34;right&#34;: &#34;$&#34;, &#34;display&#34;: false},
+    {&#34;left&#34;: &#34;\\(&#34;, &#34;right&#34;: &#34;\\)&#34;, &#34;display&#34;: false},
+    {&#34;left&#34;: &#34;\\[&#34;, &#34;right&#34;: &#34;\\]&#34;, &#34;display&#34;: true}
+  ]
+}
+);"></script>
+
+
+<p>A key optimization for accelerating autoregressive inference in large language models is Key–Value (KV) caching.
+Transformer-based LLM inference happens in two stages: <strong>prefill phase</strong>, when the prompt is processed, and <strong>decoding phase</strong>, when tokens are generated one-by-one.
+During prefill, each transformer layer computes attention keys K and values V for every input token.
+Without caching, the model would need to recompute the entire attention stack from scratch at every decoding step—an operation whose cost scales quadratically with the sequence length and quickly prohibits real-time inference.
+KV caching avoids this waste by storing the computed K and V tensors in memory, so that during decoding, the model only needs to compute attention for new tokens and can reuse the cached representations for all past tokens, avoiding redundant computations.
+The result is a drastic improvement in per-token latency and a shift in the performance bottleneck from compute to memory bandwidth.
+More specifically, the quadratic scaling of the attention layer is transformed into a linear scaling at the cost of increased memory utilization.</p>
+<h2 id="causal-attention-enables-computation-reuse">
+  Causal attention enables computation reuse
+  
+  <a class="anchor" href="#causal-attention-enables-computation-reuse">#</a>
+  
+</h2>
+<p>Consider a transformer decoder-only model with $L$ layers, $H$ attention heads, head dimension $d$, and hidden dimension $D = H \cdot d$.
+For a token sequence $(x_1, \ldots, x_T)$, denote the hidden representation entering layer $\ell$ at index $t$ by $h_t^{(\ell)} \in \mathbb{R}^D$.
+Each layer $\ell$ computes:
+$$Q^\ell_t = W^\ell_Q h^\ell_t, \qquad K^\ell_t = W^\ell_K h^\ell_t, \qquad V^\ell_t = W^\ell_V h^\ell_t,$$
+where $W^\ell_Q, W^\ell_K, W^\ell_V \in \mathbb{R}^{D \times D}$.
+During prefill, this computation is done for all $t \in {1, \ldots, T}$.</p>
+<p>For every layer $\ell$, the cache stores all the past keys and values as:</p>
+<p>$$K^\ell_{\le t} = (K^\ell_1, \dots, K^\ell_t) \in \mathbb{R}^{t \times D}$$</p>
+<p>$$V^\ell_{\le t} = (V^\ell_1, \dots, V^\ell_t) \in \mathbb{R}^{t \times D}.$$</p>
+<p>These are appended <em>once</em> during prefill, then incrementally during decoding. This KV cache built during prefill, is re-used repeatedly during decoding as follows.
+Because of the causal mask, each token&rsquo;s output depends only on representation from previous tokens.
+Since those earlier representations do not change across decoding steps, the output for a previously generated token remains the same at every iteration, making the repeated computation redundant.</p>
+<p>As a concrete example, consider the sentence, <em>The quick brown fox</em> as the input sequence. For simplicity, assume each of these words correspond to a single token. Then the representations for the tokens, <em>The</em>, <em>quick</em>, <em>brown</em>, <em>fox</em> are computed during prefill, populating the KV cache. Suppose we generate the next token to be <em>jumps</em> as a continuation of the prompt <em>The quick brown fox</em>. Output representation of the last token, <em>fox</em>, depends only on the tokens up until that point, i.e., <em>The quick brown fox</em>, so its output representation would not change when the new token <em>jumps</em> is taken into consideration &ndash; enabling reuse of the past representations.</p>
+<p>During the decoding phase, for a new decoding step at token index $t+1$, we compute
+$$Q^\ell_{t+1} = W^\ell_Q h^\ell_{t+1}, \qquad K^\ell_{t+1} = W^\ell_K h^\ell_{t+1}, \qquad V^\ell_{t+1} = W^\ell_V h^\ell_{t+1},$$
+The attention scores for $h^\ell_{t+1}$ with respect to any previous token $i$, denoted as $\alpha_{t+1 ,i}$, is computed as follows:
+$$\alpha^\ell_{t+1, i} = \frac{\text{exp}\left(\frac{(Q^\ell_{t+1})^\top K^\ell_i}{\sqrt{d}}\right)}{\sum_{j=1}^{t+1}\text{exp}\left(\frac{(Q^\ell_{t+1})^\top K^\ell_j}{\sqrt{d}}\right)}$$
+Note that the above computation reuses the cached $K^\ell_{\le t}$ for $i \leq k$.
+The contextualized output is computed by reusing $V^\ell_{\le t}$ as:
+$$z_{t+1}^\ell = \sum_{i=1}^{t+1}\alpha_{t+1,i}^\ell V_i^\ell$$
+Crucially, the model does <em>not</em> recompute $K_i$ or $V_i$ for $i \leq t$; it loads them directly from the KV cache.</p>
+<p>This (visualized below) is repeated for every subsequent auto-regressively decoded token, and the representations are appended to the KV cache (which keeps growing with the sequence length).</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/KV_caching/KV_caching_visualization.png" 
+       alt="Sliding Window Attention Mechanism" 
+       style="width: auto; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Every decoding step caches and reuses previously computed keys and values (red). Only blue blocks are new (credits: Pierre Lienhart)
+  </p>
+</div>
+<h2 id="computation-complexity-with-and-without-kv-cache">
+  Computation complexity with and without KV cache
+  
+  <a class="anchor" href="#computation-complexity-with-and-without-kv-cache">#</a>
+  
+</h2>
+<p>In the absence of KV cache, at each decoding step, attention is recomputed over all previous tokens.
+Hence, for a sequence length of $t$, we have,
+$$\text{Cost (without KV cache)} = \sum_{u=1}^{t+1}\text{O}(uD) = \text{O}(t^2D)$$</p>
+<p>However, <strong>with</strong> KV cache, at time $t+1$, for each layer $\ell$, we need to query $Q_{t+1}^\ell$ , key $K_{t+1}^\ell$, and value $V_{t+1}^\ell$ only for the last token $t+1$, i.e., a compute cost of $\text{O}(D^2)$.
+Additionally, we need to do another single attention matvec with $K_{\le t}^\ell$, which incurs a cost of $\text{O}(tD)$.
+Therefore,
+$$\text{Cost (with KV cache)} = \text{O}(tD + D^2).$$
+This reduces the quadratic growth with repect to $t$ to linear at the price of additional memory.</p>
+<h2 id="memory-footprint-of-kv-cache">
+  Memory footprint of KV cache
+  
+  <a class="anchor" href="#memory-footprint-of-kv-cache">#</a>
+  
+</h2>
+<p>For an LLM with $L$ layers, for each layer $\ell$, and token position $i \le T$, the cache stores $K_i^\ell \in \mathbb{R}^{D}$ and $V_i^\ell \in \mathbb{R}^{D}$, each stored in some preciison $b$ bytes (e.g., FP16&ndash;&gt; 2 Bytes, FP8 &ndash;&gt; 1 Byte).
+Therefore, the total KV cache size is
+$$\text{KV Cache memory} = 2b\cdot L \cdot T \cdot D$$
+This linear dependence on sequence length $T$ is the primary reason why very long-context models need aggressive KV compression.</p>
+<p><strong>Incremental update of KV cache</strong>: At each decoding step, the KV cache is updated as follows:
+$$K^\ell_{\le t+1} = \left[K^\ell_{\le t} \hspace{2px}\vert\hspace{2px} K^\ell_{t+1}\right] \quad \text{and} \quad V^\ell_{\le t+1} = \left[V^\ell_{\le t} \hspace{2px}\vert\hspace{2px} V^\ell_{t+1}\right].$$
+This append operation is $\text{O}(D)$ per layer, trivial compared to the attention read cost.</p>
+<p>Runtimes like vLLM optimize this step with Paged KV layouts so these appends do not cause memory fragmentation or reallocation.</p>
+<h2 id="prefill-vs-decoding">
+  Prefill vs. Decoding
+  
+  <a class="anchor" href="#prefill-vs-decoding">#</a>
+  
+</h2>
+<p>During prefill, full self-attention is computed over $T_{\text{input}}$ (input sequence length) tokens which involves multiplying query and key matrices of shape $T_{\text{input}} \times D$ with $D$ as the partition dimension.
+Moreover, computing the values involved multiplying an attention score matrix of shape $T_{\text{input}} \times T_{\text{input}}$ with the value matrix of shape $T_{\text{input}} \times D$.
+So, the cost is given by
+$$\text{Cost (prefill)} = \text{O}(LDT_{\text{input}}^2),$$
+which is dominated by large GEMM operations.
+Succinctly stated, prefill is <strong>compute-bound</strong> and this affect the time-to-first-token (TTFT).</p>
+<p>For decoding each new token $t+1$, each layer $\ell$ needs to read $K^\ell_{\le t} \in \mathbb{R}^{t \times D}$ and $V^\ell_{\le t} \in \mathbb{R}^{t \times D}$.
+This adds up to $2bLtD$ bytes across all layers.
+This is why autoregressive decoding in <strong>memory-bandwidth bound</strong> as attention repeatedly streams through the entire cached context.
+In this decoding regime, runtime is not limited by FLOPs but by the memory-bandwidth, which is proportional to $T$.
+This affects the decoding throughput, measured as output-tokens-per-second (OTPS).</p>
+<p>As a consequence, often prefill and decoding regimes require separately optimized kernels to optimize for overall latency.</p>
+<h2 id="connections-with-efficient-attention-mha-vs-gqa">
+  Connections with efficient attention: MHA vs. GQA
+  
+  <a class="anchor" href="#connections-with-efficient-attention-mha-vs-gqa">#</a>
+  
+</h2>
+<p>During autoregressive decoding, generating tokens sequentially isn’t constrained by compute capacity; the real bottleneck is the memory bandwidth required to stream the KV cache from HBM.
+In Multi-Head Attention (MHA), each query head has its own key and value heads (e.g., 64 Q, 64 K, 64 V), whereas, in Grouped Query Attention (GQA), multiple query heads share a smaller number of K/V heads (e.g., 64 Q but only 8 K and 8 V). This design make s abig difference. By drastically reducing the number of K/V heads, GQA shrinks the KV cache by approximately 4-8x in many models. A smaller cache means dramatically less data to stream from HBM at each decoding steps. As a consequence, the memory bandwidth bottleneck is somewhat alleviated. This is a central reason why models like Llama-2/3, Mistral achieved faster decoding over their predecessors. Note, however, GQA is a training-time optimization, i.e., the model architecture is defined beforehand, and models with GQA need to be trained from scratch.</p>
+
+
+<h1 id="references">
+  References
+  
+  <a class="anchor" href="#references">#</a>
+  
+</h1>
+<ol>
+<li>LLM Inference Series: 3. KV caching explained, Pierre Lienhart, 2023 <a href="">https://medium.com/@plienhar/llm-inference-series-3-kv-caching-unveiled-048152e461c8</a></li>
+<li>LLM Inference Series: 4. KV caching, a deeper look, Pierre Lienhart, 2024 <a href="">https://medium.com/@plienhar/llm-inference-series-4-kv-caching-a-deeper-look-4ba9a77746c8</a></li>
+</ol>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="../../../docs/section-2/subsection-3/" class="flex align-center book-icon">
+        <img src="../../../svg/backward.svg" class="book-icon" alt="Previous" title="2.3 Model Quantization" />
+        <span>2.3 Model Quantization</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="../../../docs/section-2/subsection-5/" class="flex align-center book-icon">
+        <span>2.5 Speculative Decoding</span>
+        <img src="../../../svg/forward.svg" class="book-icon" alt="Next" title="2.5 Speculative Decoding" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#causal-attention-enables-computation-reuse">Causal attention enables computation reuse</a></li>
+    <li><a href="#computation-complexity-with-and-without-kv-cache">Computation complexity with and without KV cache</a></li>
+    <li><a href="#memory-footprint-of-kv-cache">Memory footprint of KV cache</a></li>
+    <li><a href="#prefill-vs-decoding">Prefill vs. Decoding</a></li>
+    <li><a href="#connections-with-efficient-attention-mha-vs-gqa">Connections with efficient attention: MHA vs. GQA</a></li>
+  </ul>
+</nav>
+
+
+
+  </div>
+</aside>
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
