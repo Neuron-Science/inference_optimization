@@ -4,7 +4,19 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="
-  3.5 Multi-LoRA serving
+
+
+  
+
+
+
+  3.5 Multi-LoRA Serving
+  
+  #
+  
+
+
+  What is LoRA?
   
   #
   
@@ -14,17 +26,17 @@ Low-Rank Adaptation (LoRA) is a parameter-efficient fine-tuning (PEFT) technique
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:url" content="https://neuron-science.github.io/docs/section-3/subsection-5/">
   <meta property="og:site_name" content="Inference Optimization">
-  <meta property="og:title" content="3.5 Multi-LoRA serving">
-  <meta property="og:description" content="3.5 Multi-LoRA serving # Low-Rank Adaptation (LoRA) is a parameter-efficient fine-tuning (PEFT) technique used to adapt large language models (LLMs) for specific tasks at a low cost. Compared to full parameter fine-tuning, which retrains all of the LLM parameters, LoRA freezes the original model weights and injects a small number of new, trainable parameters (adapters) into the model’s layers. These adapters consist of two small matrices that are updated instead of the full weight matrix.">
+  <meta property="og:title" content="3.5 Multi-LoRA Serving">
+  <meta property="og:description" content="3.5 Multi-LoRA Serving # What is LoRA? # Low-Rank Adaptation (LoRA) is a parameter-efficient fine-tuning (PEFT) technique used to adapt large language models (LLMs) for specific tasks at a low cost. Compared to full parameter fine-tuning, which retrains all of the LLM parameters, LoRA freezes the original model weights and injects a small number of new, trainable parameters (adapters) into the model’s layers. These adapters consist of two small matrices that are updated instead of the full weight matrix.">
   <meta property="og:locale" content="en_us">
   <meta property="og:type" content="website">
-<title>3.5 Multi-LoRA serving | Inference Optimization</title>
+<title>3.5 Multi-LoRA Serving | Inference Optimization</title>
 <link rel="icon" href="../../../favicon.png" >
 <link rel="manifest" href="../../../manifest.json">
 <link rel="canonical" href="https://neuron-science.github.io/docs/section-3/subsection-5/">
 <link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
   <script defer src="../../../fuse.min.js"></script>
-  <script defer src="../../../en.search.min.9d1d95b9e653c7bee1bc2763af794a73ca266784f4acee3a0d61aaa10baa6eae.js" integrity="sha256-nR2VueZTx77hvCdjr3lKc8omZ4T0rO46DWGqoQuqbq4=" crossorigin="anonymous"></script>
+  <script defer src="../../../en.search.min.af9462d944d2397c4e2ad342b42b54811319ce1e9be69a42b170f0bca592de97.js" integrity="sha256-r5Ri2UTSOXxOKtNCtCtUgRMZzh6b5ppCsXDwvKWS3pc=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-3/subsection-5/index.xml" title="Inference Optimization" />
 <!--
 Made with Book Theme
@@ -397,7 +409,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-3/subsection-5/" class="active">3.5 Multi-LoRA serving</a>
+    <a href="../../../docs/section-3/subsection-5/" class="active">3.5 Multi-LoRA Serving</a>
   
 
           
@@ -521,9 +533,11 @@ https://github.com/alex-shpak/hugo-book
     <img src="../../../svg/menu.svg" class="book-icon" alt="Menu" />
   </label>
 
-  <h3>3.5 Multi-LoRA serving</h3>
+  <h3>3.5 Multi-LoRA Serving</h3>
 
   <label for="toc-control">
+    
+    <img src="../../../svg/toc.svg" class="book-icon" alt="Table of Contents" />
     
   </label>
 </div>
@@ -533,7 +547,21 @@ https://github.com/alex-shpak/hugo-book
   <aside class="hidden clearfix">
     
   
-<nav id="TableOfContents"></nav>
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#what-is-lora">What is LoRA?</a></li>
+    <li><a href="#how-does-lora-work">How does LoRA Work?</a></li>
+    <li><a href="#multi-lora-serving">Multi-LoRA Serving</a></li>
+    <li><a href="#static-vs-dynamic-multi-lora-serving">Static vs. Dynamic Multi-LoRA Serving</a>
+      <ul>
+        <li><a href="#static-lora-serving">Static LoRA Serving</a></li>
+        <li><a href="#dynamic-lora-serving">Dynamic LoRA Serving</a></li>
+      </ul>
+    </li>
+    <li><a href="#framework-support-for-multi-lora-serving">Framework Support for Multi-LoRA Serving</a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
 
 
 
@@ -544,14 +572,103 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown book-article"><h1 id="35-multi-lora-serving">
-  3.5 Multi-LoRA serving
+  <article class="markdown book-article">
+<link rel="stylesheet" href="../../../katex/katex.min.css" />
+<script defer src="../../../katex/katex.min.js"></script>
+
+  <script defer src="../../../katex/auto-render.min.js" onload="renderMathInElement(document.body, {
+  &#34;delimiters&#34;: [
+    {&#34;left&#34;: &#34;$$&#34;, &#34;right&#34;: &#34;$$&#34;, &#34;display&#34;: true},
+    {&#34;left&#34;: &#34;$&#34;, &#34;right&#34;: &#34;$&#34;, &#34;display&#34;: false},
+    {&#34;left&#34;: &#34;\\(&#34;, &#34;right&#34;: &#34;\\)&#34;, &#34;display&#34;: false},
+    {&#34;left&#34;: &#34;\\[&#34;, &#34;right&#34;: &#34;\\]&#34;, &#34;display&#34;: true}
+  ]
+}
+);"></script>
+
+
+<h1 id="35-multi-lora-serving">
+  3.5 Multi-LoRA Serving
   
   <a class="anchor" href="#35-multi-lora-serving">#</a>
   
 </h1>
+<h2 id="what-is-lora">
+  What is LoRA?
+  
+  <a class="anchor" href="#what-is-lora">#</a>
+  
+</h2>
 <p>Low-Rank Adaptation (LoRA) is a parameter-efficient fine-tuning (PEFT) technique used to adapt large language models (LLMs) for specific tasks at a low cost. Compared to full parameter fine-tuning, which retrains all of the LLM parameters, LoRA freezes the original model weights and injects a small number of new, trainable parameters (adapters) into the model&rsquo;s layers. These adapters consist of two small matrices that are updated instead of the full weight matrix.</p>
 <p>This method provides several key advantages, including computational and memory efficiency, as the size of LoRA adapters is typically less than 1% of the base model size.</p>
+<h2 id="how-does-lora-work">
+  How does LoRA Work?
+  
+  <a class="anchor" href="#how-does-lora-work">#</a>
+  
+</h2>
+<p>Let $W \in R^{d \times k}$ represent the original model weights, which are pretrained and frozen during LoRA fine-tuning. Instead of learning a full update $\Delta W$, LoRA decomposes the weight matrix into two new, smaller matrices $A \in R^{d \times r}$ and $B \in R^{r \times k}$, where $\Delta W = AB \in R^{d \times k}$ and rank $r \ll \text{min}(d,k)$ (typically 8, 16, 32, or 64). Only $A$ and $B$ are updated during LoRA fine-tuning. For example, if the weight matrix has dimensions 4096 $\times$ 4096 and the rank is 16, instead of training ~16M parameters, LoRA only trains ~131K parameters (two matrices: 4096 $\times$ 16 + 16 $\times$ 4096).</p>
+<p>For multi-LoRA serving, the $AB$ pairs are swapped for different requests. During inference, the weight matrix $W$ and $AB$ can be computed separately then added together. Alternatively, adapters can be merged by computing $W+AB$ offline and using the merged weights (to reduce runtime overhead).</p>
+<p>LoRA is based on the hypothesis that model adaptations have low &ldquo;intrinsic dimensionality,&rdquo; i.e. the necessary task-specific changes lie in a much smaller subspace than the full parameter space. Research has demonstrated that most adaptation information can be captured with ranks as low as 1-8 for many tasks.</p>
+<div style="text-align: center; margin: 2rem 0;">
+    <img src="../../../images/multi_lora/lora.png" 
+       style="width: 70%; height: auto; object-fit: contain;" />
+    <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+        LoRA decomposes the weight matrix into two smaller matrices, A and B.
+    </p>
+</div>
+<h2 id="multi-lora-serving">
+  Multi-LoRA Serving
+  
+  <a class="anchor" href="#multi-lora-serving">#</a>
+  
+</h2>
+<p>Base models can produce different LoRA adapters for different tasks. These adapters share the same base model weights and therefore are loaded into device memory (HBM) along with the base model weights for serving. However, HBM capacity is limited and often cannot host all of the LoRA adapters. Therefore, some adapters must be offloaded to CPU memory and dynamically loaded into HBM at runtime according to user requests. Multi-LoRA serving shares a single base model across many adapters, allowing one device to serve what would otherwise require dozens of separate model deployments.</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/multi_lora/multi_lora_serving.png" 
+       style="width: 70%; height: auto; object-fit: contain;" />
+</div>
+<h2 id="static-vs-dynamic-multi-lora-serving">
+  Static vs. Dynamic Multi-LoRA Serving
+  
+  <a class="anchor" href="#static-vs-dynamic-multi-lora-serving">#</a>
+  
+</h2>
+<p>There are two approaches for deploying fine-tuned models using LoRA: static and dynamic multi-LoRA serving.</p>
+<h3 id="static-lora-serving">
+  Static LoRA Serving
+  
+  <a class="anchor" href="#static-lora-serving">#</a>
+  
+</h3>
+<p>All LoRA adapters are preloaded into memory before model execution begins and the base model remains fixed. All adapters occupy device memory simultaneously and therefore the number of adapters that can be hosted is often very limited. This approach also limits flexibility for dynamic workloads. Therefore, this approach is best suited for scenarios where a small, fixed set of adapters is needed (e.g. a single specialized task). This allows lower latency per request, as there is no adapter swapping overhead and a simpler implementation.</p>
+<h3 id="dynamic-lora-serving">
+  Dynamic LoRA Serving
+  
+  <a class="anchor" href="#dynamic-lora-serving">#</a>
+  
+</h3>
+<p>Adapters can be loaded/unloaded on-demand based on incoming requests. Only the active adapter(s) reside in device memory while the remaining adapters are hosted in CPU memory (or a secondary memory), which enables support for hundreds or thousands of adapters. This is ideal for serving many fine-tuned variants (e.g. hundreds of task-specific models) on shared infrastructure as adapters can be added/updated without redeploying the base model. However, swapping in a new adapter into device memory can incur a latency overhead (this can be mitigated via caching/prefetching techniques).</p>
+<h2 id="framework-support-for-multi-lora-serving">
+  Framework Support for Multi-LoRA Serving
+  
+  <a class="anchor" href="#framework-support-for-multi-lora-serving">#</a>
+  
+</h2>
+<p>Multi-LoRA serving has gained significant popularity as companies and researchers seek cost-effective ways to deploy specialized LLMs at scale. Rather than hosting separate full models for different tasks or users, multi-LoRA serving enables a single base model to be shared across multiple LoRA adapters. This approach has become particularly attractive because it dramatically reduces memory footprint and infrastructure costs. While a full model might require gigabytes of device memory, LoRA adapters typically occupy only megabytes, allowing tens or even hundreds of specialized models to coexist on the same hardware. The rise of multi-LoRA serving has been driven by increasing demand for personalized AI experiences, where different customers or use cases require domain-specific fine-tuning. Companies and researchers have developed sophisticated serving systems that can dynamically load and swap LoRA adapters with minimal latency, batching requests across different adapters to maximize throughput.</p>
+<p>Open source frameworks have been instrumental in democratizing multi-LoRA serving and making it accessible to a broader audience. vLLM added native support for serving multiple LoRA adapters simultaneously, enabling dynamic LoRA adapter swapping in and out of GPU memory with minimal overhead. SGLang has emerged as a compelling alternative with its focus on efficient structured generation and co-design of frontend language with backend runtime, offering competitive multi-LoRA serving capabilities with optimizations for both throughput and flexibility in handling complex prompting scenarios. LoRAX (LoRA eXchange) was specifically designed for multi-LoRA serving with features like adapter preloading and optimized batching strategies. HuggingFace&rsquo;s Text Generation Inference (TGI) integrated multi-LoRA support to complement its production-grade serving capabilities. Other frameworks, such as Ray Serve, have enabled flexible multi-LoRA deployments at scale. These open source tools have introduced innovations such as continuous batching across adapters, efficient adapter caching strategies, and optimized CUDA kernels for LoRA computation, significantly reducing the barrier to entry for organizations wanting to deploy specialized models.</p>
+<h2 id="references">
+  References
+  
+  <a class="anchor" href="#references">#</a>
+  
+</h2>
+<ol>
+<li>HuggingFace, TGI Multi-LoRA: Deploy Once, Serve 30 models, 2024 <a href="">https://awsdocs-neuron.readthedocs-hosted.com/en/latest/nki/tutorials/layernorm.html</a></li>
+<li>Ray, Multi-LoRA deployment <a href="">https://docs.ray.io/en/master/serve/llm/user-guides/multi-lora.html</a></li>
+<li>SGLang, LoRA Serving <a href="">https://docs.sglang.io/advanced_features/lora.html</a></li>
+<li>vLLM, LoRA Adapters <a href="">https://docs.vllm.ai/en/stable/features/lora/</a></li>
+</ol>
 </article>
  
       
@@ -614,6 +731,31 @@ https://github.com/alex-shpak/hugo-book
     </div>
 
     
+
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#what-is-lora">What is LoRA?</a></li>
+    <li><a href="#how-does-lora-work">How does LoRA Work?</a></li>
+    <li><a href="#multi-lora-serving">Multi-LoRA Serving</a></li>
+    <li><a href="#static-vs-dynamic-multi-lora-serving">Static vs. Dynamic Multi-LoRA Serving</a>
+      <ul>
+        <li><a href="#static-lora-serving">Static LoRA Serving</a></li>
+        <li><a href="#dynamic-lora-serving">Dynamic LoRA Serving</a></li>
+      </ul>
+    </li>
+    <li><a href="#framework-support-for-multi-lora-serving">Framework Support for Multi-LoRA Serving</a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+
+
+
+  </div>
+</aside>
 
  
   </main>
