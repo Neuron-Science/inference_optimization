@@ -8,13 +8,24 @@
   
   #
   
-">
+
+In the previous sections, we focused on decoding, because the unpredictable
+decoding length creates batching and memory challenges that continuous batching
+and paged attention were designed to solve. But decoding is only half of the
+story. Before a model can generate even a single token, it must prefill the
+user’s prompt into the KV cache.
+Prefill is often considered a one-time cost per request, so it is easy to
+overlook. Yet in modern LLM applications like processing long documents, long
+chat histories, or retrieval-augmented (RAG) inputs, the prefill stage can be
+slow, memory-intensive, and disruptive to scheduling. As context lengths
+continue to grow, prefill becomes a major bottleneck in real deployments.">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:url" content="https://neuron-science.github.io/docs/section-3/subsection-3/">
   <meta property="og:site_name" content="Inference Optimization">
   <meta property="og:title" content="3.3 Chunked Prefill">
-  <meta property="og:description" content="3.3 Chunked Prefill #">
+  <meta property="og:description" content="3.3 Chunked Prefill # In the previous sections, we focused on decoding, because the unpredictable decoding length creates batching and memory challenges that continuous batching and paged attention were designed to solve. But decoding is only half of the story. Before a model can generate even a single token, it must prefill the user’s prompt into the KV cache.
+Prefill is often considered a one-time cost per request, so it is easy to overlook. Yet in modern LLM applications like processing long documents, long chat histories, or retrieval-augmented (RAG) inputs, the prefill stage can be slow, memory-intensive, and disruptive to scheduling. As context lengths continue to grow, prefill becomes a major bottleneck in real deployments.">
   <meta property="og:locale" content="en_us">
   <meta property="og:type" content="website">
 <title>3.3 Chunked Prefill | Inference Optimization</title>
@@ -23,7 +34,7 @@
 <link rel="canonical" href="https://neuron-science.github.io/docs/section-3/subsection-3/">
 <link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
   <script defer src="../../../fuse.min.js"></script>
-  <script defer src="../../../en.search.min.af9462d944d2397c4e2ad342b42b54811319ce1e9be69a42b170f0bca592de97.js" integrity="sha256-r5Ri2UTSOXxOKtNCtCtUgRMZzh6b5ppCsXDwvKWS3pc=" crossorigin="anonymous"></script>
+  <script defer src="../../../en.search.min.7de5366b7dcac6ddccffb157de59d5a536b89a4e5e9bf4f4fe93b39a587785f8.js" integrity="sha256-feU2a33Kxt3M/7FX3lnVpTa4mk5em/T0/pOzmlh3hfg=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-3/subsection-3/index.xml" title="Inference Optimization" />
 <!--
 Made with Book Theme
@@ -77,7 +88,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-1/" class=""> Foundations of Generative Inference</a>
+    <a href="../../../docs/section-1/" class="">Foundations of Generative Inference</a>
   
 
           
@@ -126,7 +137,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-1/subsection-3/" class="">1.3 Hardware Accelerators for Deep Learning</a>
+    <a href="../../../docs/section-1/subsection-3/" class="">1.3 Hardware Accelerators for Generative AI</a>
   
 
           
@@ -173,6 +184,24 @@ https://github.com/alex-shpak/hugo-book
         </li>
       
     
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-6/" class="">1.6 Parallelism Strategies and Communication Collectives</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
   </ul>
 
         </li>
@@ -185,7 +214,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/" class="">Algorithmic and Modeling-level Inference Optimization</a>
+    <a href="../../../docs/section-2/" class="">Algorithmic and Modeling-Level Inference Optimization</a>
   
 
           
@@ -324,7 +353,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-3/subsection-1/" class="">3.1 Paged Attention</a>
+    <a href="../../../docs/section-3/subsection-1/" class="">3.1 Continuous Batching</a>
   
 
           
@@ -342,7 +371,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-3/subsection-2/" class="">3.2 Continuous Batching</a>
+    <a href="../../../docs/section-3/subsection-2/" class="">3.2 Paged Attention</a>
   
 
           
@@ -468,7 +497,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-4/subsection-1/" class="">Section 4.1</a>
+    <a href="../../../docs/section-4/subsection-1/" class="">4.1 vLLM</a>
   
 
           
@@ -524,6 +553,8 @@ https://github.com/alex-shpak/hugo-book
 
   <label for="toc-control">
     
+    <img src="../../../svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
   </label>
 </div>
 
@@ -532,7 +563,29 @@ https://github.com/alex-shpak/hugo-book
   <aside class="hidden clearfix">
     
   
-<nav id="TableOfContents"></nav>
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#why-prefilling-can-become-a-major-challenge"><strong>Why Prefilling Can Become a Major Challenge</strong></a>
+      <ul>
+        <li><a href="#1-prefill-becomes-expensive-for-long-prompts">1. Prefill Becomes Expensive for Long Prompts</a></li>
+        <li><a href="#2-one-long-prefill-blocks-all-decoding">2. One Long Prefill Blocks All Decoding</a></li>
+        <li><a href="#3-super-long-prefills-risk-memory-exhaustion">3. Super-Long Prefills Risk Memory Exhaustion</a></li>
+      </ul>
+    </li>
+    <li><a href="#chunked-prefill-break-long-prefill-into-many-small-prefills"><strong>Chunked Prefill: Break Long Prefill into Many Small Prefills</strong></a>
+      <ul>
+        <li><a href="#how-chunked-prefill-works">How Chunked Prefill Works</a></li>
+      </ul>
+    </li>
+    <li><a href="#performance-tradeoffs"><strong>Performance Tradeoffs</strong></a>
+      <ul>
+        <li><a href="#the-fundamental-tension-prefill-vs-decode">The Fundamental Tension: Prefill vs. Decode</a></li>
+      </ul>
+    </li>
+    <li><a href="#looking-forward-disaggregated-inference"><strong>Looking Forward: Disaggregated Inference</strong></a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
 
 
 
@@ -549,6 +602,212 @@ https://github.com/alex-shpak/hugo-book
   <a class="anchor" href="#33-chunked-prefill">#</a>
   
 </h1>
+<p>In the previous sections, we focused on decoding, because the unpredictable
+decoding length creates batching and memory challenges that continuous batching
+and paged attention were designed to solve. But decoding is only half of the
+story. Before a model can generate even a single token, it must prefill the
+user’s prompt into the KV cache.</p>
+<p>Prefill is often considered a one-time cost per request, so it is easy to
+overlook. Yet in modern LLM applications like processing long documents, long
+chat histories, or retrieval-augmented (RAG) inputs, the prefill stage can be
+slow, memory-intensive, and disruptive to scheduling. As context lengths
+continue to grow, prefill becomes a major bottleneck in real deployments.</p>
+<p>Chunked Prefill [<a href="#sarathi">1</a>] addresses these issues by breaking long prefill work into
+smaller, well-behaved pieces that can be interleaved with decoding. This makes
+the system far more stable, fair, and responsive.</p>
+<h2 id="why-prefilling-can-become-a-major-challenge">
+  <strong>Why Prefilling Can Become a Major Challenge</strong>
+  
+  <a class="anchor" href="#why-prefilling-can-become-a-major-challenge">#</a>
+  
+</h2>
+<p>The default scheduling strategy of many serving systems (e.g., vLLM) prioritizes
+prefill over decode. The intuition behind is:</p>
+<ul>
+<li>A request cannot join the decode batch until its prefill finishes</li>
+<li>Finishing prefill quickly → more ready-to-decode requests</li>
+<li>Larger decode batches → higher throughput</li>
+</ul>
+<p>This scheduling policy works well when prompts are short. However, it breaks
+down badly when prefill becomes large or irregular.</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/chunked_prefill/continuous_batching.png" 
+       alt="Continuous batching" 
+       style="width: auto; height: auto; object-fit: contain;" />
+  <!-- <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+  </p> -->
+</div>
+<h3 id="1-prefill-becomes-expensive-for-long-prompts">
+  1. Prefill Becomes Expensive for Long Prompts
+  
+  <a class="anchor" href="#1-prefill-becomes-expensive-for-long-prompts">#</a>
+  
+</h3>
+<p>For long inputs (chat transcripts, RAG documents, large files), prefill must run
+full self-attention over the input sequence.</p>
+<ul>
+<li>Self-attention compute grows as O(T²)</li>
+<li>A sudden long prompt can cause a sharp spike in latency</li>
+</ul>
+<p>Users behind a long prefill request experience delayed responses, and overall
+system Tail Latency (p99) becomes unpredictable.</p>
+<h3 id="2-one-long-prefill-blocks-all-decoding">
+  2. One Long Prefill Blocks All Decoding
+  
+  <a class="anchor" href="#2-one-long-prefill-blocks-all-decoding">#</a>
+  
+</h3>
+<p>Prefill operations are far larger than decode steps. If a long prefill is
+executing:</p>
+<ul>
+<li>Decode requests must wait</li>
+<li>Continuous batching cannot issue the next decode step</li>
+<li>Interactive users experience noticeable stalls</li>
+</ul>
+<p>In effect, one long prefill stalls the entire GPU, defeating the benefits of
+continuous batching and hurting performance isolation between users.</p>
+<h3 id="3-super-long-prefills-risk-memory-exhaustion">
+  3. Super-Long Prefills Risk Memory Exhaustion
+  
+  <a class="anchor" href="#3-super-long-prefills-risk-memory-exhaustion">#</a>
+  
+</h3>
+<p>Deep models with many layers accumulate large intermediate activations during
+prefill. When sequence length is extremely long (tens of thousands of tokens),
+intermediate attention matrices become massive and GPUs can run out of memory
+mid-prefill.</p>
+<h2 id="chunked-prefill-break-long-prefill-into-many-small-prefills">
+  <strong>Chunked Prefill: Break Long Prefill into Many Small Prefills</strong>
+  
+  <a class="anchor" href="#chunked-prefill-break-long-prefill-into-many-small-prefills">#</a>
+  
+</h2>
+<p>The core insight of chunked prefill is simple:</p>
+<pre tabindex="0"><code>Split long prefill into many small chunks and make them easy to schedule and far
+less memory-intensive.
+</code></pre><div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/chunked_prefill/chunked_prefill.png" 
+       alt="Chunked prefill" 
+       style="width: auto; height: auto; object-fit: contain;" />
+  <!-- <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+  </p> -->
+</div>
+<h3 id="how-chunked-prefill-works">
+  How Chunked Prefill Works
+  
+  <a class="anchor" href="#how-chunked-prefill-works">#</a>
+  
+</h3>
+<ul>
+<li>Tokenize the prompt and divide it into smaller segments (e.g., 512 tokens).</li>
+<li>Process each chunk independently through the Transformer, appending KV entries
+as we go.</li>
+<li>For each chunk, decoding phase requests can also be piggybacked.</li>
+</ul>
+<p>This transforms prefill from a monolithic, blocking operation into a sequence of
+small, interleavable tasks, enabling more responsive and fair scheduling and
+restoring system stability even when prompts are extremely long.</p>
+<h2 id="performance-tradeoffs">
+  <strong>Performance Tradeoffs</strong>
+  
+  <a class="anchor" href="#performance-tradeoffs">#</a>
+  
+</h2>
+<p>Chunked Prefill significantly improves:</p>
+<ul>
+<li><strong>Stability under long prompts</strong><br>
+Avoids latency spikes and prevents long requests from stalling the GPU.</li>
+<li><strong>Interactive performance</strong><br>
+Decode steps can run between chunks, preserving smooth user experience.</li>
+<li><strong>Scheduling flexibility</strong><br>
+Prefill becomes preemptible, making it easier to share GPU fairly across users.</li>
+<li><strong>Peak memory usage</strong><br>
+Each chunk’s intermediate activations are freed immediately, reducing OOM risk.</li>
+</ul>
+<p>However, it is not without costs. Because prefill is no longer executed as one
+large, highly efficient operation, several downsides naturally arise:</p>
+<ul>
+<li>
+<p><strong>Longer Time-To-First-Token (TTFT</strong>)<br>
+Prefill is split into many small iterations, each separated by scheduling
+overhead. Even though inter-token latency (ITL) improves, the very first token
+may appear later compared to a single, uninterrupted prefill pass.</p>
+</li>
+<li>
+<p><strong>Lower Prefill Throughpu</strong>t<br>
+Large prefill workloads normally saturate the GPU very efficiently. Chunking the
+workload into smaller fragments reduces per-chunk utilization and introduces
+gaps so that decoding can continue meeting latency SLOs. This makes prefill
+throughput inherently lower.</p>
+</li>
+</ul>
+<h3 id="the-fundamental-tension-prefill-vs-decode">
+  The Fundamental Tension: Prefill vs. Decode
+  
+  <a class="anchor" href="#the-fundamental-tension-prefill-vs-decode">#</a>
+  
+</h3>
+<p>Chunked prefill exposes an important fact about LLM serving:</p>
+<pre tabindex="0"><code>Prefill and decode phases have fundamentally different performance profiles and
+resource requirements.
+</code></pre><ul>
+<li>
+<p>Prefill is compute-heavy, memory-intensive, and benefits from large,
+uninterrupted workloads.</p>
+</li>
+<li>
+<p>Decode is lightweight per step, latency-sensitive, and benefits from small,
+frequent scheduling opportunities.</p>
+</li>
+</ul>
+<p>When both stages must run on the same GPU with dynamic unpredictable serving
+workload, perfect fairness and optimal efficiency are impossible. Any
+improvement to decode responsiveness often comes at the expense of prefill
+efficiency, and vice versa.</p>
+<p>Chunked prefill makes this tension explicit by introducing chunk size as a
+tunable parameter:</p>
+<ul>
+<li>
+<p>Larger chunk sizes improve prefill throughput and time-to-first-token (TTFT)
+but delay decode steps.</p>
+</li>
+<li>
+<p>Smaller chunk sizes improve decode inter-token latency (ITL) and fairness but
+reduce prefill efficiency.</p>
+</li>
+</ul>
+<h2 id="looking-forward-disaggregated-inference">
+  <strong>Looking Forward: Disaggregated Inference</strong>
+  
+  <a class="anchor" href="#looking-forward-disaggregated-inference">#</a>
+  
+</h2>
+<p>Later in this tutorial, we will explore Disaggregated Inference (DI) [<a href="#di">2</a>],
+a fundamentally different architectural approach where prefill and decode are
+executed on different devices or specialized hardware tiers. This separation
+mitigates much of the scheduling tension described above, allowing each phase to
+be optimized independently.</p>
+<p>Chunked prefill represents a practical solution within today’s single GPU (group)
+serving paradigm, while disaggregated inference offers a path beyond its
+inherent limitations.</p>
+<h2 id="references">
+  References
+  
+  <a class="anchor" href="#references">#</a>
+  
+</h2>
+<ol>
+<li>
+<p><a id="sarathi"></a>Agrawal et al. &ldquo;Taming Throughput-Latency tradeoff in LLM
+inference with Sarathi-Serve.&rdquo; 18th USENIX Symposium on Operating Systems Design
+and Implementation. 2024.</p>
+</li>
+<li>
+<p><a id="di"></a>Zhong et al. &ldquo;DistServe: Disaggregating prefill and decoding
+for goodput-optimized large language model serving.&rdquo; 18th USENIX Symposium on
+Operating Systems Design and Implementation. 2024.</p>
+</li>
+</ol>
 </article>
  
       
@@ -574,8 +833,8 @@ https://github.com/alex-shpak/hugo-book
     <span>
     
       <a href="../../../docs/section-3/subsection-2/" class="flex align-center book-icon">
-        <img src="../../../svg/backward.svg" class="book-icon" alt="Previous" title="3.2 Continuous Batching" />
-        <span>3.2 Continuous Batching</span>
+        <img src="../../../svg/backward.svg" class="book-icon" alt="Previous" title="3.2 Paged Attention" />
+        <span>3.2 Paged Attention</span>
       </a>
     
     </span>
@@ -611,6 +870,39 @@ https://github.com/alex-shpak/hugo-book
     </div>
 
     
+
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#why-prefilling-can-become-a-major-challenge"><strong>Why Prefilling Can Become a Major Challenge</strong></a>
+      <ul>
+        <li><a href="#1-prefill-becomes-expensive-for-long-prompts">1. Prefill Becomes Expensive for Long Prompts</a></li>
+        <li><a href="#2-one-long-prefill-blocks-all-decoding">2. One Long Prefill Blocks All Decoding</a></li>
+        <li><a href="#3-super-long-prefills-risk-memory-exhaustion">3. Super-Long Prefills Risk Memory Exhaustion</a></li>
+      </ul>
+    </li>
+    <li><a href="#chunked-prefill-break-long-prefill-into-many-small-prefills"><strong>Chunked Prefill: Break Long Prefill into Many Small Prefills</strong></a>
+      <ul>
+        <li><a href="#how-chunked-prefill-works">How Chunked Prefill Works</a></li>
+      </ul>
+    </li>
+    <li><a href="#performance-tradeoffs"><strong>Performance Tradeoffs</strong></a>
+      <ul>
+        <li><a href="#the-fundamental-tension-prefill-vs-decode">The Fundamental Tension: Prefill vs. Decode</a></li>
+      </ul>
+    </li>
+    <li><a href="#looking-forward-disaggregated-inference"><strong>Looking Forward: Disaggregated Inference</strong></a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+
+
+
+  </div>
+</aside>
 
  
   </main>

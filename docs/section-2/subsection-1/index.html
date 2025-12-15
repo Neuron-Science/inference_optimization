@@ -34,7 +34,7 @@ Some of them are highlighted here.">
 <link rel="canonical" href="https://neuron-science.github.io/docs/section-2/subsection-1/">
 <link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
   <script defer src="../../../fuse.min.js"></script>
-  <script defer src="../../../en.search.min.af9462d944d2397c4e2ad342b42b54811319ce1e9be69a42b170f0bca592de97.js" integrity="sha256-r5Ri2UTSOXxOKtNCtCtUgRMZzh6b5ppCsXDwvKWS3pc=" crossorigin="anonymous"></script>
+  <script defer src="../../../en.search.min.7de5366b7dcac6ddccffb157de59d5a536b89a4e5e9bf4f4fe93b39a587785f8.js" integrity="sha256-feU2a33Kxt3M/7FX3lnVpTa4mk5em/T0/pOzmlh3hfg=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-2/subsection-1/index.xml" title="Inference Optimization" />
 <!--
 Made with Book Theme
@@ -88,7 +88,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-1/" class=""> Foundations of Generative Inference</a>
+    <a href="../../../docs/section-1/" class="">Foundations of Generative Inference</a>
   
 
           
@@ -137,7 +137,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-1/subsection-3/" class="">1.3 Hardware Accelerators for Deep Learning</a>
+    <a href="../../../docs/section-1/subsection-3/" class="">1.3 Hardware Accelerators for Generative AI</a>
   
 
           
@@ -184,6 +184,24 @@ https://github.com/alex-shpak/hugo-book
         </li>
       
     
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-6/" class="">1.6 Parallelism Strategies and Communication Collectives</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
   </ul>
 
         </li>
@@ -196,7 +214,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/" class="">Algorithmic and Modeling-level Inference Optimization</a>
+    <a href="../../../docs/section-2/" class="">Algorithmic and Modeling-Level Inference Optimization</a>
   
 
           
@@ -335,7 +353,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-3/subsection-1/" class="">3.1 Paged Attention</a>
+    <a href="../../../docs/section-3/subsection-1/" class="">3.1 Continuous Batching</a>
   
 
           
@@ -353,7 +371,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-3/subsection-2/" class="">3.2 Continuous Batching</a>
+    <a href="../../../docs/section-3/subsection-2/" class="">3.2 Paged Attention</a>
   
 
           
@@ -479,7 +497,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-4/subsection-1/" class="">Section 4.1</a>
+    <a href="../../../docs/section-4/subsection-1/" class="">4.1 vLLM</a>
   
 
           
@@ -549,6 +567,7 @@ https://github.com/alex-shpak/hugo-book
   <ul>
     <li><a href="#multi-head-attention-mha"><strong>Multi Head Attention (MHA)</strong></a></li>
     <li><a href="#grouped-query-attention-gqa"><strong>Grouped Query Attention (GQA)</strong></a></li>
+    <li><a href="#multi-head-latent-attention-mla"><strong>Multi-Head Latent Attention (MLA)</strong></a></li>
     <li><a href="#sliding-window-attention-swa"><strong>Sliding Window Attention (SWA)</strong></a></li>
     <li><a href="#references">References</a></li>
   </ul>
@@ -615,14 +634,22 @@ Here, $d_k = d_{\text{model}}/H$ is the dimension per head.</p>
 <li>It increases the models&rsquo; representation capacity without increasing computational complexity as much as a single very large attention would,</li>
 <li>It allows the model to capture richer contextual information because different heads can specialize in attenting to different positions or patterns in the sequence. For example, one head might learn to track subject-verb agreement, while another focuses on long-range dependencies.</li>
 </ol>
-<p>The final output provides a more expressive representation that downstream layers can use effectively.</p>
+<p>The final output provides a more expressive representation that downstream layers can use effectively. MHA (along with GQA, which is described next) is visualized below.</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/efficient_attention_variants/mha_gqa.png" 
+       alt="MLA and GQA" 
+       style="width: auto; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Comparison of Multi Head Attention (MHA) vs Grouped Query Attention (GQA) (credits: Sebastian Raschka)
+  </p>
+</div>
 <h2 id="grouped-query-attention-gqa">
   <strong>Grouped Query Attention (GQA)</strong>
   
   <a class="anchor" href="#grouped-query-attention-gqa">#</a>
   
 </h2>
-<p>Where standard MHA has one set of key/value projections per query head, GPQ reduces the number of key/value heads to save memory and bandwidth during inference, while keeping the same number of query heads for expressivity.
+<p>Where standard MHA has one set of key/value projections per query head, GQA (<a href="https://arxiv.org/abs/2305.13245">Ainslie et al.</a>) reduces the number of key/value heads to save memory and bandwidth during inference, while keeping the same number of query heads for expressivity.
 Let $G$ be the total number of key/value heads (with $G &lt; H$, i.e., the number of query heads).
 Denote by $d_q = d_{\text{model}}/ H$ and $d_{kv} = d_{\text{model}}/G$ be the dimension per query head and per KV head, respectively.</p>
 <p>For each head $h = 1, \ldots, H$, the query is given by $Q_h = XW_h^Q$, where $W_h^Q \in \mathbb{R}^{d_{\text{model}} \times d_q}$.</p>
@@ -640,7 +667,26 @@ Subsequently, for each query head $h$, we attend to the key/value head $g$ it&rs
 <p>GQA offers a balance between efficiency and expressivity in transformer architectures.
 By allowing many query heads to share a smaller number of KV heads, GQA drastically reduce the memory footprint and bandwidth cost of KV caching during autoregressive inference &ndash; often by a factor of $H/G$, where $H$ is the number of query heads and $G$ is the number of KV heads.
 This reduction leads to faster decoding, lower latency, and better scalability to longer context lengths.
-In practice, this enables deploying larger or more capable models under the same memory budget, making GQA a key ingredient in efficient long-context language models like Llama 2 and Llama 3.</p>
+In practice, this enables deploying larger or more capable models under the same memory budget, making GQA a key ingredient in efficient long-context language models like <a href="https://arxiv.org/abs/2307.09288">Llama 2</a> and <a href="https://arxiv.org/abs/2407.21783">Llama 3</a>.</p>
+<h2 id="multi-head-latent-attention-mla">
+  <strong>Multi-Head Latent Attention (MLA)</strong>
+  
+  <a class="anchor" href="#multi-head-latent-attention-mla">#</a>
+  
+</h2>
+<p>As an alternative to GQA, DeepSeek V3/R1 introduced MLA, in which instead of sharing key and value heads like GQA, MLA compresses the key and value tensors into a lower-dimensional space before storing them in the KV cache. At inference, compressed tensors are re-expanded to their original dimensions, trading an extra matrix multiplication for reduced memory footprint, since only the latent states are cached. More specifically, for each token:</p>
+<p>$$Z_t = X_t W_Z,\quad W_Z \in \mathbb{R}^{d \times d_\ell},\quad d_\ell \ll d.$$</p>
+<p>Instead of caching $K_t, V_t \in \mathbb{R}^d$, we cache the latent vector $Z_t \in \mathbb{R}^{d_l}$ once per token. The core of MLA is this low-rank joint compression for attention keys and values to reduce Key-Value (KV) cache during inference. Each attention head $h$ has its own projections from the latent space:</p>
+<p>$$K_t^{(h)} = Z_t W_K^{(h)},\quad V_t^{(h)} = Z_t W_V^{(h)}$$</p>
+<p>Queries are still head-specific, i.e., $Q_t^{(h)} = X_t W_Q^{(h)}$. Once the keys and values are reconstructed, attention is computed as before. Since $d_l \ll d$, this results in a massive reduction in KV cache memory footprint, which is excellent for long-context decoding. As with GQA, this is orthogonal to other KV cache compression techniques like quantization. Moreover, the <a href="https://arxiv.org/abs/2405.04434">DeepSeek V2</a> paper showed some ablation studies that MLA outperforms MHA with MoE architectures. The only downside of MLA is the added computation due to the extra projection FLOPs involved in obtaining $K^{(h)}, V^{(h)}$ from $Z$, but this is not a major concern because autoregressive decoding is memory-bandwidth bound. MLA is visualized below.</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/efficient_attention_variants/mla.png" 
+       alt="MLA" 
+       style="width: auto; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Comparison between MLA (used in DeepSeek V3 and R1) and regular MHA (credits: Sebastian Raschka)
+  </p>
+</div>
 <h2 id="sliding-window-attention-swa">
   <strong>Sliding Window Attention (SWA)</strong>
   
@@ -658,7 +704,7 @@ With SWA, the KV cache size is given by,</p>
 <div style="text-align: center; margin: 2rem 0;">
   <img src="../../../images/efficient_attention_variants/swa-attention-mechanism.webp" 
        alt="Sliding Window Attention Mechanism" 
-       style="width: 70%; height: auto; object-fit: contain;" />
+       style="width: auto; height: auto; object-fit: contain;" />
   <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
     Comparison of standard attention vs sliding window attention (credits: Sebastian Raschka)
   </p>
@@ -673,6 +719,12 @@ With SWA, the KV cache size is given by,</p>
 </h2>
 <ol>
 <li>Sliding Window Attention (SWA) <a href="">https://sebastianraschka.com/llms-from-scratch/ch04/06_swa/</a></li>
+<li>The big LLM architecture comparison <a href="">https://magazine.sebastianraschka.com/p/the-big-llm-architecture-comparison</a></li>
+<li>GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints <a href="">https://arxiv.org/abs/2305.13245</a></li>
+<li>Llama 2: Open Foundation and Fine-Tuned Chat Models <a href="">https://arxiv.org/abs/2307.09288</a></li>
+<li>The Llama 3 Herd of Models <a href="">https://arxiv.org/abs/2407.21783</a></li>
+<li>DeepSeek-V3 Technical Report <a href="">https://arxiv.org/abs/2412.19437</a></li>
+<li>DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model <a href="">https://arxiv.org/abs/2405.04434</a></li>
 </ol>
 </article>
  
@@ -699,8 +751,8 @@ With SWA, the KV cache size is given by,</p>
     <span>
     
       <a href="../../../docs/section-2/" class="flex align-center book-icon">
-        <img src="../../../svg/backward.svg" class="book-icon" alt="Previous" title="Algorithmic and Modeling-level Inference Optimization" />
-        <span>Algorithmic and Modeling-level Inference Optimization</span>
+        <img src="../../../svg/backward.svg" class="book-icon" alt="Previous" title="Algorithmic and Modeling-Level Inference Optimization" />
+        <span>Algorithmic and Modeling-Level Inference Optimization</span>
       </a>
     
     </span>
@@ -745,6 +797,7 @@ With SWA, the KV cache size is given by,</p>
   <ul>
     <li><a href="#multi-head-attention-mha"><strong>Multi Head Attention (MHA)</strong></a></li>
     <li><a href="#grouped-query-attention-gqa"><strong>Grouped Query Attention (GQA)</strong></a></li>
+    <li><a href="#multi-head-latent-attention-mla"><strong>Multi-Head Latent Attention (MLA)</strong></a></li>
     <li><a href="#sliding-window-attention-swa"><strong>Sliding Window Attention (SWA)</strong></a></li>
     <li><a href="#references">References</a></li>
   </ul>

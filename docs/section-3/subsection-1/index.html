@@ -4,26 +4,33 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="
-  3.1 Paged Attention
+  3.1 Continuous Batching
   
   #
   
-">
+
+Batching is one of the oldest and most effective techniques in machine learning
+deployment. Long before LLMs became mainstream, batching was already the key
+enabler that allowed production systems to serve many users quickly and
+cost-effectively. But LLMs introduce new challenges that make traditional
+batching insufficient, especially during decoding. Continuous batching emerged
+as the solution, and it has fundamentally reshaped how modern LLM serving
+systems operate.">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:url" content="https://neuron-science.github.io/docs/section-3/subsection-1/">
   <meta property="og:site_name" content="Inference Optimization">
-  <meta property="og:title" content="3.1 Paged Attention">
-  <meta property="og:description" content="3.1 Paged Attention #">
+  <meta property="og:title" content="3.1 Continuous Batching">
+  <meta property="og:description" content="3.1 Continuous Batching # Batching is one of the oldest and most effective techniques in machine learning deployment. Long before LLMs became mainstream, batching was already the key enabler that allowed production systems to serve many users quickly and cost-effectively. But LLMs introduce new challenges that make traditional batching insufficient, especially during decoding. Continuous batching emerged as the solution, and it has fundamentally reshaped how modern LLM serving systems operate.">
   <meta property="og:locale" content="en_us">
   <meta property="og:type" content="website">
-<title>3.1 Paged Attention | Inference Optimization</title>
+<title>3.1 Continuous Batching | Inference Optimization</title>
 <link rel="icon" href="../../../favicon.png" >
 <link rel="manifest" href="../../../manifest.json">
 <link rel="canonical" href="https://neuron-science.github.io/docs/section-3/subsection-1/">
 <link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
   <script defer src="../../../fuse.min.js"></script>
-  <script defer src="../../../en.search.min.af9462d944d2397c4e2ad342b42b54811319ce1e9be69a42b170f0bca592de97.js" integrity="sha256-r5Ri2UTSOXxOKtNCtCtUgRMZzh6b5ppCsXDwvKWS3pc=" crossorigin="anonymous"></script>
+  <script defer src="../../../en.search.min.7de5366b7dcac6ddccffb157de59d5a536b89a4e5e9bf4f4fe93b39a587785f8.js" integrity="sha256-feU2a33Kxt3M/7FX3lnVpTa4mk5em/T0/pOzmlh3hfg=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-3/subsection-1/index.xml" title="Inference Optimization" />
 <!--
 Made with Book Theme
@@ -77,7 +84,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-1/" class=""> Foundations of Generative Inference</a>
+    <a href="../../../docs/section-1/" class="">Foundations of Generative Inference</a>
   
 
           
@@ -126,7 +133,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-1/subsection-3/" class="">1.3 Hardware Accelerators for Deep Learning</a>
+    <a href="../../../docs/section-1/subsection-3/" class="">1.3 Hardware Accelerators for Generative AI</a>
   
 
           
@@ -173,6 +180,24 @@ https://github.com/alex-shpak/hugo-book
         </li>
       
     
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-6/" class="">1.6 Parallelism Strategies and Communication Collectives</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
   </ul>
 
         </li>
@@ -185,7 +210,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/" class="">Algorithmic and Modeling-level Inference Optimization</a>
+    <a href="../../../docs/section-2/" class="">Algorithmic and Modeling-Level Inference Optimization</a>
   
 
           
@@ -324,7 +349,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-3/subsection-1/" class="active">3.1 Paged Attention</a>
+    <a href="../../../docs/section-3/subsection-1/" class="active">3.1 Continuous Batching</a>
   
 
           
@@ -342,7 +367,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-3/subsection-2/" class="">3.2 Continuous Batching</a>
+    <a href="../../../docs/section-3/subsection-2/" class="">3.2 Paged Attention</a>
   
 
           
@@ -468,7 +493,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-4/subsection-1/" class="">Section 4.1</a>
+    <a href="../../../docs/section-4/subsection-1/" class="">4.1 vLLM</a>
   
 
           
@@ -520,9 +545,11 @@ https://github.com/alex-shpak/hugo-book
     <img src="../../../svg/menu.svg" class="book-icon" alt="Menu" />
   </label>
 
-  <h3>3.1 Paged Attention</h3>
+  <h3>3.1 Continuous Batching</h3>
 
   <label for="toc-control">
+    
+    <img src="../../../svg/toc.svg" class="book-icon" alt="Table of Contents" />
     
   </label>
 </div>
@@ -532,7 +559,34 @@ https://github.com/alex-shpak/hugo-book
   <aside class="hidden clearfix">
     
   
-<nav id="TableOfContents"></nav>
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#why-batching-is-essential-in-real-deployment"><strong>Why Batching Is Essential in Real Deployment</strong></a>
+      <ul>
+        <li><a href="#modern-gpus-encourage-parallelism">Modern GPUs Encourage Parallelism</a></li>
+        <li><a href="#batching-benefits-both-provider-and-user">Batching Benefits Both Provider and User</a></li>
+      </ul>
+    </li>
+    <li><a href="#why-llms-make-batching-hard"><strong>Why LLMs Make Batching Hard</strong></a>
+      <ul>
+        <li><a href="#batching-requires-identical-structure">Batching Requires Identical Structure</a></li>
+      </ul>
+    </li>
+    <li><a href="#straw-man-solution-static-batching"><strong>Straw-man Solution: Static Batching</strong></a>
+      <ul>
+        <li><a href="#problems-with-static-batching">Problems with Static Batching</a></li>
+      </ul>
+    </li>
+    <li><a href="#continuous-batching-the-key-idea"><strong>Continuous Batching: The Key Idea</strong></a>
+      <ul>
+        <li><a href="#how-continuous-batching-works">How Continuous Batching Works</a></li>
+        <li><a href="#support-attention-kv-cache">Support Attention KV Cache</a></li>
+      </ul>
+    </li>
+    <li><a href="#common-deployment-pattern"><strong>Common Deployment Pattern</strong></a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
 
 
 
@@ -543,12 +597,229 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown book-article"><h1 id="31-paged-attention">
-  3.1 Paged Attention
+  <article class="markdown book-article"><h1 id="31-continuous-batching">
+  3.1 Continuous Batching
   
-  <a class="anchor" href="#31-paged-attention">#</a>
+  <a class="anchor" href="#31-continuous-batching">#</a>
   
 </h1>
+<p>Batching is one of the oldest and most effective techniques in machine learning
+deployment. Long before LLMs became mainstream, batching was already the key
+enabler that allowed production systems to serve many users quickly and
+cost-effectively. But LLMs introduce new challenges that make traditional
+batching insufficient, especially during decoding. Continuous batching emerged
+as the solution, and it has fundamentally reshaped how modern LLM serving
+systems operate.</p>
+<p>In this section, we first examine how batching works in classical inference
+systems, identify why it breaks for LLMs, and then introduce continuous batching
+as the natural evolution of batching for autoregressive generation workloads.</p>
+<h2 id="why-batching-is-essential-in-real-deployment">
+  <strong>Why Batching Is Essential in Real Deployment</strong>
+  
+  <a class="anchor" href="#why-batching-is-essential-in-real-deployment">#</a>
+  
+</h2>
+<p>When deploying ML models, one of the first goals is to maximize system
+throughput (i.e., the number of requests a system can serve per second) while
+keeping <strong>latency low</strong>. Batching helps achieve both.</p>
+<h3 id="modern-gpus-encourage-parallelism">
+  Modern GPUs Encourage Parallelism
+  
+  <a class="anchor" href="#modern-gpus-encourage-parallelism">#</a>
+  
+</h3>
+<p>High-end GPUs (A100, H100, B100, etc.) are designed to run large matrix
+multiplications at extremely high throughput. They have:</p>
+<ul>
+<li>Many SMs capable of executing multiple threads concurrently</li>
+<li>Gigabytes of high-bandwidth memory</li>
+<li>Wide vector units that prefer large, dense workloads</li>
+</ul>
+<p>A single user request often does not fully utilize the GPU. But if we group
+multiple requests into a single batch, we can use far more of the GPU’s compute
+capacity without significantly increasing the latency for any individual
+request.</p>
+<h3 id="batching-benefits-both-provider-and-user">
+  Batching Benefits Both Provider and User
+  
+  <a class="anchor" href="#batching-benefits-both-provider-and-user">#</a>
+  
+</h3>
+<ul>
+<li><strong>Higher throughput</strong>, lowering cost per request</li>
+<li><strong>Better GPU utilization</strong>, reducing servers needed and operational cost</li>
+<li><strong>Shorter queuing delay</strong>, because serving more requests at once drains the queue
+more quickly</li>
+</ul>
+<p>Thus, batching is a win-win: the system becomes cheaper to operate, and users
+see faster responses.</p>
+<h2 id="why-llms-make-batching-hard">
+  <strong>Why LLMs Make Batching Hard</strong>
+  
+  <a class="anchor" href="#why-llms-make-batching-hard">#</a>
+  
+</h2>
+<p>Transformer-based LLMs behave very differently from traditional models (like
+CNNs) during inference. The core difficulty lies in <strong>autoregressive decoding</strong>,
+where the model generates one token at a time.</p>
+<h3 id="batching-requires-identical-structure">
+  Batching Requires Identical Structure
+  
+  <a class="anchor" href="#batching-requires-identical-structure">#</a>
+  
+</h3>
+<p>To batch multiple requests together, frameworks expect that all requests in the
+batch:</p>
+<ul>
+<li>Have the <strong>same input shape</strong></li>
+<li>Follow the <strong>same execution path</strong></li>
+<li>Produce outputs in <strong>lockstep</strong></li>
+</ul>
+<p>This is fine for tasks with fixed-size inputs (e.g., images).  But
+LLM requests violate almost all of these expectations:</p>
+<ul>
+<li>LLMs vary in context length. User prompt could be a short sentence or a
+10-page document.</li>
+<li>Number of decoding steps is unknown. Some generations finish in a few tokens
+(e.g., short answers), Others take hundreds or thousands of tokens (e.g.,
+stories, code generation)</li>
+</ul>
+<h2 id="straw-man-solution-static-batching">
+  <strong>Straw-man Solution: Static Batching</strong>
+  
+  <a class="anchor" href="#straw-man-solution-static-batching">#</a>
+  
+</h2>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/continuous_batching/static_batching.png" 
+       alt="Static Batching" 
+       style="width: auto; height: auto; object-fit: contain;" />
+  <!-- <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+  </p> -->
+</div>
+<p>A simple way to batch LLM requests is to pad them:</p>
+<ol>
+<li>Wait for a batch of N requests to arrive.</li>
+<li>Decode tokens synchronously, step by step.</li>
+<li>Continue decoding until the longest request finishes.</li>
+</ol>
+<h3 id="problems-with-static-batching">
+  Problems with Static Batching
+  
+  <a class="anchor" href="#problems-with-static-batching">#</a>
+  
+</h3>
+<ol>
+<li>
+<p><strong>Latency Explosion for Short Requests</strong><br>
+Short requests finish early, but cannot exit the batch until the longest request
+finishes.  A simple, fast task (e.g., a yes or no question)
+gets stuck waiting behind someone generating a 500-token story.  In
+conversational systems, this creates terrible user experience.</p>
+</li>
+<li>
+<p><strong>Throughput Drops Rapidly</strong><br>
+As some requests finish and others continue, the effective batch size shrinks
+over time.  The GPU ends up running small, inefficient matmuls after a few
+steps.</p>
+</li>
+</ol>
+<p>Static batching is easy to implement but fundamentally mismatched to how LLM decoding works.</p>
+<h2 id="continuous-batching-the-key-idea">
+  <strong>Continuous Batching: The Key Idea</strong>
+  
+  <a class="anchor" href="#continuous-batching-the-key-idea">#</a>
+  
+</h2>
+<p>Continuous batching borrows the idea from “iteration-level batching” used
+in RNN serving systems [<a href="#batchmaker">1</a>], where sequences can join and leave at
+each recurrent step.</p>
+<p>The intuition is simple:</p>
+<pre tabindex="0"><code>Instead of batching requests only at the beginning, we should make fine-grained
+decision and rebuild the batch at every decoding step.
+</code></pre><p>In other words, the computation unit to be batched becomes one token generation
+step instead of one request.</p>
+<h3 id="how-continuous-batching-works">
+  How Continuous Batching Works
+  
+  <a class="anchor" href="#how-continuous-batching-works">#</a>
+  
+</h3>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/continuous_batching/continuous_batching.png" 
+       alt="Continuous Batching" 
+       style="width: auto; height: auto; object-fit: contain;" />
+  <!-- <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+  </p> -->
+</div>
+<p>At each decode iteration:</p>
+<ul>
+<li>Requests that finish leave immediately</li>
+<li>New requests that complete their prefill can join immediately</li>
+<li>The next decoding step runs on all currently active requests</li>
+</ul>
+<p>This dynamic reconstruction of the batch accomplishes several goals:</p>
+<ul>
+<li>Short requests finish quickly</li>
+<li>Long requests don’t block newcomers</li>
+<li>GPU utilization remains high across all decoding steps</li>
+</ul>
+<p>Throughput also increases because batch size does not collapse over time</p>
+<h3 id="support-attention-kv-cache">
+  Support Attention KV Cache
+  
+  <a class="anchor" href="#support-attention-kv-cache">#</a>
+  
+</h3>
+<p>However, Transformer-based LLMs introduce an additional complexity:</p>
+<pre tabindex="0"><code class="language-less" data-lang="less">Each request maintains a growing Key-Value (KV) cache for attention.
+</code></pre><p>Supporting continuous batching for Transformers therefore requires managing KV
+caches of different lengths inside the same batch, which vanilla RNN models do
+not need to handle.</p>
+<p>Early systems such as Orca [<a href="#orca">2</a>] handled this by allocating a large
+batched KV buffer and designing attention mechanisms that handle variable
+context lengths. Modern systems like vLLM [<a href="#vllm">3</a>] typically rely on more
+flexible memory management techniques, such as paged attention (discussed in
+next section), which makes continuous batching scalable and efficient.</p>
+<h2 id="common-deployment-pattern">
+  <strong>Common Deployment Pattern</strong>
+  
+  <a class="anchor" href="#common-deployment-pattern">#</a>
+  
+</h2>
+<p>In practice, nearly all high-performance LLM serving systems use:</p>
+<ul>
+<li>Continuous batching for dynamic scheduling</li>
+<li>A flexible KV memory manager (such as paged attention) to support
+variable-length sequences</li>
+</ul>
+<p>Together, these two ideas form the backbone of modern high-throughput
+low-latency LLM serving architectures.  While the Transformer architecture
+remains the same, the way we feed data to it drastically changes compute
+efficiency. By rebuilding the batch each token, we can keep GPUs busy, reduce
+latency, and serve far more users with the same hardware.</p>
+<h2 id="references">
+  References
+  
+  <a class="anchor" href="#references">#</a>
+  
+</h2>
+<ol>
+<li>
+<p><a id="batchmaker"></a>Gao et al. &ldquo;Low Latency RNN Inference with Cellular
+Batching.&rdquo; Proceedings of the Thirteenth EuroSys Conference. 2018</p>
+</li>
+<li>
+<p><a id="orca"></a>Yu et al. &ldquo;Orca: A Distributed Serving System for
+Transformer-Based Generative Models.&rdquo; 16th USENIX Symposium on Operating Systems
+Design and Implementation. 2022.</p>
+</li>
+<li>
+<p><a id="vllm"></a>Kwon et al. &ldquo;Efficient Memory Management for Large Language
+Model Serving with PagedAttention.&rdquo; Proceedings of the 29th symposium on
+operating systems principles. 2023.</p>
+</li>
+</ol>
 </article>
  
       
@@ -582,8 +853,8 @@ https://github.com/alex-shpak/hugo-book
     <span>
     
       <a href="../../../docs/section-3/subsection-2/" class="flex align-center book-icon">
-        <span>3.2 Continuous Batching</span>
-        <img src="../../../svg/forward.svg" class="book-icon" alt="Next" title="3.2 Continuous Batching" />
+        <span>3.2 Paged Attention</span>
+        <img src="../../../svg/forward.svg" class="book-icon" alt="Next" title="3.2 Paged Attention" />
       </a>
     
     </span>
@@ -611,6 +882,44 @@ https://github.com/alex-shpak/hugo-book
     </div>
 
     
+
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#why-batching-is-essential-in-real-deployment"><strong>Why Batching Is Essential in Real Deployment</strong></a>
+      <ul>
+        <li><a href="#modern-gpus-encourage-parallelism">Modern GPUs Encourage Parallelism</a></li>
+        <li><a href="#batching-benefits-both-provider-and-user">Batching Benefits Both Provider and User</a></li>
+      </ul>
+    </li>
+    <li><a href="#why-llms-make-batching-hard"><strong>Why LLMs Make Batching Hard</strong></a>
+      <ul>
+        <li><a href="#batching-requires-identical-structure">Batching Requires Identical Structure</a></li>
+      </ul>
+    </li>
+    <li><a href="#straw-man-solution-static-batching"><strong>Straw-man Solution: Static Batching</strong></a>
+      <ul>
+        <li><a href="#problems-with-static-batching">Problems with Static Batching</a></li>
+      </ul>
+    </li>
+    <li><a href="#continuous-batching-the-key-idea"><strong>Continuous Batching: The Key Idea</strong></a>
+      <ul>
+        <li><a href="#how-continuous-batching-works">How Continuous Batching Works</a></li>
+        <li><a href="#support-attention-kv-cache">Support Attention KV Cache</a></li>
+      </ul>
+    </li>
+    <li><a href="#common-deployment-pattern"><strong>Common Deployment Pattern</strong></a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+
+
+
+  </div>
+</aside>
 
  
   </main>

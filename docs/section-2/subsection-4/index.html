@@ -37,7 +37,7 @@ More specifically, the quadratic scaling of the attention layer is transformed i
 <link rel="canonical" href="https://neuron-science.github.io/docs/section-2/subsection-4/">
 <link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
   <script defer src="../../../fuse.min.js"></script>
-  <script defer src="../../../en.search.min.af9462d944d2397c4e2ad342b42b54811319ce1e9be69a42b170f0bca592de97.js" integrity="sha256-r5Ri2UTSOXxOKtNCtCtUgRMZzh6b5ppCsXDwvKWS3pc=" crossorigin="anonymous"></script>
+  <script defer src="../../../en.search.min.7de5366b7dcac6ddccffb157de59d5a536b89a4e5e9bf4f4fe93b39a587785f8.js" integrity="sha256-feU2a33Kxt3M/7FX3lnVpTa4mk5em/T0/pOzmlh3hfg=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-2/subsection-4/index.xml" title="Inference Optimization" />
 <!--
 Made with Book Theme
@@ -91,7 +91,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-1/" class=""> Foundations of Generative Inference</a>
+    <a href="../../../docs/section-1/" class="">Foundations of Generative Inference</a>
   
 
           
@@ -140,7 +140,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-1/subsection-3/" class="">1.3 Hardware Accelerators for Deep Learning</a>
+    <a href="../../../docs/section-1/subsection-3/" class="">1.3 Hardware Accelerators for Generative AI</a>
   
 
           
@@ -187,6 +187,24 @@ https://github.com/alex-shpak/hugo-book
         </li>
       
     
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-6/" class="">1.6 Parallelism Strategies and Communication Collectives</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
   </ul>
 
         </li>
@@ -199,7 +217,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/" class="">Algorithmic and Modeling-level Inference Optimization</a>
+    <a href="../../../docs/section-2/" class="">Algorithmic and Modeling-Level Inference Optimization</a>
   
 
           
@@ -338,7 +356,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-3/subsection-1/" class="">3.1 Paged Attention</a>
+    <a href="../../../docs/section-3/subsection-1/" class="">3.1 Continuous Batching</a>
   
 
           
@@ -356,7 +374,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-3/subsection-2/" class="">3.2 Continuous Batching</a>
+    <a href="../../../docs/section-3/subsection-2/" class="">3.2 Paged Attention</a>
   
 
           
@@ -482,7 +500,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-4/subsection-1/" class="">Section 4.1</a>
+    <a href="../../../docs/section-4/subsection-1/" class="">4.1 vLLM</a>
   
 
           
@@ -550,11 +568,12 @@ https://github.com/alex-shpak/hugo-book
   
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#causal-attention-enables-computation-reuse">Causal attention enables computation reuse</a></li>
-    <li><a href="#computation-complexity-with-and-without-kv-cache">Computation complexity with and without KV cache</a></li>
-    <li><a href="#memory-footprint-of-kv-cache">Memory footprint of KV cache</a></li>
-    <li><a href="#prefill-vs-decoding">Prefill vs. Decoding</a></li>
-    <li><a href="#connections-with-efficient-attention-mha-vs-gqa">Connections with efficient attention: MHA vs. GQA</a></li>
+    <li><a href="#causal-attention-enables-computation-reuse"><strong>Causal attention enables computation reuse</strong></a></li>
+    <li><a href="#computation-complexity-with-and-without-kv-cache"><strong>Computation complexity with and without KV cache</strong></a></li>
+    <li><a href="#memory-footprint-of-kv-cache"><strong>Memory footprint of KV cache</strong></a></li>
+    <li><a href="#prefill-vs-decoding"><strong>Prefill vs. Decoding</strong></a></li>
+    <li><a href="#connections-with-efficient-attention-mha-vs-gqa"><strong>Connections with efficient attention: MHA vs. GQA</strong></a></li>
+    <li><a href="#references">References</a></li>
   </ul>
 </nav>
 
@@ -596,7 +615,7 @@ KV caching avoids this waste by storing the computed K and V tensors in memory, 
 The result is a drastic improvement in per-token latency and a shift in the performance bottleneck from compute to memory bandwidth.
 More specifically, the quadratic scaling of the attention layer is transformed into a linear scaling at the cost of increased memory utilization.</p>
 <h2 id="causal-attention-enables-computation-reuse">
-  Causal attention enables computation reuse
+  <strong>Causal attention enables computation reuse</strong>
   
   <a class="anchor" href="#causal-attention-enables-computation-reuse">#</a>
   
@@ -632,7 +651,7 @@ Crucially, the model does <em>not</em> recompute $K_i$ or $V_i$ for $i \leq t$; 
   </p>
 </div>
 <h2 id="computation-complexity-with-and-without-kv-cache">
-  Computation complexity with and without KV cache
+  <strong>Computation complexity with and without KV cache</strong>
   
   <a class="anchor" href="#computation-complexity-with-and-without-kv-cache">#</a>
   
@@ -646,7 +665,7 @@ Therefore,
 $$\text{Cost (with KV cache)} = \text{O}(tD + D^2).$$
 This reduces the quadratic growth with repect to $t$ to linear at the price of additional memory.</p>
 <h2 id="memory-footprint-of-kv-cache">
-  Memory footprint of KV cache
+  <strong>Memory footprint of KV cache</strong>
   
   <a class="anchor" href="#memory-footprint-of-kv-cache">#</a>
   
@@ -660,7 +679,7 @@ $$K^\ell_{\le t+1} = \left[K^\ell_{\le t} \hspace{2px}\vert\hspace{2px} K^\ell_{
 This append operation is $\text{O}(D)$ per layer, trivial compared to the attention read cost.</p>
 <p>Runtimes like vLLM optimize this step with Paged KV layouts so these appends do not cause memory fragmentation or reallocation.</p>
 <h2 id="prefill-vs-decoding">
-  Prefill vs. Decoding
+  <strong>Prefill vs. Decoding</strong>
   
   <a class="anchor" href="#prefill-vs-decoding">#</a>
   
@@ -678,7 +697,7 @@ In this decoding regime, runtime is not limited by FLOPs but by the memory-bandw
 This affects the decoding throughput, measured as output-tokens-per-second (OTPS).</p>
 <p>As a consequence, often prefill and decoding regimes require separately optimized kernels to optimize for overall latency.</p>
 <h2 id="connections-with-efficient-attention-mha-vs-gqa">
-  Connections with efficient attention: MHA vs. GQA
+  <strong>Connections with efficient attention: MHA vs. GQA</strong>
   
   <a class="anchor" href="#connections-with-efficient-attention-mha-vs-gqa">#</a>
   
@@ -687,12 +706,12 @@ This affects the decoding throughput, measured as output-tokens-per-second (OTPS
 In Multi-Head Attention (MHA), each query head has its own key and value heads (e.g., 64 Q, 64 K, 64 V), whereas, in Grouped Query Attention (GQA), multiple query heads share a smaller number of K/V heads (e.g., 64 Q but only 8 K and 8 V). This design make s abig difference. By drastically reducing the number of K/V heads, GQA shrinks the KV cache by approximately 4-8x in many models. A smaller cache means dramatically less data to stream from HBM at each decoding steps. As a consequence, the memory bandwidth bottleneck is somewhat alleviated. This is a central reason why models like Llama-2/3, Mistral achieved faster decoding over their predecessors. Note, however, GQA is a training-time optimization, i.e., the model architecture is defined beforehand, and models with GQA need to be trained from scratch.</p>
 
 
-<h1 id="references">
+<h2 id="references">
   References
   
   <a class="anchor" href="#references">#</a>
   
-</h1>
+</h2>
 <ol>
 <li>LLM Inference Series: 3. KV caching explained, Pierre Lienhart, 2023 <a href="">https://medium.com/@plienhar/llm-inference-series-3-kv-caching-unveiled-048152e461c8</a></li>
 <li>LLM Inference Series: 4. KV caching, a deeper look, Pierre Lienhart, 2024 <a href="">https://medium.com/@plienhar/llm-inference-series-4-kv-caching-a-deeper-look-4ba9a77746c8</a></li>
@@ -766,11 +785,12 @@ In Multi-Head Attention (MHA), each query head has its own key and value heads (
   
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#causal-attention-enables-computation-reuse">Causal attention enables computation reuse</a></li>
-    <li><a href="#computation-complexity-with-and-without-kv-cache">Computation complexity with and without KV cache</a></li>
-    <li><a href="#memory-footprint-of-kv-cache">Memory footprint of KV cache</a></li>
-    <li><a href="#prefill-vs-decoding">Prefill vs. Decoding</a></li>
-    <li><a href="#connections-with-efficient-attention-mha-vs-gqa">Connections with efficient attention: MHA vs. GQA</a></li>
+    <li><a href="#causal-attention-enables-computation-reuse"><strong>Causal attention enables computation reuse</strong></a></li>
+    <li><a href="#computation-complexity-with-and-without-kv-cache"><strong>Computation complexity with and without KV cache</strong></a></li>
+    <li><a href="#memory-footprint-of-kv-cache"><strong>Memory footprint of KV cache</strong></a></li>
+    <li><a href="#prefill-vs-decoding"><strong>Prefill vs. Decoding</strong></a></li>
+    <li><a href="#connections-with-efficient-attention-mha-vs-gqa"><strong>Connections with efficient attention: MHA vs. GQA</strong></a></li>
+    <li><a href="#references">References</a></li>
   </ul>
 </nav>
 

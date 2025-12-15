@@ -4,26 +4,34 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="
-  Hardware Accelerators for Deep Learning
+  Hardware Accelerators for Generative AI
   
   #
   
-">
+
+
+
+
+
+  
+
+
+Generative AI (GenAI) workloads, especially those dominated by transformer architectures in LLMs, have computational demands that general-purpose CPUs were never designed to satisfy. CPUs excel at low-latency control flow, irregular computation, and a broad range of general workloads, but they offer relatively limited parallelism, modest memory bandwidth, and low arithmetic throughput compared to what large-scale neural networks demand. Core operations such as matrix multiplication, which are abundant in neural networks, thrive on Single-Instruction-Multiple-Data (SIMD) execution, massive parallel compute arrays, and fast access to on-chip memory &ndash; capabilities that exceed the architectural intent of CPUs (which are meant for general purpose programs).">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:url" content="https://neuron-science.github.io/docs/section-1/subsection-3/">
   <meta property="og:site_name" content="Inference Optimization">
-  <meta property="og:title" content="1.3 Hardware Accelerators for Deep Learning">
-  <meta property="og:description" content="Hardware Accelerators for Deep Learning #">
+  <meta property="og:title" content="1.3 Hardware Accelerators for Generative AI">
+  <meta property="og:description" content="Hardware Accelerators for Generative AI # Generative AI (GenAI) workloads, especially those dominated by transformer architectures in LLMs, have computational demands that general-purpose CPUs were never designed to satisfy. CPUs excel at low-latency control flow, irregular computation, and a broad range of general workloads, but they offer relatively limited parallelism, modest memory bandwidth, and low arithmetic throughput compared to what large-scale neural networks demand. Core operations such as matrix multiplication, which are abundant in neural networks, thrive on Single-Instruction-Multiple-Data (SIMD) execution, massive parallel compute arrays, and fast access to on-chip memory – capabilities that exceed the architectural intent of CPUs (which are meant for general purpose programs).">
   <meta property="og:locale" content="en_us">
   <meta property="og:type" content="website">
-<title>1.3 Hardware Accelerators for Deep Learning | Inference Optimization</title>
+<title>1.3 Hardware Accelerators for Generative AI | Inference Optimization</title>
 <link rel="icon" href="../../../favicon.png" >
 <link rel="manifest" href="../../../manifest.json">
 <link rel="canonical" href="https://neuron-science.github.io/docs/section-1/subsection-3/">
 <link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
   <script defer src="../../../fuse.min.js"></script>
-  <script defer src="../../../en.search.min.af9462d944d2397c4e2ad342b42b54811319ce1e9be69a42b170f0bca592de97.js" integrity="sha256-r5Ri2UTSOXxOKtNCtCtUgRMZzh6b5ppCsXDwvKWS3pc=" crossorigin="anonymous"></script>
+  <script defer src="../../../en.search.min.7de5366b7dcac6ddccffb157de59d5a536b89a4e5e9bf4f4fe93b39a587785f8.js" integrity="sha256-feU2a33Kxt3M/7FX3lnVpTa4mk5em/T0/pOzmlh3hfg=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-1/subsection-3/index.xml" title="Inference Optimization" />
 <!--
 Made with Book Theme
@@ -77,7 +85,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-1/" class=""> Foundations of Generative Inference</a>
+    <a href="../../../docs/section-1/" class="">Foundations of Generative Inference</a>
   
 
           
@@ -126,7 +134,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-1/subsection-3/" class="active">1.3 Hardware Accelerators for Deep Learning</a>
+    <a href="../../../docs/section-1/subsection-3/" class="active">1.3 Hardware Accelerators for Generative AI</a>
   
 
           
@@ -173,6 +181,24 @@ https://github.com/alex-shpak/hugo-book
         </li>
       
     
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-6/" class="">1.6 Parallelism Strategies and Communication Collectives</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
   </ul>
 
         </li>
@@ -185,7 +211,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/" class="">Algorithmic and Modeling-level Inference Optimization</a>
+    <a href="../../../docs/section-2/" class="">Algorithmic and Modeling-Level Inference Optimization</a>
   
 
           
@@ -324,7 +350,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-3/subsection-1/" class="">3.1 Paged Attention</a>
+    <a href="../../../docs/section-3/subsection-1/" class="">3.1 Continuous Batching</a>
   
 
           
@@ -342,7 +368,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-3/subsection-2/" class="">3.2 Continuous Batching</a>
+    <a href="../../../docs/section-3/subsection-2/" class="">3.2 Paged Attention</a>
   
 
           
@@ -468,7 +494,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-4/subsection-1/" class="">Section 4.1</a>
+    <a href="../../../docs/section-4/subsection-1/" class="">4.1 vLLM</a>
   
 
           
@@ -520,9 +546,11 @@ https://github.com/alex-shpak/hugo-book
     <img src="../../../svg/menu.svg" class="book-icon" alt="Menu" />
   </label>
 
-  <h3>1.3 Hardware Accelerators for Deep Learning</h3>
+  <h3>1.3 Hardware Accelerators for Generative AI</h3>
 
   <label for="toc-control">
+    
+    <img src="../../../svg/toc.svg" class="book-icon" alt="Table of Contents" />
     
   </label>
 </div>
@@ -532,7 +560,25 @@ https://github.com/alex-shpak/hugo-book
   <aside class="hidden clearfix">
     
   
-<nav id="TableOfContents"></nav>
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#neuroncore-the-fundamental-compute-unit-in-tranium"><strong>NeuronCore: The fundamental compute unit in Tranium</strong></a></li>
+    <li><a href="#memory-hierarchy-in-a-trainium-chip"><strong>Memory hierarchy in a Trainium chip</strong></a>
+      <ul>
+        <li><a href="#external-memory-host-dram-and-device-hbm"><strong>External memory: Host DRAM and Device HBM</strong></a></li>
+        <li><a href="#internal-on-chip-memory-sbuf-and-psum"><strong>Internal (on-chip) memory: SBUF and PSUM</strong></a></li>
+      </ul>
+    </li>
+    <li><a href="#importance-of-writing-good-kernels-for-inference-optimization"><strong>Importance of writing good kernels for inference optimization?</strong></a></li>
+    <li><a href="#scale-up-networking-from-trainium-chip-to-trainium-server"><strong>Scale-up networking: From Trainium chip to Trainium Server</strong></a>
+      <ul>
+        <li><a href="#direct-topology-vs-switched-fabric-for-scaling-up-infrastructure"><strong>Direct topology vs. Switched fabric for scaling up infrastructure</strong></a></li>
+      </ul>
+    </li>
+    <li><a href="#scale-out-networking-from-trainium-server-to-datacenters"><strong>Scale-out networking: From Trainium Server to Datacenters</strong></a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
 
 
 
@@ -543,12 +589,207 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown book-article"><h1 id="hardware-accelerators-for-deep-learning">
-  Hardware Accelerators for Deep Learning
+  <article class="markdown book-article"><h1 id="hardware-accelerators-for-generative-ai">
+  Hardware Accelerators for Generative AI
   
-  <a class="anchor" href="#hardware-accelerators-for-deep-learning">#</a>
+  <a class="anchor" href="#hardware-accelerators-for-generative-ai">#</a>
   
 </h1>
+
+<link rel="stylesheet" href="../../../katex/katex.min.css" />
+<script defer src="../../../katex/katex.min.js"></script>
+
+  <script defer src="../../../katex/auto-render.min.js" onload="renderMathInElement(document.body, {
+  &#34;delimiters&#34;: [
+    {&#34;left&#34;: &#34;$$&#34;, &#34;right&#34;: &#34;$$&#34;, &#34;display&#34;: true},
+    {&#34;left&#34;: &#34;$&#34;, &#34;right&#34;: &#34;$&#34;, &#34;display&#34;: false},
+    {&#34;left&#34;: &#34;\\(&#34;, &#34;right&#34;: &#34;\\)&#34;, &#34;display&#34;: false},
+    {&#34;left&#34;: &#34;\\[&#34;, &#34;right&#34;: &#34;\\]&#34;, &#34;display&#34;: true}
+  ]
+}
+);"></script>
+
+
+<p>Generative AI (GenAI) workloads, especially those dominated by transformer architectures in LLMs, have computational demands that general-purpose CPUs were never designed to satisfy. CPUs excel at low-latency control flow, irregular computation, and a broad range of general workloads, but they offer relatively limited parallelism, modest memory bandwidth, and low arithmetic throughput compared to what large-scale neural networks demand. Core operations such as matrix multiplication, which are abundant in neural networks, thrive on Single-Instruction-Multiple-Data (SIMD) execution, massive parallel compute arrays, and fast access to on-chip memory &ndash; capabilities that exceed the architectural intent of CPUs (which are meant for general purpose programs).</p>
+<p>As a result, the industry has increasingly turned to specialized hardware accelerators that are purpose-built for GenAI to achieve the necessary balance between performance, affordability, and sustainability. Operating a fleet of servers for high volume inference, as is done by the cloud hyperscalers today, consistently requires <strong>low latency</strong> (TTFT, OTPS, etc.) for good user experience. Moreover, the computational demand for serving continuous, real-time user requests has become a dominant financial and environmental burden. Consequently, the focus for inference optimization has decisively shifted toward minimizing the total cost of ownership, which means maximizing <strong>energy efficiency</strong> (a core component of <strong>green computing</strong>; to reduce the operational and environmental expenses from power and cooling). While NVIDIA GPUs were the first widely adopted solution, more recently, a new wave of domain-specific accelerators are gaining traction. These include hardware like AWS Trainium and Inferentia, and Google&rsquo;s TPU families, which go beyond general-purpose parallel processors, and instead co-design the entire vertical stack, i.e., silicon, compiler, runtime, and interconnect around the computational demands of large-scale machine learning workloads.</p>
+<p>Modern AI accelerators are domain-specific hardware (ASICs or highly specialized chips) explicitly designed to speed up the heavy linear algebra (matrix-multiply, tensor operations) found in neural network inference/training. In what follows, we discuss the typical architecture model: how memory and compute units are organized, how that impacts LLM inference performance, and its implications on inference optimization strategies. Although, as a case study, we turn to AWS Trainium (Trn), these concepts are applicable in general to other AI accelerators as well. The Trn family of chips &ndash; Trn1, Trn2, and Trn3, is Amazon Web Services&rsquo; family of custom-built AI accelerator chips, designed not just for raw speed (in both training and inference), but to offer a significantly superior total cost of ownership for massive-scale GenAI deployments.</p>
+<h2 id="neuroncore-the-fundamental-compute-unit-in-tranium">
+  <strong>NeuronCore: The fundamental compute unit in Tranium</strong>
+  
+  <a class="anchor" href="#neuroncore-the-fundamental-compute-unit-in-tranium">#</a>
+  
+</h2>
+<p>A NeuronCore is basically a compute core (analogous to a TensorCore in a TPU) that integrates dedicated tensor, vector, and scalar engines, along with software-managed on-chip SRAM, to compute neural network operations like matmuls efficiently. Because these engines operate in hardware-organized parallel units and often asynchronously (with compiler/runtime scheduling), the accelerator can run different parts of a neural network pipeline in parallel. These engines are visualized below:</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/AI_accelerator_hardware/NeuronCore_architecture.png" 
+       alt="NeuronCore architecture" 
+       style="width: 50%; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    NeuronCore architecture (credits: AWS Neuron Docs)
+  </p>
+</div>
+<p>A NeuronCore is comprised of the following four heterogeneous compute engines:</p>
+<ol>
+<li>
+<p><strong>Tensor engine</strong>: The Tensor Engine is the primary high-throughput compute unit inside a NeuronCore, responsible for accelerating the dense linear-algebra operations that dominate modern LLMs. It is built around a large <strong>systolic array</strong> that performs matrix multiplications and convolutions with extremely high arithmetic intensity, supporting mixed-precision formats such as BF16, FP16, and MXFP8/4. A NeuronCore-v4 Tensor Engine (used in Trn3 chips delivers 315 MXFP8/MXFP4 TFLOPS, 79 BF16/FP16/TF32, or 20 FP32 TFLOPS of tensor computations. Because attention projections, feed-forward layers, and most MLP operations reduce to GEMMs (GEneral Matrix Multiplications), the Tensor Engine is responsible for the vast majority of FLOPs in LLM inference.</p>
+</li>
+<li>
+<p><strong>Vector engine</strong>: The Vector Engine handles the wide range of elementwise and vectorized operations, in which every element of the output is dependent on multiple input elements. Examples include axpy operations (Z=aX+Y), Layer Normalization, activation functions, and Pooling operations. By offloading these non-matmul operations to dedicated vector hardware, the NeuronCore avoids bottlenecks on the Tensor Engine and enables overlap between matmul-heavy and vectorization-heavy phases of LLM execution. It can deliver 1.2 TFLOPS of FP32 computations.</p>
+</li>
+<li>
+<p><strong>Scalar engine</strong>: This engine is optimized for scalar computations in which every element of the output is dependent on one element of the input (eg., activations, absolute value, etc.). It executes per-element control logic and delivers 1.2 TFLOPS of FP32 computations. By isolating these lightweight tasks onto a dedicated scalar pipeline, the NeuronCore prevents them from stalling the Tensor or Vector Engines, and enabling overlap.</p>
+</li>
+<li>
+<p><strong>GPSIMD engine</strong>: Each GPSIMD engine consists of eight fully-programmable 512-bit wide vector processors. They can execute general purpose C-code and access the embedded on-chip SRAM, allowing the implementation of custom operators and their execution directly on the NeuronCores. It serves as the flexible “catch-all” compute unit within a NeuronCore, designed to handle operations that do not map cleanly onto the tensor, vector, or scalar engines. This flexibility ensures that the NeuronCore can efficiently support evolving LLM workloads, experimental layers, and optimization techniques &ndash; all while maintaining a predictable dataflow execution schedule.</p>
+</li>
+</ol>
+<h2 id="memory-hierarchy-in-a-trainium-chip">
+  <strong>Memory hierarchy in a Trainium chip</strong>
+  
+  <a class="anchor" href="#memory-hierarchy-in-a-trainium-chip">#</a>
+  
+</h2>
+<p>Now that we have outlined the core compute engines of a NeuronCore, i.e., the Tensor, Vector, Scalar, and GPSIMD units, the next question is how these engines are consistently kept supplied with the data they need. The performance of an AI accelerator is not determined solely by raw FLOPs of the compute engines alone, but also hinges on the efficiency of the memory hierarchy that moves model weights and activations through the chip. In modern accelerators, data does not simply flow through a conventional cache system as in a CPU &ndash; instead, a carefully structured hierarchical high-bandwidth off-chip memory, software-managed on-chip SRAM, and dedicated Direct Memory Access (DMA) pathways, control how tensors are staged, reused, and pipelined. Understanding this memory subsystem is essential, because the effectiveness of the compute engines is directly tied to how well the underlying memory architecture can support the dataflow patterns of LLM inference. We definitely do not want the compute engines to stay idle, waiting for the data to arrive.</p>
+<p>The following figure shows how the compute engines in a NeuronCore are connected to the four hierarchical memories (which are described in detail below).</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/AI_accelerator_hardware/NeuronCore_and_memory.png" 
+       alt="NeuronCore architecture with memory blocks" 
+       style="width: 70%; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    NeuronCore architecture with memory blocks (credits: AWS Neuron Docs)
+  </p>
+</div>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/memory_hierarchy/pm-memory.png" 
+       alt="NeuronCore architecture with memory blocks" 
+       style="width: auto; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    NeuronCore memory hierarchy showing capacity and bandwidth for each level (credits: AWS Neuron Docs)
+  </p>
+</div>
+<p>As in the above figure, each NeuronCore exposes a four-level hierarchy of memories &ndash; ranging from large but slow external memory to small, extremely fast on-chip buffers (such a memory hierarchy is present for most other AI accelerators as well). The qualitative latency numbers (pyramid schematic above) are not meant to be exact but help build intuition of the fact that on-chip memories (sometimes also referred to as on-chip SRAM) closer to the compute engines offer <strong>higher bandwidth and lower latency</strong>, but also <strong>much smaller capacity</strong>. The exact numbers may differ for different chips as well as different generations of the same chip family, but the general trend remains the same. Understanding the tradeoff between speed and size is essential for writing high-performance kernels for GenAI, where compute is often cheap (owing to the powerful compute engines), but data movement dominates both latency and energy.</p>
+<h3 id="external-memory-host-dram-and-device-hbm">
+  <strong>External memory: Host DRAM and Device HBM</strong>
+  
+  <a class="anchor" href="#external-memory-host-dram-and-device-hbm">#</a>
+  
+</h3>
+<p><strong>Host DRAM</strong> refers to the main system memory attached to the host CPU, typically implemented using Double Data Rate (DDR) technologies. In AI accelerator systems, host DRAM sits outside the accelerator device and serves as the primary memory for the operating system, ML frameworks, and application-level data structures. Model checkpoints are often initially loaded into host DRAM from storage before being transferred to accelerator-attached memory (such as HBM &ndash; described next), and input/output tensors may be staged there between inference requests.</p>
+<p>From the perspective of an AI accelerator, host DRAM is high-capacity but high-latency and low-bandwidth compared to on-device memory. As a result, accelerators do not directly execute kernels on host DRAM data. Instead, host DRAM acts as a staging and coordination layer, while performance-critical computation occurs entirely on the device after inputs have been explicitly transferred. In inference workloads (like LLM serving), host DRAM is commonly used to manage request queues, tokenize inputs, batch requests, and orchestrate data movement, while model weights and intermediate activations are kept resident in accelerator memory. Efficient inference pipelines therefore minimize round-trips to host DRAM, treating it as a control-plane and staging resource rather than part of the compute-critical data path.</p>
+<p><strong>High Bandwidth Memory (HBM)</strong> is a specialized DRAM technology designed to deliver extremely high memory bandwidth while maintaining relatively low energy per byte transferred. Unlike conventional DDR memory, HBM stacks multiple dies vertically and connects them to the accelerator die. This design trades clock speed for width, resulting in bandwidths that are an order of magnitude higher than host DRAM, which is critical for data-intensive AI workloads.</p>
+<p>In modern AI accelerators, HBM serves as the primary device memory that stores model weights, activations, KV caches, and intermediate tensors during execution. While HBM is significantly faster than host DRAM, it is still much slower and higher-latency than on-chip SRAM (i.e., SBUF and PSUM, described later). As a result, accelerators typically use HBM for staging working sets into smaller on-chip buffers for computation. This often makes HBM bandwidth (not compute FLOPs) a dominant performance limiter for many inference workloads, particularly during autoregressive decoding where large KV caches must be repeatedly read as tokens are generated one-by-one.</p>
+<p>From a system-design perspective, HBM capacity and bandwidth directly constrain the maximum model size, batch size, and achievable throughput on a single device. For LLM inference, keeping weights and KV tensors resident in HBM avoids expensive transfers over the host interconnect, while careful tiling and reuse strategies minimize repeated HBM accesses. Consequently, many inference optimizations, such as quantization, KV-cache compression, operator fusion, and attention variants, can be understood as techniques for reducing HBM traffic, making effective use of this precious resource.</p>
+<h3 id="internal-on-chip-memory-sbuf-and-psum">
+  <strong>Internal (on-chip) memory: SBUF and PSUM</strong>
+  
+  <a class="anchor" href="#internal-on-chip-memory-sbuf-and-psum">#</a>
+  
+</h3>
+<p>At the top of the accelerator memory hierarchy sit the on-chip memories, which provide the highest bandwidth and lowest latency access to the compute engines. In Trn accelerators, these memories are explicitly software-managed and are central to the dataflow execution model. Two such memories are particularly important: <strong>State Buffer (SBUF)</strong> and <strong>Partial Sum Buffer (PSUM)</strong>.</p>
+<p><strong>SBUF</strong> is the primary general-purpose on-chip SRAM and acts as the main working memory for a compute core. All compute engines—tensor, vector, scalar, and GPSIMD—can read from and write to SBUF. Before any computation begins, input tensors must be explicitly loaded from HBM into SBUF, and once computation completes, results must be written back from SBUF to HBM.</p>
+<p>Because SBUF offers dramatically higher bandwidth and lower latency than HBM, it is also used to hold intermediate tensors generated during execution. In LLM inference, this includes tiled weight blocks, activation fragments, attention intermediates, and residual values that are reused across multiple operations within a layer. Effective use of SBUF—through careful tiling, data reuse, and operator fusion—allows many computations to proceed without repeatedly accessing HBM, which is critical for both throughput and latency. However, SBUF capacity is limited, so kernels must carefully manage the lifetime of data to avoid spills back to slower memory.</p>
+<p><strong>PSUM</strong> is a smaller, specialized on-chip memory designed specifically to support high-throughput matrix multiplication on the Tensor Engine, allowing the Tensor Engine to accumulate partial results from multiple matrix-multiply tiles into the same output region. This makes PSUM essential for large GEMMs, where the final output matrix is produced by accumulating many smaller tiled computations.</p>
+<p>In transformer models, operations such as attention projections and MLP layers rely heavily on this accumulation pattern. PSUM enables these matmuls to be executed efficiently without repeatedly materializing intermediate results in SBUF or HBM. While the vector and scalar engines can also access PSUM, its limited capacity makes it best reserved for Tensor Engine accumulation, with completed tiles quickly evicted to SBUF for further processing or storage.</p>
+<h2 id="importance-of-writing-good-kernels-for-inference-optimization">
+  <strong>Importance of writing good kernels for inference optimization?</strong>
+  
+  <a class="anchor" href="#importance-of-writing-good-kernels-for-inference-optimization">#</a>
+  
+</h2>
+<p>Performance on NeuronCores depends not only on using the compute engines effectively but also on mapping dataflow to this memory hierarchy. When the live set of activations, weights, and partial results fits entirely within on-chip memory, the compiler can construct pipelines that overlap DMA transfers, computation, and post-processing. If the working set exceeds SBUF or PSUM capacity, the compiler must insert spill/fill cycles to HBM, increasing latency and reducing effective throughput.</p>
+<p>At this point, it is important to clarify the role of <strong>kernels</strong> in an accelerator programming model. A kernel is simply a function (in a domain specific language (DSL) e.g., Triton, NKI, etc.) that explicitly specifies how computation is mapped onto the available compute engines (Tensor, Vector, Scalar, and GPSIMD) and memory hierarchy (HBM, SBUF, and PSUM). Rather than relying on implicit hardware behavior, kernels optimize how tensors are tiled, where data is staged, which engine executes each operation, and when data is moved between memory levels. Their primary goal is to maximize utilization of fast on-chip resources—keeping frequently reused data resident in SBUF or PSUM, while minimizing expensive spill and refill traffic to HBM. In the context of LLM inference, well-designed kernels enable predictable, low-latency execution by aligning the dataflow of transformer workloads with the underlying hardware, ensuring that compute engines remain busy and memory bandwidth is used efficiently. Kernels for Trainium are written using the <a href="https://awsdocs-neuron.readthedocs-hosted.com/en/latest/nki/index.html">Neuron Kernel Interface (NKI)</a> language.</p>
+<h2 id="scale-up-networking-from-trainium-chip-to-trainium-server">
+  <strong>Scale-up networking: From Trainium chip to Trainium Server</strong>
+  
+  <a class="anchor" href="#scale-up-networking-from-trainium-chip-to-trainium-server">#</a>
+  
+</h2>
+<p>So far, we have focused on how a single accelerator chip extracts performance through specialized compute engines and a carefully managed memory hierarchy. However, modern LLMs rarely run on a single chip in isolation. Model sizes, KV cache growth, and throughput requirements quickly exceed the capacity of one device, making <strong>scale-up within a server</strong> a fundamental part of inference system design. In this next section, we move beyond the single-chip view and examine how multiple accelerator chips are interconnected within a server, how memory and compute are aggregated across devices, and how communication bandwidth and latency shape the practical limits of LLM inference at scale.</p>
+<p align="center">
+<img src="../../../images/AI_accelerator_hardware/Trn3_chip_real.jpg" width=400 align=left/>
+&nbsp;&nbsp;&nbsp;
+<img src="../../../images/AI_accelerator_hardware/Trn3_chip_schematic.png" width=300 align=right/>
+<p>Trainium chip consisting of eight (8) NeuronCores and four (4) banks of HBM</p>
+</p>
+<p>Physically, the Trainium chip is a rectangular accelerator package with the compute silicon at the center and multiple HBM stacks placed closely around it, all mounted on a high-density substrate. This tight integration is what enables Trn2’s very high on-device memory bandwidth. Inside the package, the main die is subdivided into many identical NeuronCores, each containing its own tensor, vector, scalar, and GPSIMD engines plus local on-chip SRAM. These cores are arranged in a regular grid and connected by a high-bandwidth on-chip interconnect so data and synchronization can flow efficiently across the chip. Surrounding the compute die are the four banks of HBM stacks.</p>
+<p>From a system perspective, Trn is typically deployed as a PCIe accelerator card (or equivalent module) in a server. The card exposes high-speed links for host connectivity and device-to-device communication, allowing multiple Trn chips to be wired together within a single server for scale-up (as we see next). This makes Trn2 resemble modern high-end GPUs or other AI ASICs: a large package optimized for memory proximity, mounted on a board designed to deliver power, cooling, and interconnect bandwidth at scale.</p>
+<p>To address modern LLM workloads, servers connect multiple accelerators using high-bandwidth, low-latency scale-up interconnects, allowing compute and memory resources to be aggregated. We now shift from the chip-level perspective to the scale-up architecture of a server (as in the figure below), examining how multiple accelerators are interconnected, how data and synchronization flow between them, and why this design is critical for efficient large-model inference.</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/AI_accelerator_hardware/Trn3_server.png" 
+       alt="NeuronCore architecture with memory blocks" 
+       style="width: 70%; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Trn3 ultraserver with several connected Trn chips (credits: AWS re:Invent, 2025)
+  </p>
+</div>
+<h3 id="direct-topology-vs-switched-fabric-for-scaling-up-infrastructure">
+  <strong>Direct topology vs. Switched fabric for scaling up infrastructure</strong>
+  
+  <a class="anchor" href="#direct-topology-vs-switched-fabric-for-scaling-up-infrastructure">#</a>
+  
+</h3>
+<p>To scale up within a server, multiple accelerators can be connected using either a direct topology, such as a torus or mesh, or a switched fabric. In a torus topology, each accelerator is directly connected to a small, fixed set of neighbors (e.g., in 2D or 3D), forming a regular grid with wrap-around links. Communication between distant devices proceeds by hop-by-hop routing through intermediate accelerators. This design has attractive properties: it is hardware-efficient, avoids expensive switches, and provides predictable bandwidth for nearest-neighbor collectives. Torus topologies work particularly well for workloads with structured communication patterns—such as pipeline or tensor parallelism with local exchanges—and are relatively easy to scale in a cost-effective manner. This can be seen in the following diagram:</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/AI_accelerator_hardware/trn2_us_3d_torus.png" 
+       alt="NeuronCore architecture with memory blocks" 
+       style="width: 70%; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Scaling up with a 3D torus
+  </p>
+</div>
+<p>Direct topologies such as torus are particularly effective when communication patterns are structured and predictable. A prime example is the prefill phase of LLM inference, where long input sequences are processed in parallel. During prefill, computation is dominated by large batched matrix multiplications and attention over the full prompt, and parallelism is often implemented using tensor parallelism or pipeline parallelism with relatively regular collective operations. In these cases, most communication occurs between fixed groups of neighboring devices, and the cost of hop-by-hop routing in a torus can be amortized over large compute-heavy kernels. Moreover, prefill is typically compute-bound rather than latency-bound. Each communication step transfers large tensors and is followed by substantial computation, allowing the network to be efficiently pipelined. However, the hop-based nature of a torus introduces latency that grows with distance, and aggregate bandwidth between arbitrary pairs of devices is limited by the topology.</p>
+<p>On the other hand, phases such as <strong>autoregressive decoding</strong> or <strong>Mixture-of-Experts routing</strong> involve smaller, more frequent, and often more global communication events, where latency and bisection bandwidth become critical, and the downsides of using a direct topology become more pronounced. In these regimes, the limitations of direct topologies become visible, motivating the use of <strong>switched fabrics</strong>. In a switched fabric, each accelerator connects to one or more high-radix switches. In this model, any device can communicate with any other device in (ideally) a single hop, providing higher bisection bandwidth, lower and more uniform latency, and better support for irregular or dynamic communication patterns. While switched fabrics are more complex and costly, they often deliver superior performance and utilization for large-scale, latency-sensitive LLM inference workloads, especially as model sizes and parallelism degrees continue to grow.</p>
+<p>Switched fabrics provide low, uniform latency and high bisection bandwidth for scale-up communication, but they come with important tradeoffs. Compared to direct topologies like torus or mesh, they require additional switch hardware, cabling, and power, increasing system cost, complexity, and thermal overhead. For structured, compute-heavy workloads such as prefill—where communication is regular and can be amortized over large kernels—the extra flexibility of a switched fabric may be underutilized, offering limited performance gains relative to its cost. Switched fabrics can also introduce latency variability under contention and create larger fault domains, since a single switch affects many devices. As a result, while switched fabrics are well suited for latency-sensitive and communication-intensive phases like decoding or MoE routing, they are not always the most cost-effective choice for all scale-up inference workloads.</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/AI_accelerator_hardware/switched_fabric_zoomed_in.png" 
+       alt="Compute trays connected to switching trays" 
+       style="width: 80%; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Compute trays connected to switching trays
+  </p>
+</div>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/AI_accelerator_hardware/Trn3_NL_32x2.png" 
+       alt="Schematic of a Trn2 NL 32x2 server" 
+       style="width: 80%; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Schematic of a Trn2 NL 32x2 server showing two racks with compute trays, switching trays, CPU, and power sources
+  </p>
+</div>
+<p>Trainium chip consisting of eight (8) NeuronCores and four (4) banks of HBM</p>
+</p>
+<h2 id="scale-out-networking-from-trainium-server-to-datacenters">
+  <strong>Scale-out networking: From Trainium Server to Datacenters</strong>
+  
+  <a class="anchor" href="#scale-out-networking-from-trainium-server-to-datacenters">#</a>
+  
+</h2>
+<p>While scale-up networking aggregates multiple accelerators within a single server, scale-out networking connects multiple servers across a rack, cluster, or entire datacenter. This layer is essential once model size, serving throughput, or availability requirements exceed what a single node can provide. Scale-out networks are typically built using high-speed Ethernet fabrics (like <strong>Elastic Fabric Adapter (EFA)</strong>) and are designed to support communication across much larger physical distances than intra-server links, trading higher latency for vastly greater scale.</p>
+<p>In the context of LLM inference, scale-out networking is commonly used to enable data parallel serving, pipeline parallelism across nodes, or KV-cache and request sharding across a fleet of servers. Because scale-out latency is orders of magnitude higher than on-chip or intra-server communication, inference systems are typically designed to minimize cross-node dependencies in the critical path. For example, individual inference requests are often confined to a single server, while scale-out links are used for load balancing, model replication, checkpointing, or asynchronous coordination. When cross-node communication is unavoidable, as in very large models or distributed MoE routing, the system must carefully balance communication frequency and payload size to avoid turning the network into the bottleneck.</p>
+<p>Overall, scale-out networking enables LLM systems to grow from a single server to thousands of nodes, but it fundamentally changes the optimization landscape. Performance is no longer dominated by FLOPs or memory bandwidth alone; instead, network latency, bandwidth, and tail behavior become first-class concerns. Effective inference architectures therefore combine fast scale-up fabrics within a node with robust scale-out networks across nodes, using each where it delivers the most value.</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/AI_accelerator_hardware/ProjectRainier.png" 
+       alt="Project Rainier Compute cluster" 
+       style="width: auto; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+      Several accelerator-equipped servers are connected to form a single, datacenter-scale inference and training fabric.
+  </p>
+</div>
+<p>Taken together, modern AI infrastructure is best understood as a hierarchy of compute, memory, and communication, spanning from on-chip execution within a single accelerator core to scale-up fabrics inside a server and scale-out networks across a datacenter. Specialized compute engines and software-managed memory hierarchies enable efficient dataflow execution at the chip level, while high-bandwidth scale-up interconnects aggregate accelerators to meet the demands of large models. Beyond a single server, scale-out networking provides the elasticity, throughput, and fault tolerance required for production-scale LLM inference. Effective inference optimization emerges from aligning each phase of execution—prefill, decoding, and expert routing—with the appropriate level of this hierarchy, using fast local resources wherever possible and resorting to broader communication only when necessary. Understanding this end-to-end infrastructure stack is therefore essential for reasoning about performance, cost, and scalability in real-world LLM deployment.</p>
+
+
+<h2 id="references">
+  References
+  
+  <a class="anchor" href="#references">#</a>
+  
+</h2>
+<ol>
+<li>NeuronCore-v4 architecture <a href="">https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/arch/neuron-hardware/neuron-core-v4.html</a></li>
+<li>How to think about TPUs <a href="">https://jax-ml.github.io/scaling-book/tpus/</a></li>
+<li>Deep Dive into Trainium-3 by SemiAnalysis <a href="">https://newsletter.semianalysis.com/p/aws-trainium3-deep-dive-a-potential</a></li>
+<li>Project Rainier Compute Cluster <a href="">https://www.aboutamazon.com/news/aws/aws-project-rainier-ai-trainium-chips-compute-cluster</a></li>
+</ol>
 </article>
  
       
@@ -611,6 +852,35 @@ https://github.com/alex-shpak/hugo-book
     </div>
 
     
+
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#neuroncore-the-fundamental-compute-unit-in-tranium"><strong>NeuronCore: The fundamental compute unit in Tranium</strong></a></li>
+    <li><a href="#memory-hierarchy-in-a-trainium-chip"><strong>Memory hierarchy in a Trainium chip</strong></a>
+      <ul>
+        <li><a href="#external-memory-host-dram-and-device-hbm"><strong>External memory: Host DRAM and Device HBM</strong></a></li>
+        <li><a href="#internal-on-chip-memory-sbuf-and-psum"><strong>Internal (on-chip) memory: SBUF and PSUM</strong></a></li>
+      </ul>
+    </li>
+    <li><a href="#importance-of-writing-good-kernels-for-inference-optimization"><strong>Importance of writing good kernels for inference optimization?</strong></a></li>
+    <li><a href="#scale-up-networking-from-trainium-chip-to-trainium-server"><strong>Scale-up networking: From Trainium chip to Trainium Server</strong></a>
+      <ul>
+        <li><a href="#direct-topology-vs-switched-fabric-for-scaling-up-infrastructure"><strong>Direct topology vs. Switched fabric for scaling up infrastructure</strong></a></li>
+      </ul>
+    </li>
+    <li><a href="#scale-out-networking-from-trainium-server-to-datacenters"><strong>Scale-out networking: From Trainium Server to Datacenters</strong></a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+
+
+
+  </div>
+</aside>
 
  
   </main>

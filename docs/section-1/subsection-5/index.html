@@ -33,7 +33,7 @@ These are visualized and described in details below.">
 <link rel="canonical" href="https://neuron-science.github.io/docs/section-1/subsection-5/">
 <link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
   <script defer src="../../../fuse.min.js"></script>
-  <script defer src="../../../en.search.min.af9462d944d2397c4e2ad342b42b54811319ce1e9be69a42b170f0bca592de97.js" integrity="sha256-r5Ri2UTSOXxOKtNCtCtUgRMZzh6b5ppCsXDwvKWS3pc=" crossorigin="anonymous"></script>
+  <script defer src="../../../en.search.min.7de5366b7dcac6ddccffb157de59d5a536b89a4e5e9bf4f4fe93b39a587785f8.js" integrity="sha256-feU2a33Kxt3M/7FX3lnVpTa4mk5em/T0/pOzmlh3hfg=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-1/subsection-5/index.xml" title="Inference Optimization" />
 <!--
 Made with Book Theme
@@ -87,7 +87,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-1/" class=""> Foundations of Generative Inference</a>
+    <a href="../../../docs/section-1/" class="">Foundations of Generative Inference</a>
   
 
           
@@ -136,7 +136,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-1/subsection-3/" class="">1.3 Hardware Accelerators for Deep Learning</a>
+    <a href="../../../docs/section-1/subsection-3/" class="">1.3 Hardware Accelerators for Generative AI</a>
   
 
           
@@ -183,6 +183,24 @@ https://github.com/alex-shpak/hugo-book
         </li>
       
     
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-6/" class="">1.6 Parallelism Strategies and Communication Collectives</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
   </ul>
 
         </li>
@@ -195,7 +213,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/" class="">Algorithmic and Modeling-level Inference Optimization</a>
+    <a href="../../../docs/section-2/" class="">Algorithmic and Modeling-Level Inference Optimization</a>
   
 
           
@@ -334,7 +352,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-3/subsection-1/" class="">3.1 Paged Attention</a>
+    <a href="../../../docs/section-3/subsection-1/" class="">3.1 Continuous Batching</a>
   
 
           
@@ -352,7 +370,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-3/subsection-2/" class="">3.2 Continuous Batching</a>
+    <a href="../../../docs/section-3/subsection-2/" class="">3.2 Paged Attention</a>
   
 
           
@@ -478,7 +496,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-4/subsection-1/" class="">Section 4.1</a>
+    <a href="../../../docs/section-4/subsection-1/" class="">4.1 vLLM</a>
   
 
           
@@ -546,9 +564,10 @@ https://github.com/alex-shpak/hugo-book
   
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#latency-time-to-first-token">Latency (Time-to-First-Token)</a></li>
-    <li><a href="#output-speed-tokens-per-second">Output Speed (Tokens per Second)</a></li>
-    <li><a href="#throughput">Throughput</a></li>
+    <li><a href="#latency-time-to-first-token"><strong>Latency (Time-to-First-Token)</strong></a></li>
+    <li><a href="#output-speed-tokens-per-second"><strong>Output Speed (Tokens per Second)</strong></a></li>
+    <li><a href="#throughput"><strong>Throughput</strong></a></li>
+    <li><a href="#references">References</a></li>
   </ul>
 </nav>
 
@@ -594,7 +613,7 @@ These are visualized and described in details below.</p>
   </p>
 </div>
 <h2 id="latency-time-to-first-token">
-  Latency (Time-to-First-Token)
+  <strong>Latency (Time-to-First-Token)</strong>
   
   <a class="anchor" href="#latency-time-to-first-token">#</a>
   
@@ -608,7 +627,7 @@ If it takes 480 ms from sending the prompt to receiving &ldquo;<em>lazy</em>&rdq
 TTFT is a crucial indicator of responsiveness, especially for interactive or low-latency applications, where users perceive delay before the model begins to <em>speak</em>.</p>
 <p>Because the prefill stage processes the entire input sequence in a single pass before any decoding begins, TTFT is generally <strong>compute-bound</strong>, i.e., its latency is dominated by dense matrix multiplications and attention operations over long input sequences.</p>
 <h2 id="output-speed-tokens-per-second">
-  Output Speed (Tokens per Second)
+  <strong>Output Speed (Tokens per Second)</strong>
   
   <a class="anchor" href="#output-speed-tokens-per-second">#</a>
   
@@ -624,7 +643,7 @@ This indicates that, after the initial TTFT, the model sustains a generation rat
 The need to repeatedly access and update large key–value (KV) caches for attention makes memory throughput and cache locality key determinants of OTPS.
 High OTPS is especially important for long-form generation and large-scale serving workloads, where sustained decoding performance dictates overall system efficiency.</p>
 <h2 id="throughput">
-  Throughput
+  <strong>Throughput</strong>
   
   <a class="anchor" href="#throughput">#</a>
   
@@ -645,12 +664,14 @@ Systems that overlap the prefill and decoding phases, such as those employing co
 The system outputs a total of 1,600 tokens, giving a throughput of 400 tokens/sec.
 Even if each request has a TTFT of 600 ms, the aggregate throughput remains high because token generation for later requests overlaps with the TTFT of earlier ones.
 This illustrates how TTFT governs perceived user latency, while throughput governs aggregate system efficiency and cost in large-scale LLM serving.</p>
-<h1 id="references">
+
+
+<h2 id="references">
   References
   
   <a class="anchor" href="#references">#</a>
   
-</h1>
+</h2>
 <ol>
 <li>Artificial Analysis: Understand the AI landscape to choose the best model and provider for your use case <a href="">https://artificialanalysis.ai/</a></li>
 </ol>
@@ -686,9 +707,9 @@ This illustrates how TTFT governs perceived user latency, while throughput gover
     </span>
     <span>
     
-      <a href="../../../docs/section-2/" class="flex align-center book-icon">
-        <span>Algorithmic and Modeling-level Inference Optimization</span>
-        <img src="../../../svg/forward.svg" class="book-icon" alt="Next" title="Algorithmic and Modeling-level Inference Optimization" />
+      <a href="../../../docs/section-1/subsection-6/" class="flex align-center book-icon">
+        <span>1.6 Parallelism Strategies and Communication Collectives</span>
+        <img src="../../../svg/forward.svg" class="book-icon" alt="Next" title="1.6 Parallelism Strategies and Communication Collectives" />
       </a>
     
     </span>
@@ -723,9 +744,10 @@ This illustrates how TTFT governs perceived user latency, while throughput gover
   
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#latency-time-to-first-token">Latency (Time-to-First-Token)</a></li>
-    <li><a href="#output-speed-tokens-per-second">Output Speed (Tokens per Second)</a></li>
-    <li><a href="#throughput">Throughput</a></li>
+    <li><a href="#latency-time-to-first-token"><strong>Latency (Time-to-First-Token)</strong></a></li>
+    <li><a href="#output-speed-tokens-per-second"><strong>Output Speed (Tokens per Second)</strong></a></li>
+    <li><a href="#throughput"><strong>Throughput</strong></a></li>
+    <li><a href="#references">References</a></li>
   </ul>
 </nav>
 

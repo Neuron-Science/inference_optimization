@@ -33,7 +33,7 @@ The following schematic captures the general idea of KD:">
 <link rel="canonical" href="https://neuron-science.github.io/docs/section-2/subsection-6/">
 <link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
   <script defer src="../../../fuse.min.js"></script>
-  <script defer src="../../../en.search.min.af9462d944d2397c4e2ad342b42b54811319ce1e9be69a42b170f0bca592de97.js" integrity="sha256-r5Ri2UTSOXxOKtNCtCtUgRMZzh6b5ppCsXDwvKWS3pc=" crossorigin="anonymous"></script>
+  <script defer src="../../../en.search.min.7de5366b7dcac6ddccffb157de59d5a536b89a4e5e9bf4f4fe93b39a587785f8.js" integrity="sha256-feU2a33Kxt3M/7FX3lnVpTa4mk5em/T0/pOzmlh3hfg=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-2/subsection-6/index.xml" title="Inference Optimization" />
 <!--
 Made with Book Theme
@@ -87,7 +87,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-1/" class=""> Foundations of Generative Inference</a>
+    <a href="../../../docs/section-1/" class="">Foundations of Generative Inference</a>
   
 
           
@@ -136,7 +136,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-1/subsection-3/" class="">1.3 Hardware Accelerators for Deep Learning</a>
+    <a href="../../../docs/section-1/subsection-3/" class="">1.3 Hardware Accelerators for Generative AI</a>
   
 
           
@@ -183,6 +183,24 @@ https://github.com/alex-shpak/hugo-book
         </li>
       
     
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-6/" class="">1.6 Parallelism Strategies and Communication Collectives</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
   </ul>
 
         </li>
@@ -195,7 +213,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/" class="">Algorithmic and Modeling-level Inference Optimization</a>
+    <a href="../../../docs/section-2/" class="">Algorithmic and Modeling-Level Inference Optimization</a>
   
 
           
@@ -334,7 +352,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-3/subsection-1/" class="">3.1 Paged Attention</a>
+    <a href="../../../docs/section-3/subsection-1/" class="">3.1 Continuous Batching</a>
   
 
           
@@ -352,7 +370,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-3/subsection-2/" class="">3.2 Continuous Batching</a>
+    <a href="../../../docs/section-3/subsection-2/" class="">3.2 Paged Attention</a>
   
 
           
@@ -478,7 +496,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-4/subsection-1/" class="">Section 4.1</a>
+    <a href="../../../docs/section-4/subsection-1/" class="">4.1 vLLM</a>
   
 
           
@@ -546,13 +564,14 @@ https://github.com/alex-shpak/hugo-book
   
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#types-of-knowledge-distillation">Types of knowledge distillation</a>
+    <li><a href="#types-of-knowledge-distillation"><strong>Types of knowledge distillation</strong></a>
       <ul>
         <li><a href="#logitsoft-label-distillation"><strong>Logit/Soft-label distillation</strong></a></li>
         <li><a href="#sequence-level-distillation"><strong>Sequence-level distillation</strong></a></li>
         <li><a href="#feature-levelintermediate-representation-distillation"><strong>Feature-level/Intermediate representation distillation</strong></a></li>
       </ul>
     </li>
+    <li><a href="#references">References</a></li>
   </ul>
 </nav>
 
@@ -606,7 +625,7 @@ This happens for several fundamental reasons &ndash; rooted in optimization, rep
 <li>Big models can learn higher-quality representations that small models can imitate but cannot discover. Rather than needing to infer long-range semantics or complex reasoning from raw text, the student only needs to approximate the teacher’s function, which is a simpler mapping than learning the function from scratch. It is often useful to consider the following analogy &ndash; <em>a college student can learn calculus from a professor in months, but would not reinvent calculus on their own even in years.</em></li>
 </ul>
 <h2 id="types-of-knowledge-distillation">
-  Types of knowledge distillation
+  <strong>Types of knowledge distillation</strong>
   
   <a class="anchor" href="#types-of-knowledge-distillation">#</a>
   
@@ -649,12 +668,12 @@ may be used. Here, the attention scores of the $m^{\rm th}$ layer of the student
 <p>While very effective, it should be noted that feature-level KD is rare for distilling knowledge from large-scale LLMs because the computation and memory cost explode. To distill hidden states  for a sequence length $S$, hidden dimension $d$, and across $L$ layers, all hidden states must be stoed, which requires $O(LSd)$ memory, which blows up. Hence, logit-level KD and sequence-level KD are more popular for large scale LLMs. Feature-level KD is more common in vision models and smaller text models of relatively small size ($\leq 3{\rm B}$ params).</p>
 
 
-<h1 id="references">
+<h2 id="references">
   References
   
   <a class="anchor" href="#references">#</a>
   
-</h1>
+</h2>
 <ol>
 <li>Sreenivas et. al., LLM Pruning and Distillation in Practice: The Minitron Approach <a href="">https://arxiv.org/abs/2408.11796</a></li>
 <li>Hinton, Vinyals, Dean, Distilling the Knowledge in a Neural Network, NeurIPS 2014 <a href="">https://arxiv.org/abs/1503.02531</a></li>
@@ -731,13 +750,14 @@ may be used. Here, the attention scores of the $m^{\rm th}$ layer of the student
   
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#types-of-knowledge-distillation">Types of knowledge distillation</a>
+    <li><a href="#types-of-knowledge-distillation"><strong>Types of knowledge distillation</strong></a>
       <ul>
         <li><a href="#logitsoft-label-distillation"><strong>Logit/Soft-label distillation</strong></a></li>
         <li><a href="#sequence-level-distillation"><strong>Sequence-level distillation</strong></a></li>
         <li><a href="#feature-levelintermediate-representation-distillation"><strong>Feature-level/Intermediate representation distillation</strong></a></li>
       </ul>
     </li>
+    <li><a href="#references">References</a></li>
   </ul>
 </nav>
 
