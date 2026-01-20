@@ -32,7 +32,7 @@ The challenge of systems-level optimization lies in managing the inherent tensio
 <link rel="canonical" href="https://neuron-science.github.io/docs/section-3/">
 <link rel="stylesheet" href="../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
   <script defer src="../../fuse.min.js"></script>
-  <script defer src="../../en.search.min.3c62f5a27fc04c4a5c5420d70c134672d5ef1510a3729f75a5b9a3eddf3bfc0b.js" integrity="sha256-PGL1on/ATEpcVCDXDBNGctXvFRCjcp91pbmj7d87/As=" crossorigin="anonymous"></script>
+  <script defer src="../../en.search.min.a89997399eb08ce35be72f720495fd960093a5c72a25e71d31620435a5e7dcf9.js" integrity="sha256-qJmXOZ6wjONb5y9yBJX9lgCTpccqJecdMWIENaXn3Pk=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-3/index.xml" title="Inference Optimization" />
 <!--
 Made with Book Theme
@@ -470,11 +470,6 @@ https://github.com/alex-shpak/hugo-book
         </li>
       
     
-  </ul>
-
-        </li>
-      
-    
       
         <li>
           
@@ -482,20 +477,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../docs/section-4/" class="">Open-Source Tools, Frameworks, and Deployment Scenarios</a>
-  
-
-          
-  <ul>
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="../../docs/section-4/subsection-1/" class="">4.1 vLLM</a>
+    <a href="../../docs/section-3/subsection-8/" class="">3.8 vLLM</a>
   
 
           
@@ -513,7 +495,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../docs/section-4/subsection-2/" class="">4.2 Framework Comparison</a>
+    <a href="../../docs/section-3/subsection-9/" class="">3.9 Framework Comparison</a>
   
 
           
@@ -591,6 +573,8 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#35-multi-lora-serving">3.5 Multi-LoRA Serving</a></li>
         <li><a href="#36-compute-graph-optimization">3.6 Compute Graph Optimization</a></li>
         <li><a href="#37-kernel-fusion">3.7 Kernel Fusion</a></li>
+        <li><a href="#38-vllm">3.8 vLLM</a></li>
+        <li><a href="#39-framework-comparison">3.9 Framework Comparison</a></li>
       </ul>
     </li>
   </ul>
@@ -678,6 +662,20 @@ https://github.com/alex-shpak/hugo-book
   
 </h3>
 <p>Explores kernel fusion as a critical optimization for memory-bound operations, combining multiple operations into single kernels to minimize memory traffic. Covers operator fusion, tiling strategies, and mathematical fusion techniques like Flash Attention that enable efficient attention computation through online softmax algorithms.</p>
+<h3 id="38-vllm">
+  <a href="../../docs/section-3/subsection-8/">3.8 vLLM</a>
+  
+  <a class="anchor" href="#38-vllm">#</a>
+  
+</h3>
+<p>Presents one of the most popular open-source, high-throughput LLM serving frameworks used by researchers and engineers in academia and industry.</p>
+<h3 id="39-framework-comparison">
+  <a href="../../docs/section-3/subsection-9/">3.9 Framework Comparison</a>
+  
+  <a class="anchor" href="#39-framework-comparison">#</a>
+  
+</h3>
+<p>Compares popular open-source LLM serving frameworks with respect to the optimizations discussed in this section.</p>
 </article>
  
       
@@ -757,6 +755,8 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#35-multi-lora-serving">3.5 Multi-LoRA Serving</a></li>
         <li><a href="#36-compute-graph-optimization">3.6 Compute Graph Optimization</a></li>
         <li><a href="#37-kernel-fusion">3.7 Kernel Fusion</a></li>
+        <li><a href="#38-vllm">3.8 vLLM</a></li>
+        <li><a href="#39-framework-comparison">3.9 Framework Comparison</a></li>
       </ul>
     </li>
   </ul>
