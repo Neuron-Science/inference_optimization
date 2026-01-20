@@ -33,7 +33,7 @@ These are visualized and described in details below.">
 <link rel="canonical" href="https://neuron-science.github.io/docs/section-1/subsection-5/">
 <link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
   <script defer src="../../../fuse.min.js"></script>
-  <script defer src="../../../en.search.min.7de5366b7dcac6ddccffb157de59d5a536b89a4e5e9bf4f4fe93b39a587785f8.js" integrity="sha256-feU2a33Kxt3M/7FX3lnVpTa4mk5em/T0/pOzmlh3hfg=" crossorigin="anonymous"></script>
+  <script defer src="../../../en.search.min.3c62f5a27fc04c4a5c5420d70c134672d5ef1510a3729f75a5b9a3eddf3bfc0b.js" integrity="sha256-PGL1on/ATEpcVCDXDBNGctXvFRCjcp91pbmj7d87/As=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-1/subsection-5/index.xml" title="Inference Optimization" />
 <!--
 Made with Book Theme
@@ -118,7 +118,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-1/subsection-2/" class="">1.2 Llama family of models</a>
+    <a href="../../../docs/section-1/subsection-2/" class="">1.2 Representative LLM Architectures</a>
   
 
           
@@ -226,7 +226,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-1/" class="">2.1 Efficient Attention Variants</a>
+    <a href="../../../docs/section-2/subsection-1/" class="">2.1 Key-Value Caching</a>
   
 
           
@@ -244,7 +244,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-2/" class="">2.2 Mixture of Experts</a>
+    <a href="../../../docs/section-2/subsection-2/" class="">2.2 Efficient Attention Variants</a>
   
 
           
@@ -262,7 +262,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-3/" class="">2.3 Model Quantization</a>
+    <a href="../../../docs/section-2/subsection-3/" class="">2.3 Mixture of Experts</a>
   
 
           
@@ -280,7 +280,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-4/" class="">2.4 Key-Value Caching</a>
+    <a href="../../../docs/section-2/subsection-4/" class="">2.4 Model Quantization</a>
   
 
           
@@ -460,7 +460,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion</a>
+    <a href="../../../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion and Flash Attention</a>
   
 
           
@@ -497,6 +497,24 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="../../../docs/section-4/subsection-1/" class="">4.1 vLLM</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/subsection-2/" class="">4.2 Framework Comparison</a>
   
 
           
@@ -581,7 +599,7 @@ https://github.com/alex-shpak/hugo-book
       
       
   <article class="markdown book-article"><h1 id="measuring-inference-efficiency">
-  Measuring Inference Efficiency
+  <strong>Measuring Inference Efficiency</strong>
   
   <a class="anchor" href="#measuring-inference-efficiency">#</a>
   
@@ -618,7 +636,7 @@ These are visualized and described in details below.</p>
   <a class="anchor" href="#latency-time-to-first-token">#</a>
   
 </h2>
-<p>Time-to-first-token (TTFT) measures the elapsed tie between submitting a prompt to an LLM and receiving the first generated token in response.
+<p>Time-to-first-token (TTFT) measures the elapsed time between submitting a prompt to an LLM and receiving the first generated token in response.
 It captures the model’s initial latency, encompassing tokenization, prompt encoding, etc., and the first forward pass through the network.
 TTFT is especially important for interactive or streaming applications such as chatbots or autocomplete systems, where perceived responsiveness directly affects user experience.</p>
 <p>For example, consider the prompt: &ldquo;<em>The quick brown fox jumps over the</em>&rdquo;.

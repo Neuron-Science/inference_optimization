@@ -4,24 +4,20 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="
-  3.2 Paged Attention
+  Paged Attention
   
   #
   
 
-In the previous section, we saw how continuous batching fundamentally improves LLM
-serving by rebuilding the batch at every decoding step. This keeps the GPU busy,
-reduces wasted computation, and dramatically lowers latency for shorter
-requests.
-However, continuous batching alone is not sufficient for achieving high
-throughput in real LLM systems. Even with perfect scheduling, the decoding phase
-can still become bottlenecked by memory, not compute.">
+In the previous section, we saw how continuous batching fundamentally improves LLM serving by rebuilding the batch at every decoding step. This keeps the accelerator device busy,
+reduces wasted computation, and dramatically lowers latency for shorter requests.
+However, continuous batching alone is not sufficient for achieving high throughput in real LLM systems. Even with perfect scheduling, the decoding phase can still become bottlenecked by memory, not compute.">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:url" content="https://neuron-science.github.io/docs/section-3/subsection-2/">
   <meta property="og:site_name" content="Inference Optimization">
   <meta property="og:title" content="3.2 Paged Attention">
-  <meta property="og:description" content="3.2 Paged Attention # In the previous section, we saw how continuous batching fundamentally improves LLM serving by rebuilding the batch at every decoding step. This keeps the GPU busy, reduces wasted computation, and dramatically lowers latency for shorter requests.
+  <meta property="og:description" content="Paged Attention # In the previous section, we saw how continuous batching fundamentally improves LLM serving by rebuilding the batch at every decoding step. This keeps the accelerator device busy, reduces wasted computation, and dramatically lowers latency for shorter requests.
 However, continuous batching alone is not sufficient for achieving high throughput in real LLM systems. Even with perfect scheduling, the decoding phase can still become bottlenecked by memory, not compute.">
   <meta property="og:locale" content="en_us">
   <meta property="og:type" content="website">
@@ -31,7 +27,7 @@ However, continuous batching alone is not sufficient for achieving high throughp
 <link rel="canonical" href="https://neuron-science.github.io/docs/section-3/subsection-2/">
 <link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
   <script defer src="../../../fuse.min.js"></script>
-  <script defer src="../../../en.search.min.7de5366b7dcac6ddccffb157de59d5a536b89a4e5e9bf4f4fe93b39a587785f8.js" integrity="sha256-feU2a33Kxt3M/7FX3lnVpTa4mk5em/T0/pOzmlh3hfg=" crossorigin="anonymous"></script>
+  <script defer src="../../../en.search.min.3c62f5a27fc04c4a5c5420d70c134672d5ef1510a3729f75a5b9a3eddf3bfc0b.js" integrity="sha256-PGL1on/ATEpcVCDXDBNGctXvFRCjcp91pbmj7d87/As=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-3/subsection-2/index.xml" title="Inference Optimization" />
 <!--
 Made with Book Theme
@@ -116,7 +112,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-1/subsection-2/" class="">1.2 Llama family of models</a>
+    <a href="../../../docs/section-1/subsection-2/" class="">1.2 Representative LLM Architectures</a>
   
 
           
@@ -224,7 +220,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-1/" class="">2.1 Efficient Attention Variants</a>
+    <a href="../../../docs/section-2/subsection-1/" class="">2.1 Key-Value Caching</a>
   
 
           
@@ -242,7 +238,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-2/" class="">2.2 Mixture of Experts</a>
+    <a href="../../../docs/section-2/subsection-2/" class="">2.2 Efficient Attention Variants</a>
   
 
           
@@ -260,7 +256,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-3/" class="">2.3 Model Quantization</a>
+    <a href="../../../docs/section-2/subsection-3/" class="">2.3 Mixture of Experts</a>
   
 
           
@@ -278,7 +274,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-4/" class="">2.4 Key-Value Caching</a>
+    <a href="../../../docs/section-2/subsection-4/" class="">2.4 Model Quantization</a>
   
 
           
@@ -458,7 +454,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion</a>
+    <a href="../../../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion and Flash Attention</a>
   
 
           
@@ -495,6 +491,24 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="../../../docs/section-4/subsection-1/" class="">4.1 vLLM</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/subsection-2/" class="">4.2 Framework Comparison</a>
   
 
           
@@ -592,33 +606,21 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown book-article"><h1 id="32-paged-attention">
-  3.2 Paged Attention
+  <article class="markdown book-article"><h1 id="paged-attention">
+  <strong>Paged Attention</strong>
   
-  <a class="anchor" href="#32-paged-attention">#</a>
+  <a class="anchor" href="#paged-attention">#</a>
   
 </h1>
-<p>In the previous section, we saw how continuous batching fundamentally improves LLM
-serving by rebuilding the batch at every decoding step. This keeps the GPU busy,
-reduces wasted computation, and dramatically lowers latency for shorter
-requests.</p>
-<p>However, continuous batching alone is not sufficient for achieving high
-throughput in real LLM systems. Even with perfect scheduling, the decoding phase
-can still become bottlenecked by memory, not compute.</p>
-<p>This is because Transformer attention requires the entire KV cache (i.e., all
-previously generated tokens for each request) to be kept resident in GPU memory.
-As the number of concurrent requests grows and as sequences become longer, the
-KV cache quickly consumes a large portion of GPU memory. This limits how many
-requests can fit in the batch at once, which in turn restricts the maximum
-throughput of continuous batching.</p>
+<p>In the previous section, we saw how continuous batching fundamentally improves LLM serving by rebuilding the batch at every decoding step. This keeps the accelerator device busy,
+reduces wasted computation, and dramatically lowers latency for shorter requests.</p>
+<p>However, continuous batching alone is not sufficient for achieving high throughput in real LLM systems. Even with perfect scheduling, the decoding phase can still become bottlenecked by memory, not compute.</p>
+<p>This is because Transformer attention requires the entire KV cache (i.e., all previously generated tokens for each request) to be kept resident in the device memory.
+As the number of concurrent requests grows and as sequences become longer, the KV cache quickly consumes a large portion of the device memory. This limits how many requests can fit in the batch at once, which in turn restricts the maximum throughput of continuous batching.</p>
 <p>In other words:</p>
-<pre tabindex="0"><code>Continuous batching keeps the GPU ready to process more requests, but memory
-limitations prevent the GPU from actually hosting more requests.
-</code></pre><p>In this section, we will discuss Paged Attention, which was introduced to
-address this bottleneck. Similar to paging in operating systems, by reorganizing
-the KV cache into small, fixed-size blocks that can be allocated on demand and
-reused flexibly, Paged Attention enables high concurrency, reduces
-fragmentation, and unlocks the full potential of continuous batching.</p>
+<pre tabindex="0"><code>Continuous batching keeps the accelerator ready to process more requests, but memory
+limitations prevent the accelerator from actually hosting more requests.
+</code></pre><p>In this section, we will discuss <strong>Paged Attention</strong>, which was introduced to address this bottleneck. Similar to paging in operating systems, by reorganizing the KV cache into small, fixed-size blocks that can be allocated on demand and reused flexibly, Paged Attention enables high concurrency, reduces fragmentation, and unlocks the full potential of continuous batching.</p>
 <h2 id="the-limitations-of-naive-kv-cache-allocation">
   <strong>The Limitations of Naive KV Cache Allocation</strong>
   
@@ -632,23 +634,18 @@ fragmentation, and unlocks the full potential of continuous batching.</p>
   <!-- <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
   </p> -->
 </div>
-<p>Before Paged Attention, the simplest way to support continuous batching for LLMs
-was to preallocate KV space to the maximum model sequence length for every
-request [<a href="#orca">1</a>].  This is easy to implement, but it carries several severe drawbacks:</p>
+<p>Before Paged Attention, the simplest way to support continuous batching for LLMs was to preallocate KV space to the maximum model sequence length for every request [<a href="#orca">1</a>].  This is easy to implement, but it carries several severe drawbacks:</p>
 <h3 id="1-must-allocate-maximum-space-due-to-unknown-decoding-length">
   1. Must Allocate Maximum Space due to Unknown Decoding Length
   
   <a class="anchor" href="#1-must-allocate-maximum-space-due-to-unknown-decoding-length">#</a>
   
 </h3>
-<p>Each request may decode a handful of tokens or hundreds.
-Since the decoding length is <strong>unknown</strong> and tensors are allocated on <strong>contiguous
-space</strong>, systems must reserve KV space equal to the maximum sequence length the
-model supports (e.g., 128k for LLaMA-3.1).</p>
+<p>Each request may decode a handful of tokens or hundreds. Since the decoding length is <strong>unknown</strong> and tensors are allocated on <strong>contiguous space</strong>, systems must reserve KV space equal to the maximum sequence length the model supports (e.g., 128k for LLaMA-3.1).</p>
 <p>This causes devastating internal fragmentation:</p>
 <ul>
 <li>A request that only generates 10 tokens still occupies an 128k-token KV buffer.</li>
-<li>Tens of such requests quickly exhaust GPU memory.</li>
+<li>Tens of such requests quickly exhaust accelerator memory.</li>
 </ul>
 <h3 id="2-severely-limits-maximum-batch-size-and-hurts-throughput">
   2. Severely Limits Maximum Batch Size and Hurts Throughput
@@ -656,8 +653,7 @@ model supports (e.g., 128k for LLaMA-3.1).</p>
   <a class="anchor" href="#2-severely-limits-maximum-batch-size-and-hurts-throughput">#</a>
   
 </h3>
-<p>Preallocating full-length KV for each request drastically reduces how many
-requests can fit on the GPU simultaneously.</p>
+<p>Preallocating full-length KV for each request drastically reduces how many requests can fit on the GPU simultaneously.</p>
 <p>Let’s make this concrete using a LLaMA3-70B model on 8 GPUs (TP=8):</p>
 <ul>
 <li>80 layers</li>
@@ -669,10 +665,8 @@ requests can fit on the GPU simultaneously.</p>
 <pre tabindex="0"><code>Per token KV ≈ 2 bytes × (K + V) × num_layers × num_kv_heads × head_dim
 = 2 × 2 × 80 × 1 x 128 
 = 40KB
-</code></pre><p>Pre-allocating maximum context space (128k) for a request takes 40KB * 128k ≈
-5GB per GPU.</p>
-<p>As we support larger models and longer context length, this wastes memory and
-eliminates opportunities for optimization.</p>
+</code></pre><p>Pre-allocating maximum context space (128k) for a request takes 40KB * 128k ≈ 5GB per GPU.</p>
+<p>As we support larger models and longer context length, this wastes memory and eliminates opportunities for optimization.</p>
 <h2 id="the-key-idea-bring-os-paging-principles-to-kv-memory">
   <strong>The Key Idea: Bring OS Paging Principles to KV Memory</strong>
   
@@ -689,18 +683,15 @@ without requiring contiguous allocation?
 <li>Maintain a page table mapping logical addresses to physical blocks</li>
 <li>Allow physical blocks to be located anywhere in memory</li>
 </ul>
-<p>Paged Attention was proposed by vLLM [<a href="#vllm">2</a>] to adapt this idea for the LLM
-KV cache.</p>
-<p><strong>Note:</strong> &ldquo;Page&rdquo; and &ldquo;Block&rdquo; are often used interchangeably in the context of
-Paged Attention.</p>
+<p>Paged Attention was proposed by vLLM [<a href="#vllm">2</a>] to adapt this idea for the LLM KV cache.</p>
+<p><strong>Note:</strong> &ldquo;Page&rdquo; and &ldquo;Block&rdquo; are often used interchangeably in the context of Paged Attention.</p>
 <h2 id="how-paged-attention-works">
   <strong>How Paged Attention Works</strong>
   
   <a class="anchor" href="#how-paged-attention-works">#</a>
   
 </h2>
-<p>Paged Attention treats each request’s KV cache as a virtual address space,
-backed by fixed-size blocks of GPU memory.</p>
+<p>Paged Attention treats each request’s KV cache as a virtual address space, backed by fixed-size blocks of GPU memory.</p>
 <div style="text-align: center; margin: 2rem 0;">
   <img src="../../../images/paged_attention/paged_attn.png" 
        alt="Paged Attention" 
@@ -714,9 +705,7 @@ backed by fixed-size blocks of GPU memory.</p>
   <a class="anchor" href="#1-partition-gpu-memory-into-fixed-size-kv-blocks">#</a>
   
 </h3>
-<p>Instead of allocating a giant contiguous buffer per request, the KV cache is
-split into blocks (e.g., 4KB per block).  These blocks form a global pool
-shared among all requests.</p>
+<p>Instead of allocating a giant contiguous buffer per request, the KV cache is split into blocks (e.g., 4KB per block).  These blocks form a global pool shared among all requests.</p>
 <h3 id="2-allocate-blocks-on-demand">
   2. Allocate Blocks On Demand
   
@@ -729,8 +718,7 @@ shared among all requests.</p>
 <li>When the block is full, a new block is allocated from the global pool</li>
 <li>Only the memory actually needed is used</li>
 </ul>
-<p>Short requests use few blocks; long requests use more.
-Memory usage scales gracefully with actual decoding progress.</p>
+<p>Short requests use few blocks; long requests use more. Memory usage scales gracefully with actual decoding progress.</p>
 <h3 id="3-maintain-a-block-table">
   3. Maintain a Block Table
   
@@ -739,8 +727,7 @@ Memory usage scales gracefully with actual decoding progress.</p>
 </h3>
 <p>Each request maintains a lightweight structure mapping:</p>
 <pre tabindex="0"><code>Logical token positions → Physical block locations
-</code></pre><p>From the model’s perspective, the KV cache appears contiguous, but physically it
-is scattered across blocks.</p>
+</code></pre><p>From the model’s perspective, the KV cache appears contiguous, but physically it is scattered across blocks.</p>
 <h3 id="4-paged-attention-gpu-kernel">
   4. Paged-Attention GPU Kernel
   
@@ -768,35 +755,26 @@ This enables high-throughput continuous batching. -->
   <a class="anchor" href="#performance-advantages-and-tradeoffs">#</a>
   
 </h2>
-<p>Paged Attention directly unlocks higher concurrency and throughput by making KV
-memory flexible and efficient.</p>
+<p>Paged Attention directly unlocks higher concurrency and throughput by making KV memory flexible and efficient.</p>
 <ol>
 <li>
 <p><strong>Reduces Fragmentation</strong><br>
-Fixed-size blocks prevent memory from getting unusably “chopped up”. Blocks are
-recycled instantly after request completion and freed blocks can serve any future
-request immediately.</p>
+Fixed-size blocks prevent memory from getting unusably “chopped up”. Blocks are recycled instantly after request completion and freed blocks can serve any future request immediately.</p>
 </li>
 <li>
 <p><strong>Higher Batch Size → Better GPU Utilization</strong><br>
-Because KV is allocated on demand instead of at maximum size, the system can
-host many more parallel requests, enabling continuous batching to operate at
-full efficiency.</p>
+Because KV is allocated on demand instead of at maximum size, the system can host many more parallel requests, enabling continuous batching to operate at full efficiency.</p>
 </li>
 <li>
 <p><strong>Supports Shared Prefixes</strong><br>
-Identical prefix KV entries can be shared across requests, reducing duplication
-and further improving memory efficiency.</p>
+Identical prefix KV entries can be shared across requests, reducing duplication and further improving memory efficiency.</p>
 </li>
 <li>
 <p><strong>Works Naturally With Continuous Batching</strong><br>
-Because block allocation is handled independently for each request on demand,
-the system can easily handle new requests joining and old requests leaving at
-each decoding step.</p>
+Because block allocation is handled independently for each request on demand, the system can easily handle new requests joining and old requests leaving at each decoding step.</p>
 </li>
 </ol>
-<p>However, Paged Attention introduces a tunable parameter: block size.
-This affects both memory efficiency and GPU kernel performance.</p>
+<p>However, Paged Attention introduces a tunable parameter: block size. This affects both memory efficiency and GPU kernel performance.</p>
 <ul>
 <li>
 <p>Large block size</p>
@@ -820,11 +798,8 @@ This affects both memory efficiency and GPU kernel performance.</p>
   <a class="anchor" href="#summary">#</a>
   
 </h2>
-<p>Paged Attention applies a classic OS paging idea to the KV cache of LLMs. By
-breaking memory into fixed-size blocks allocated on demand, it reduces
-fragmentation, increases batch size, improves throughput, enables prefix sharing,
-and forms the foundation for scalable continuous batching.</p>
-<p>It is one of the most important innovations in modern LLM serving systems.</p>
+<p>Paged Attention applies a classic OS paging idea to the KV cache of LLMs. By breaking memory into fixed-size blocks allocated on demand, it reduces fragmentation, increases batch size, improves throughput, enables prefix sharing, and forms the foundation for scalable continuous batching.</p>
+<p>PagedAttention is one of the most important innovations in modern LLM serving systems.</p>
 <h2 id="references">
   References
   
@@ -833,14 +808,10 @@ and forms the foundation for scalable continuous batching.</p>
 </h2>
 <ol>
 <li>
-<p><a id="orca"></a>Yu et al. &ldquo;Orca: A Distributed Serving System for
-Transformer-Based Generative Models.&rdquo; 16th USENIX Symposium on Operating Systems
-Design and Implementation. 2022.</p>
+<p><a id="orca"></a>Yu et al. &ldquo;Orca: A Distributed Serving System for Transformer-Based Generative Models.&rdquo; 16th USENIX Symposium on Operating Systems Design and Implementation. 2022.</p>
 </li>
 <li>
-<p><a id="vllm"></a>Kwon et al. &ldquo;Efficient Memory Management for Large Language
-Model Serving with PagedAttention.&rdquo; Proceedings of the 29th symposium on
-operating systems principles. 2023.</p>
+<p><a id="vllm"></a>Kwon et al. &ldquo;Efficient Memory Management for Large Language Model Serving with PagedAttention.&rdquo; Proceedings of the 29th symposium on operating systems principles. 2023.</p>
 </li>
 </ol>
 </article>

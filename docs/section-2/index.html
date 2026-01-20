@@ -9,13 +9,21 @@
   #
   
 
-Overview of Section 2.">
+
+  Overview
+  
+  #
+  
+
+While Section 1 established the foundational architecture and hardware context for generative inference, this section focuses on algorithmic and modeling-level optimizations that improve inference efficiency without requiring changes to the underlying hardware. These techniques operate at the level of model architecture, computation patterns, and data representations, enabling significant improvements in latency, throughput, and memory utilization.
+The fundamental challenge in optimizing generative inference lies in balancing three competing objectives: maintaining model quality and expressivity, minimizing computational cost and latency, and reducing memory footprint and bandwidth requirements. Standard transformer architectures, while powerful, exhibit several inherent inefficiencies that become bottlenecks at scale. The attention mechanism scales quadratically with sequence length, making long-context processing prohibitively expensive. Dense models require executing all parameters for every token, preventing efficient scaling to very large model sizes. High-precision floating-point representations consume substantial memory and bandwidth, limiting deployment on resource-constrained devices. The autoregressive nature of generation creates sequential dependencies that underutilize parallel compute resources. And the need to recompute intermediate representations at each decoding step introduces redundant computation that could be avoided through careful caching strategies.">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:url" content="https://neuron-science.github.io/docs/section-2/">
   <meta property="og:site_name" content="Inference Optimization">
   <meta property="og:title" content="Algorithmic and Modeling-Level Inference Optimization">
-  <meta property="og:description" content="Algorithmic and Modeling-Level Inference Optimization # Overview of Section 2.">
+  <meta property="og:description" content="Algorithmic and Modeling-Level Inference Optimization # Overview # While Section 1 established the foundational architecture and hardware context for generative inference, this section focuses on algorithmic and modeling-level optimizations that improve inference efficiency without requiring changes to the underlying hardware. These techniques operate at the level of model architecture, computation patterns, and data representations, enabling significant improvements in latency, throughput, and memory utilization.
+The fundamental challenge in optimizing generative inference lies in balancing three competing objectives: maintaining model quality and expressivity, minimizing computational cost and latency, and reducing memory footprint and bandwidth requirements. Standard transformer architectures, while powerful, exhibit several inherent inefficiencies that become bottlenecks at scale. The attention mechanism scales quadratically with sequence length, making long-context processing prohibitively expensive. Dense models require executing all parameters for every token, preventing efficient scaling to very large model sizes. High-precision floating-point representations consume substantial memory and bandwidth, limiting deployment on resource-constrained devices. The autoregressive nature of generation creates sequential dependencies that underutilize parallel compute resources. And the need to recompute intermediate representations at each decoding step introduces redundant computation that could be avoided through careful caching strategies.">
   <meta property="og:locale" content="en_us">
   <meta property="og:type" content="website">
 <title>Algorithmic and Modeling-Level Inference Optimization | Inference Optimization</title>
@@ -24,7 +32,7 @@ Overview of Section 2.">
 <link rel="canonical" href="https://neuron-science.github.io/docs/section-2/">
 <link rel="stylesheet" href="../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
   <script defer src="../../fuse.min.js"></script>
-  <script defer src="../../en.search.min.7de5366b7dcac6ddccffb157de59d5a536b89a4e5e9bf4f4fe93b39a587785f8.js" integrity="sha256-feU2a33Kxt3M/7FX3lnVpTa4mk5em/T0/pOzmlh3hfg=" crossorigin="anonymous"></script>
+  <script defer src="../../en.search.min.3c62f5a27fc04c4a5c5420d70c134672d5ef1510a3729f75a5b9a3eddf3bfc0b.js" integrity="sha256-PGL1on/ATEpcVCDXDBNGctXvFRCjcp91pbmj7d87/As=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-2/index.xml" title="Inference Optimization" />
 <!--
 Made with Book Theme
@@ -109,7 +117,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../docs/section-1/subsection-2/" class="">1.2 Llama family of models</a>
+    <a href="../../docs/section-1/subsection-2/" class="">1.2 Representative LLM Architectures</a>
   
 
           
@@ -217,7 +225,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../docs/section-2/subsection-1/" class="">2.1 Efficient Attention Variants</a>
+    <a href="../../docs/section-2/subsection-1/" class="">2.1 Key-Value Caching</a>
   
 
           
@@ -235,7 +243,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../docs/section-2/subsection-2/" class="">2.2 Mixture of Experts</a>
+    <a href="../../docs/section-2/subsection-2/" class="">2.2 Efficient Attention Variants</a>
   
 
           
@@ -253,7 +261,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../docs/section-2/subsection-3/" class="">2.3 Model Quantization</a>
+    <a href="../../docs/section-2/subsection-3/" class="">2.3 Mixture of Experts</a>
   
 
           
@@ -271,7 +279,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../docs/section-2/subsection-4/" class="">2.4 Key-Value Caching</a>
+    <a href="../../docs/section-2/subsection-4/" class="">2.4 Model Quantization</a>
   
 
           
@@ -451,7 +459,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion</a>
+    <a href="../../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion and Flash Attention</a>
   
 
           
@@ -488,6 +496,24 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="../../docs/section-4/subsection-1/" class="">4.1 vLLM</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../docs/section-4/subsection-2/" class="">4.2 Framework Comparison</a>
   
 
           
@@ -543,6 +569,8 @@ https://github.com/alex-shpak/hugo-book
 
   <label for="toc-control">
     
+    <img src="../../svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
   </label>
 </div>
 
@@ -551,7 +579,21 @@ https://github.com/alex-shpak/hugo-book
   <aside class="hidden clearfix">
     
   
-<nav id="TableOfContents"></nav>
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#overview"><strong>Overview</strong></a></li>
+    <li><a href="#contents-of-this-section"><strong>Contents of this section</strong></a>
+      <ul>
+        <li><a href="#21-key-value-caching">2.1 Key-Value Caching</a></li>
+        <li><a href="#22-efficient-attention-variants">2.2 Efficient Attention Variants</a></li>
+        <li><a href="#23-mixture-of-experts">2.3 Mixture of Experts</a></li>
+        <li><a href="#24-model-quantization">2.4 Model Quantization</a></li>
+        <li><a href="#25-speculative-decoding">2.5 Speculative Decoding</a></li>
+        <li><a href="#26-knowledge-distillation">2.6 Knowledge Distillation</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
 
 
 
@@ -563,12 +605,70 @@ https://github.com/alex-shpak/hugo-book
       
       
   <article class="markdown book-article"><h1 id="algorithmic-and-modeling-level-inference-optimization">
-  Algorithmic and Modeling-Level Inference Optimization
+  <strong>Algorithmic and Modeling-Level Inference Optimization</strong>
   
   <a class="anchor" href="#algorithmic-and-modeling-level-inference-optimization">#</a>
   
 </h1>
-<p>Overview of Section 2.</p>
+<h2 id="overview">
+  <strong>Overview</strong>
+  
+  <a class="anchor" href="#overview">#</a>
+  
+</h2>
+<p>While Section 1 established the foundational architecture and hardware context for generative inference, this section focuses on <strong>algorithmic and modeling-level optimizations</strong> that improve inference efficiency without requiring changes to the underlying hardware. These techniques operate at the level of model architecture, computation patterns, and data representations, enabling significant improvements in latency, throughput, and memory utilization.</p>
+<p>The fundamental challenge in optimizing generative inference lies in balancing three competing objectives: maintaining model quality and expressivity, minimizing computational cost and latency, and reducing memory footprint and bandwidth requirements. Standard transformer architectures, while powerful, exhibit several inherent inefficiencies that become bottlenecks at scale. The attention mechanism scales quadratically with sequence length, making long-context processing prohibitively expensive. Dense models require executing all parameters for every token, preventing efficient scaling to very large model sizes. High-precision floating-point representations consume substantial memory and bandwidth, limiting deployment on resource-constrained devices. The autoregressive nature of generation creates sequential dependencies that underutilize parallel compute resources. And the need to recompute intermediate representations at each decoding step introduces redundant computation that could be avoided through careful caching strategies.</p>
+<p>Algorithmic optimizations address these challenges by rethinking how computation is structured, how data is represented, and how models are architected. Rather than treating the model as a fixed black box, these techniques exploit the mathematical structure of transformer operations, the causal dependencies in autoregressive generation, and the statistical properties of model weights and activations. They enable models to achieve similar or better quality with reduced compute, lower memory requirements, and faster inference speeds. Critically, these optimizations are often complementary—they can be combined and layered together to achieve multiplicative improvements in efficiency.</p>
+<p>The techniques covered in this section span multiple dimensions of the optimization space. Some focus on architectural modifications that fundamentally change how attention is computed or how parameters are organized. Others target data representation, reducing the precision required to store and compute with model weights and activations while preserving accuracy. Still others exploit temporal and structural patterns in the inference process itself, using caching, speculation, and knowledge transfer to avoid redundant work or leverage previously computed results. What unifies these approaches is their focus on algorithmic efficiency: they improve performance by changing what computation is performed and how it is organized, <strong>rather than simply executing the same computation faster on better hardware</strong>.</p>
+<p>Together, these algorithmic optimizations form a critical layer of the inference optimization stack, complementing hardware-level optimizations and parallelism strategies to deliver production-ready performance for large-scale generative AI deployment. Understanding these techniques is essential for practitioners who need to deploy efficient inference systems, as they often provide the largest performance gains and are the most accessible optimizations that can be applied without specialized hardware or infrastructure changes.</p>
+<h2 id="contents-of-this-section">
+  <strong>Contents of this section</strong>
+  
+  <a class="anchor" href="#contents-of-this-section">#</a>
+  
+</h2>
+<h3 id="21-key-value-caching">
+  <a href="../../docs/section-2/subsection-4/">2.1 Key-Value Caching</a>
+  
+  <a class="anchor" href="#21-key-value-caching">#</a>
+  
+</h3>
+<p>Explains how KV caching accelerates autoregressive inference by storing and reusing previously computed attention keys and values. Analyzes the computational complexity reduction from quadratic to linear, memory footprint considerations, and the distinction between compute-bound prefill and memory-bound decoding phases.</p>
+<h3 id="22-efficient-attention-variants">
+  <a href="../../docs/section-2/subsection-1/">2.2 Efficient Attention Variants</a>
+  
+  <a class="anchor" href="#22-efficient-attention-variants">#</a>
+  
+</h3>
+<p>Introduces attention mechanisms that reduce the computational and memory overhead of standard self-attention, including Grouped Query Attention (GQA), Multi-Head Latent Attention (MLA), and Sliding Window Attention (SWA). Explains how these variants address the quadratic scaling problem while maintaining model expressivity.</p>
+<h3 id="23-mixture-of-experts">
+  <a href="../../docs/section-2/subsection-2/">2.3 Mixture of Experts</a>
+  
+  <a class="anchor" href="#23-mixture-of-experts">#</a>
+  
+</h3>
+<p>Explores the Mixture-of-Experts architecture that decouples model size from compute by activating only a routed subset of parameters per token. Covers routing mechanisms, parallelism strategies (tensor vs. expert parallelism), and inference optimizations including fused kernels and expert-weight quantization.</p>
+<h3 id="24-model-quantization">
+  <a href="../../docs/section-2/subsection-3/">2.4 Model Quantization</a>
+  
+  <a class="anchor" href="#24-model-quantization">#</a>
+  
+</h3>
+<p>Presents quantization as a fundamental compression technique for reducing model memory footprint and accelerating inference. Covers quantization basics, sources of quantization error, techniques to minimize error (micro-scaling, Hadamard transforms), and different quantization approaches (post-training, one-shot, quantization-aware training).</p>
+<h3 id="25-speculative-decoding">
+  <a href="../../docs/section-2/subsection-5/">2.5 Speculative Decoding</a>
+  
+  <a class="anchor" href="#25-speculative-decoding">#</a>
+  
+</h3>
+<p>Describes speculative decoding techniques that improve throughput by generating multiple tokens in parallel using a lightweight drafter model, then verifying them efficiently with the target model. Covers Eagle drafter architecture and tree-structured draft approaches that better utilize available compute resources.</p>
+<h3 id="26-knowledge-distillation">
+  <a href="../../docs/section-2/subsection-6/">2.6 Knowledge Distillation</a>
+  
+  <a class="anchor" href="#26-knowledge-distillation">#</a>
+  
+</h3>
+<p>Introduces knowledge distillation as a method to transfer capabilities from large teacher models to smaller, faster student models. Covers logit-level, sequence-level, and feature-level distillation strategies, explaining how each approach enables model compression while preserving quality.</p>
 </article>
  
       
@@ -602,8 +702,8 @@ https://github.com/alex-shpak/hugo-book
     <span>
     
       <a href="../../docs/section-2/subsection-1/" class="flex align-center book-icon">
-        <span>2.1 Efficient Attention Variants</span>
-        <img src="../../svg/forward.svg" class="book-icon" alt="Next" title="2.1 Efficient Attention Variants" />
+        <span>2.1 Key-Value Caching</span>
+        <img src="../../svg/forward.svg" class="book-icon" alt="Next" title="2.1 Key-Value Caching" />
       </a>
     
     </span>
@@ -631,6 +731,31 @@ https://github.com/alex-shpak/hugo-book
     </div>
 
     
+
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#overview"><strong>Overview</strong></a></li>
+    <li><a href="#contents-of-this-section"><strong>Contents of this section</strong></a>
+      <ul>
+        <li><a href="#21-key-value-caching">2.1 Key-Value Caching</a></li>
+        <li><a href="#22-efficient-attention-variants">2.2 Efficient Attention Variants</a></li>
+        <li><a href="#23-mixture-of-experts">2.3 Mixture of Experts</a></li>
+        <li><a href="#24-model-quantization">2.4 Model Quantization</a></li>
+        <li><a href="#25-speculative-decoding">2.5 Speculative Decoding</a></li>
+        <li><a href="#26-knowledge-distillation">2.6 Knowledge Distillation</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </div>
+</aside>
 
  
   </main>

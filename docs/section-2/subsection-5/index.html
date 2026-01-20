@@ -4,24 +4,25 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="
-
-
-  
-
-
-
-  2.5 Speculative Decoding
+  Speculative Decoding
   
   #
   
 
-By default, LLM decoding generates one token at a time. It loads kv cache of all previous tokens but only computes for a single new token. Such a process is known to be memory-bound and under-utilizes the hardware.">
+
+
+
+
+  
+
+
+By default, LLM decoding generates one token at a time. During each decoding step, the model loads the KV cache of all previous tokens but only computes attention for a single new token. This process is memory-bound and under-utilizes the available compute resources, as modern accelerators are designed for parallel processing of multiple tokens (as seen in the prefill phase).">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:url" content="https://neuron-science.github.io/docs/section-2/subsection-5/">
   <meta property="og:site_name" content="Inference Optimization">
   <meta property="og:title" content="2.5 Speculative Decoding">
-  <meta property="og:description" content="2.5 Speculative Decoding # By default, LLM decoding generates one token at a time. It loads kv cache of all previous tokens but only computes for a single new token. Such a process is known to be memory-bound and under-utilizes the hardware.">
+  <meta property="og:description" content="Speculative Decoding # By default, LLM decoding generates one token at a time. During each decoding step, the model loads the KV cache of all previous tokens but only computes attention for a single new token. This process is memory-bound and under-utilizes the available compute resources, as modern accelerators are designed for parallel processing of multiple tokens (as seen in the prefill phase).">
   <meta property="og:locale" content="en_us">
   <meta property="og:type" content="website">
 <title>2.5 Speculative Decoding | Inference Optimization</title>
@@ -30,7 +31,7 @@ By default, LLM decoding generates one token at a time. It loads kv cache of all
 <link rel="canonical" href="https://neuron-science.github.io/docs/section-2/subsection-5/">
 <link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
   <script defer src="../../../fuse.min.js"></script>
-  <script defer src="../../../en.search.min.7de5366b7dcac6ddccffb157de59d5a536b89a4e5e9bf4f4fe93b39a587785f8.js" integrity="sha256-feU2a33Kxt3M/7FX3lnVpTa4mk5em/T0/pOzmlh3hfg=" crossorigin="anonymous"></script>
+  <script defer src="../../../en.search.min.3c62f5a27fc04c4a5c5420d70c134672d5ef1510a3729f75a5b9a3eddf3bfc0b.js" integrity="sha256-PGL1on/ATEpcVCDXDBNGctXvFRCjcp91pbmj7d87/As=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-2/subsection-5/index.xml" title="Inference Optimization" />
 <!--
 Made with Book Theme
@@ -115,7 +116,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-1/subsection-2/" class="">1.2 Llama family of models</a>
+    <a href="../../../docs/section-1/subsection-2/" class="">1.2 Representative LLM Architectures</a>
   
 
           
@@ -223,7 +224,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-1/" class="">2.1 Efficient Attention Variants</a>
+    <a href="../../../docs/section-2/subsection-1/" class="">2.1 Key-Value Caching</a>
   
 
           
@@ -241,7 +242,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-2/" class="">2.2 Mixture of Experts</a>
+    <a href="../../../docs/section-2/subsection-2/" class="">2.2 Efficient Attention Variants</a>
   
 
           
@@ -259,7 +260,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-3/" class="">2.3 Model Quantization</a>
+    <a href="../../../docs/section-2/subsection-3/" class="">2.3 Mixture of Experts</a>
   
 
           
@@ -277,7 +278,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-4/" class="">2.4 Key-Value Caching</a>
+    <a href="../../../docs/section-2/subsection-4/" class="">2.4 Model Quantization</a>
   
 
           
@@ -457,7 +458,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion</a>
+    <a href="../../../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion and Flash Attention</a>
   
 
           
@@ -494,6 +495,24 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="../../../docs/section-4/subsection-1/" class="">4.1 vLLM</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/subsection-2/" class="">4.2 Framework Comparison</a>
   
 
           
@@ -561,9 +580,28 @@ https://github.com/alex-shpak/hugo-book
   
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#251-eagle-drafter">2.5.1 Eagle Drafter</a></li>
-    <li><a href="#252-tree-structured-draft">2.5.2 Tree-structured Draft</a></li>
-    <li><a href="#253-speculative-decoding-on-trainium">2.5.3. Speculative Decoding on Trainium</a></li>
+    <li><a href="#the-verification-process"><strong>The Verification Process</strong></a></li>
+    <li><a href="#acceptance-and-rejection-mechanism"><strong>Acceptance and Rejection Mechanism</strong></a></li>
+    <li><a href="#speedup-analysis"><strong>Speedup Analysis</strong></a></li>
+    <li><a href="#251-eagle-drafter"><strong>2.5.1 Eagle Drafter</strong></a>
+      <ul>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#training">Training</a></li>
+      </ul>
+    </li>
+    <li><a href="#252-tree-structured-draft"><strong>2.5.2 Tree-structured Draft</strong></a>
+      <ul>
+        <li><a href="#token-tree-structure">Token Tree Structure</a></li>
+      </ul>
+    </li>
+    <li><a href="#253-practical-considerations-and-limitations"><strong>2.5.3 Practical Considerations and Limitations</strong></a>
+      <ul>
+        <li><a href="#when-speculative-decoding-is-most-beneficial">When Speculative Decoding is Most Beneficial</a></li>
+        <li><a href="#trade-offs">Trade-offs</a></li>
+        <li><a href="#integration-with-other-optimizations">Integration with Other Optimizations</a></li>
+      </ul>
+    </li>
+    <li><a href="#references">References</a></li>
   </ul>
 </nav>
 
@@ -576,7 +614,13 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown book-article">
+  <article class="markdown book-article"><h1 id="speculative-decoding">
+  <strong>Speculative Decoding</strong>
+  
+  <a class="anchor" href="#speculative-decoding">#</a>
+  
+</h1>
+
 <link rel="stylesheet" href="../../../katex/katex.min.css" />
 <script defer src="../../../katex/katex.min.js"></script>
 
@@ -591,14 +635,9 @@ https://github.com/alex-shpak/hugo-book
 );"></script>
 
 
-<h1 id="25-speculative-decoding">
-  2.5 Speculative Decoding
-  
-  <a class="anchor" href="#25-speculative-decoding">#</a>
-  
-</h1>
-<p>By default, LLM decoding generates one token at a time. It loads kv cache of all previous tokens but only computes for a single new token. Such a process is known to be memory-bound and under-utilizes the hardware.</p>
-<p>Speculative Decoding (SD) is one approach that improves the throughput of token generation. In SD, the LLM (dubbed target model) is paired with a lightweight drafter, which could be another much smaller LLM. The drafter predicts multiple tokens into the future (illustrated left below). And the target model verifies these tokens <em>in parallel</em> (illustration right below).</p>
+<p>By default, LLM decoding generates one token at a time. During each decoding step, the model loads the KV cache of all previous tokens but only computes attention for a single new token. This process is memory-bound and under-utilizes the available compute resources, as modern accelerators are designed for parallel processing of multiple tokens (as seen in the prefill phase).</p>
+<p><strong>Speculative Decoding (SD)</strong> is a technique that improves the throughput of token generation by breaking the sequential bottleneck. The key insight is to use a lightweight <strong>drafter model</strong> to predict multiple future tokens, then have the main <strong>target model</strong> verify these predictions in parallel. This transforms the memory-bound sequential decoding into a compute-bound parallel verification process, similar to prefill.</p>
+<p>In speculative decoding, the target model (the main LLM) is paired with a lightweight drafter, which could be another much smaller LLM or a specialized model derived from the target. The drafter predicts multiple tokens into the future (illustrated left below), and the target model verifies these tokens <em>in parallel</em> (illustration right below).</p>
 <div style="text-align: center; margin: 2rem 0;">
   <img src="../../../images/speculative_decoding/drafter.png" 
        alt="Speculative Decoding: Drafter" 
@@ -613,36 +652,191 @@ https://github.com/alex-shpak/hugo-book
   <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
   </p>
 </div>
-<p>Notably, the verfication inputs the prompt and drafter&rsquo;s generation together to the target model. The prompt&rsquo;s kv cache is loaded, and attention is computed for multiple drafted tokens all at once. This is similar to prefilling and better utilizes compute. The first token that differs (in this case, the &ldquo;can&rdquo;) is where rejection starts. The best case is when all drafted tokens are accepted. The worst case is when the first drafted token fails to match. But in such a case, we just fall back to the first token generated by the target model. Therefore, in any case, the generation is exactly the same as a conventional decoding using the target model only. In other words, speculative decoding is lossless.</p>
-<p>Clearly, the speedup hinges upon two key factors: 1) How many drafted tokens are accepted; 2) how much faster the drafter is compared against the target model. A good drafter should be fast and generates similar continuation as the target model.</p>
+<h2 id="the-verification-process">
+  <strong>The Verification Process</strong>
+  
+  <a class="anchor" href="#the-verification-process">#</a>
+  
+</h2>
+<p>The verification step inputs the prompt and the drafter&rsquo;s generation together to the target model. The prompt&rsquo;s KV cache is loaded, and attention is computed for multiple drafted tokens all at once. This is similar to prefilling and better utilizes compute resources by processing multiple tokens in parallel.</p>
+<p>Formally, if the drafter generates a sequence of $\gamma$ tokens $(t_1, t_2, \ldots, t_\gamma)$, the target model processes the concatenated sequence $[\text{prompt}; t_1, t_2, \ldots, t_\gamma]$ in a single forward pass. For each position $i \in {1, 2, \ldots, \gamma}$, the target model computes the probability distribution $p_{\text{target}}(\cdot | \text{prompt}, t_1, \ldots, t_{i-1})$ over the vocabulary.</p>
+<h2 id="acceptance-and-rejection-mechanism">
+  <strong>Acceptance and Rejection Mechanism</strong>
+  
+  <a class="anchor" href="#acceptance-and-rejection-mechanism">#</a>
+  
+</h2>
+<p>The verification process uses an acceptance criterion to determine which drafted tokens to keep. For each drafted token $t_i$ at position $i$, we compare the target model&rsquo;s probability $p_{\text{target}}(t_i | \text{prompt}, t_1, \ldots, t_{i-1})$ with the drafter&rsquo;s probability $p_{\text{drafter}}(t_i | \text{prompt}, t_1, \ldots, t_{i-1})$. A common acceptance criterion is:</p>
+<p>$$\text{accept } t_i \text{ if } \frac{p_{\text{target}}(t_i)}{p_{\text{drafter}}(t_i)} \geq r$$</p>
+<p>where $r$ is a threshold. This ensures that the distribution of accepted tokens matches the target model&rsquo;s distribution, maintaining correctness.</p>
+<p>The first token that fails the acceptance criterion triggers rejection. All subsequent tokens are discarded, and we fall back to the target model&rsquo;s generation starting from that position. The best case occurs when all $\gamma$ drafted tokens are accepted, providing maximum speedup. The worst case occurs when the first drafted token fails to match, but even then, we simply use the first token generated by the target model, falling back to standard decoding behavior.</p>
+<p><strong>Crucially, speculative decoding is lossless</strong>: The output distribution is identical to that of conventional decoding using only the target model. This is guaranteed by the acceptance mechanism, which ensures that only tokens that would have been generated by the target model are accepted.</p>
+<h2 id="speedup-analysis">
+  <strong>Speedup Analysis</strong>
+  
+  <a class="anchor" href="#speedup-analysis">#</a>
+  
+</h2>
+<p>The speedup from speculative decoding depends on two key factors:</p>
+<ol>
+<li>
+<p><strong>Acceptance rate</strong>: How many drafted tokens are accepted on average. If $\alpha$ tokens are accepted on average from $\gamma$ drafted tokens, the effective tokens generated per target model forward pass is $1 + \alpha$ (an one additional token is generated by the target model).</p>
+</li>
+<li>
+<p><strong>Drafter speed</strong>: How much faster the drafter is compared to the target model. If the drafter is $k$ times faster, and we draft $\gamma$ tokens, the total time is approximately:</p>
+<p>$$\text{SDTime} = \text{DrafterTime}(\gamma) + \text{TargetTime}(1 + \alpha)$$</p>
+<p>Compared to standard decoding which requires $\text{TargetTime}(1 + \alpha)$ sequential forward passes, the speedup is:
+$$\text{Speedup} = \frac{1 + \alpha}{1 + \frac{\text{DrafterTime}(\gamma)}{\text{TargetTime}(1 + \alpha)}}$$</p>
+</li>
+</ol>
+<p>A good drafter should be both fast (small $\text{DrafterTime}$) and accurate (high $\alpha$), generating continuations that closely match the target model&rsquo;s distribution.</p>
 <h2 id="251-eagle-drafter">
-  2.5.1 Eagle Drafter
+  <strong>2.5.1 Eagle Drafter</strong>
   
   <a class="anchor" href="#251-eagle-drafter">#</a>
   
 </h2>
-<p>One could train a drafter such that its generations match the target models&rsquo; (e.g., <a href="https://arxiv.org/abs/2310.08461">DistillSpec</a>). However, training such a separate drafter from scratch could be significant one-time overhead. Instead, one could reuse intermediate hidden states and parameters of the target model. <a href="https://arxiv.org/abs/2401.15077">Eagle</a> is one such method that achieves State-of-the-art performance.</p>
-<p>The eagle drafter is illustrated below, target model on the left, and the drafter on the right. The drafter reuses the embedding layer and LM head of the target model. Moreover, it combines the input tokens&rsquo; embeddings (the $e_i$&rsquo;s) and their features (the $f_i$&rsquo;s) and further processes them with a transformer decoder layer, which is the only trainable parameter in the drafter.</p>
-<p align="center">
-<img src="eagle_drafter.png" width=300 align=center/>
-</p>
-<p>The drafter is trained such that its generated continuation can match those by the target model. An easy way is to generate continuations with the target model and use that as training data. Then train the drafter by minimizing next-token-prediction loss on this dataset. A more sophisticated approach by the seminal <a href="https://arxiv.org/abs/2401.15077">Eagle</a> paper proposes a distillation based loss that minimizes the KL divergene between the logits of drafter and target model.</p>
+<p>One approach to creating a drafter is to train a separate smaller model from scratch such that its generations match the target model&rsquo;s (e.g., <a href="https://arxiv.org/abs/2310.08461">DistillSpec</a>). However, training such a separate drafter requires significant computational overhead and may not fully leverage the target model&rsquo;s learned representations.</p>
+<p><strong>Eagle</strong> (<a href="https://arxiv.org/abs/2401.15077">Li et al., 2024</a>) is a state-of-the-art method that reuses intermediate hidden states and parameters of the target model, dramatically reducing training overhead while achieving high acceptance rates. The key innovation is to leverage the target model&rsquo;s internal representations rather than training a completely independent drafter.</p>
+<h3 id="architecture">
+  Architecture
+  
+  <a class="anchor" href="#architecture">#</a>
+  
+</h3>
+<p>The Eagle drafter architecture is illustrated below, with the target model on the left and the drafter on the right. The drafter reuses two key components from the target model:</p>
+<ol>
+<li><strong>Embedding layer</strong>: The same token embeddings used by the target model</li>
+<li><strong>Language model head</strong>: The same output projection layer that maps hidden states to vocabulary logits</li>
+</ol>
+<p>Additionally, the drafter extracts intermediate features $f_i$ from the target model&rsquo;s hidden states (typically from an intermediate layer). The drafter then combines:</p>
+<ul>
+<li>Input token embeddings $e_i$ (from the shared embedding layer)</li>
+<li>Target model features $f_i$ (extracted from intermediate layers)</li>
+</ul>
+<p>These are processed through a lightweight transformer decoder layer, which is the <strong>only trainable parameter</strong> in the drafter. This design makes the drafter extremely efficient while maintaining strong alignment with the target model&rsquo;s behavior.</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/speculative_decoding/eagle_drafter.png" 
+       alt="Eagle Drafter Architecture" 
+       style="width: 70%; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Eagle drafter architecture: reusing target model components (embedding, LM head) and intermediate features.
+  </p>
+</div>
+<h3 id="training">
+  Training
+  
+  <a class="anchor" href="#training">#</a>
+  
+</h3>
+<p>The drafter is trained to generate continuations that match the target model&rsquo;s distribution. A simple approach is to generate continuations using the target model and use these as training data, then train the drafter by minimizing the next-token prediction loss on this dataset.</p>
+<p>Another option is to use a more sophisticated <strong>distillation-based loss</strong> that minimizes the KL divergence between the drafter&rsquo;s and target model&rsquo;s logit distributions:</p>
+<p>$$\mathcal{L} = \text{KL}(p_{\text{target}} || p_{\text{drafter}}) + \lambda \cdot \mathcal{L}_{\text{CE}}$$</p>
+<p>where $\mathcal{L}_{\text{CE}}$ is the cross-entropy loss on target model generations, and $\lambda$ is a weighting factor. This approach ensures the drafter learns not just to predict the most likely tokens, but to match the entire probability distribution of the target model, leading to higher acceptance rates during verification.</p>
 <h2 id="252-tree-structured-draft">
-  2.5.2 Tree-structured Draft
+  <strong>2.5.2 Tree-structured Draft</strong>
   
   <a class="anchor" href="#252-tree-structured-draft">#</a>
   
 </h2>
-<p>As an orthogonal approach to improve acceptance, one could draft multiple continuations. This also fully utilizes the compute power of hardware. These continuations can be viewed as a tree since they often share some part of their prefixes. This token tree is verified using tree attention <em>in parallel</em>.</p>
-<h2 id="253-speculative-decoding-on-trainium">
-  2.5.3. Speculative Decoding on Trainium
+<p>As an orthogonal approach to improve acceptance rates, one can draft <strong>multiple continuations</strong> simultaneously. This strategy increases the probability that at least one continuation will have high acceptance, while also better utilizing available compute resources.</p>
+<h3 id="token-tree-structure">
+  Token Tree Structure
   
-  <a class="anchor" href="#253-speculative-decoding-on-trainium">#</a>
+  <a class="anchor" href="#token-tree-structure">#</a>
+  
+</h3>
+<p>Multiple draft continuations naturally form a <strong>tree structure</strong> because they often share common prefixes. For example, if we draft three continuations:</p>
+<ul>
+<li>Path 1: &ldquo;The cat sat on the&rdquo;</li>
+<li>Path 2: &ldquo;The cat sat on a&rdquo;</li>
+<li>Path 3: &ldquo;The dog ran&rdquo;</li>
+</ul>
+<p>These form a tree where &ldquo;The cat sat on&rdquo; is a shared prefix, branching into &ldquo;the&rdquo; and &ldquo;a&rdquo;, while &ldquo;The dog ran&rdquo; forms a separate branch. This tree structure is efficient because shared prefixes only need to be computed once.</p>
+<!-- ### Tree Attention
+
+The key challenge is verifying multiple draft paths efficiently. **Tree attention** enables parallel verification of all paths in the token tree using a single forward pass through the target model. The attention mechanism is modified to handle the tree structure, where:
+
+1. Shared prefixes are computed once and reused across all branches
+2. Branching points are handled by computing attention over multiple candidate tokens simultaneously
+3. The verification process checks all paths in parallel, accepting tokens along paths that pass the acceptance criterion
+
+This approach can significantly improve acceptance rates because:
+- If one path fails early, other paths may still succeed
+- Multiple diverse continuations increase the chance of finding high-probability sequences
+- The tree structure allows efficient reuse of shared computations
+
+Tree-structured drafting is particularly effective when combined with sampling strategies that explore diverse continuations, as it increases the likelihood of finding sequences that the target model would generate with high probability. -->
+<h2 id="253-practical-considerations-and-limitations">
+  <strong>2.5.3 Practical Considerations and Limitations</strong>
+  
+  <a class="anchor" href="#253-practical-considerations-and-limitations">#</a>
   
 </h2>
-<p>The eagle drafter has already been integrated in NeuronX Distributed Inference (NXDI) toolkit for Trainium. An example is in this <a href="https://awsdocs-neuron.readthedocs-hosted.com/en/latest/libraries/nxd-inference/tutorials/sd-inference-tutorial.html">tutorial</a>, showing 35% higher throughput than conventional causal decoding.</p>
+<h3 id="when-speculative-decoding-is-most-beneficial">
+  When Speculative Decoding is Most Beneficial
+  
+  <a class="anchor" href="#when-speculative-decoding-is-most-beneficial">#</a>
+  
+</h3>
+<p>Speculative decoding provides the greatest speedup when:</p>
+<ul>
+<li><strong>High acceptance rates</strong>: The drafter generates continuations that closely match the target model</li>
+<li><strong>Fast drafter</strong>: The drafter is significantly faster than the target model (typically 3-10×)</li>
+<li><strong>Memory-bound regime</strong>: The system has available compute capacity that would otherwise be idle</li>
+<li><strong>Long sequences</strong>: The benefits accumulate over many tokens, making the overhead worthwhile</li>
+</ul>
+<p>The technique is less beneficial when:</p>
+<ul>
+<li><strong>Low acceptance rates</strong>: If the drafter frequently fails, the overhead may outweigh benefits</li>
+<li><strong>Compute-bound regime</strong>: If already compute-limited, additional parallelism may not help</li>
+<li><strong>Short sequences</strong>: The overhead of drafting and verification may not be amortized</li>
+</ul>
+<h3 id="trade-offs">
+  Trade-offs
+  
+  <a class="anchor" href="#trade-offs">#</a>
+  
+</h3>
+<p>While speculative decoding can provide 2-3× speedup in practice, it comes with trade-offs:</p>
+<ul>
+<li><strong>Memory overhead</strong>: Storing multiple draft tokens and their KV caches increases memory usage</li>
+<li><strong>Complexity</strong>: The verification and acceptance logic adds system complexity</li>
+<li><strong>Drafter training</strong>: Creating an effective drafter requires additional training or fine-tuning effort</li>
+<li><strong>Variable latency</strong>: Acceptance rates vary, leading to variable per-token latency (though average throughput improves)</li>
+</ul>
+<h3 id="integration-with-other-optimizations">
+  Integration with Other Optimizations
+  
+  <a class="anchor" href="#integration-with-other-optimizations">#</a>
+  
+</h3>
+<p>Speculative decoding is complementary to other inference optimizations:</p>
+<ul>
+<li><strong>KV cache quantization</strong>: Can be applied to both target and drafter models to reduce memory</li>
+<li><strong>Continuous batching</strong>: Works well with dynamic batching systems</li>
+<li><strong>Model parallelism</strong>: Can be applied across both target and drafter models</li>
+</ul>
+<!-- ## **2.5.4 Speculative Decoding on Trainium**
 
-
+The Eagle drafter has been integrated into the NeuronX Distributed Inference (NXDI) toolkit for AWS Trainium accelerators. This integration demonstrates the practical viability of speculative decoding in production systems. A detailed [tutorial](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/libraries/nxd-inference/tutorials/sd-inference-tutorial.html) shows that speculative decoding can achieve approximately 35% higher throughput compared to conventional causal decoding, validating the technique's effectiveness in real-world deployments. -->
+<h2 id="references">
+  References
+  
+  <a class="anchor" href="#references">#</a>
+  
+</h2>
+<ol>
+<li>
+<p><a id="specdec"></a>Fast Inference from Transformers via Speculative Decoding, Leviathan et al., 2023 <a href="https://arxiv.org/abs/2211.17192">https://arxiv.org/abs/2211.17192</a></p>
+</li>
+<li>
+<p><a id="distillspec"></a>DistillSpec: Improving Speculative Decoding via Knowledge Distillation, Zhou et al., 2024 <a href="https://arxiv.org/abs/2310.08461">https://arxiv.org/abs/2310.08461</a></p>
+</li>
+<li>
+<p><a id="eagle"></a>EAGLE: Speculative Sampling Requires Rethinking Feature Uncertainty, Li et al., 2024 <a href="https://arxiv.org/abs/2401.15077">https://arxiv.org/abs/2401.15077</a></p>
+</li>
+</ol>
 </article>
  
       
@@ -668,8 +862,8 @@ https://github.com/alex-shpak/hugo-book
     <span>
     
       <a href="../../../docs/section-2/subsection-4/" class="flex align-center book-icon">
-        <img src="../../../svg/backward.svg" class="book-icon" alt="Previous" title="2.4 Key-Value Caching" />
-        <span>2.4 Key-Value Caching</span>
+        <img src="../../../svg/backward.svg" class="book-icon" alt="Previous" title="2.4 Model Quantization" />
+        <span>2.4 Model Quantization</span>
       </a>
     
     </span>
@@ -712,9 +906,28 @@ https://github.com/alex-shpak/hugo-book
   
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#251-eagle-drafter">2.5.1 Eagle Drafter</a></li>
-    <li><a href="#252-tree-structured-draft">2.5.2 Tree-structured Draft</a></li>
-    <li><a href="#253-speculative-decoding-on-trainium">2.5.3. Speculative Decoding on Trainium</a></li>
+    <li><a href="#the-verification-process"><strong>The Verification Process</strong></a></li>
+    <li><a href="#acceptance-and-rejection-mechanism"><strong>Acceptance and Rejection Mechanism</strong></a></li>
+    <li><a href="#speedup-analysis"><strong>Speedup Analysis</strong></a></li>
+    <li><a href="#251-eagle-drafter"><strong>2.5.1 Eagle Drafter</strong></a>
+      <ul>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#training">Training</a></li>
+      </ul>
+    </li>
+    <li><a href="#252-tree-structured-draft"><strong>2.5.2 Tree-structured Draft</strong></a>
+      <ul>
+        <li><a href="#token-tree-structure">Token Tree Structure</a></li>
+      </ul>
+    </li>
+    <li><a href="#253-practical-considerations-and-limitations"><strong>2.5.3 Practical Considerations and Limitations</strong></a>
+      <ul>
+        <li><a href="#when-speculative-decoding-is-most-beneficial">When Speculative Decoding is Most Beneficial</a></li>
+        <li><a href="#trade-offs">Trade-offs</a></li>
+        <li><a href="#integration-with-other-optimizations">Integration with Other Optimizations</a></li>
+      </ul>
+    </li>
+    <li><a href="#references">References</a></li>
   </ul>
 </nav>
 

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="
-  2.6 Knowledge Distillation
+  Knowledge Distillation
   
   #
   
@@ -24,7 +24,7 @@ The following schematic captures the general idea of KD:">
 <meta name="color-scheme" content="light dark"><meta property="og:url" content="https://neuron-science.github.io/docs/section-2/subsection-6/">
   <meta property="og:site_name" content="Inference Optimization">
   <meta property="og:title" content="2.6 Knowledge Distillation">
-  <meta property="og:description" content="2.6 Knowledge Distillation # Knowledge distillation (KD) refers to a principled way to transfer the capabilities of a large teacher model into a smaller, faster student model – often achieving substantial reductions in latency, memory footprint, and cost. In inference optimization pipelines, KD can often be used in conjunction with other model compression techniques like quantization. The following schematic captures the general idea of KD:">
+  <meta property="og:description" content="Knowledge Distillation # Knowledge distillation (KD) refers to a principled way to transfer the capabilities of a large teacher model into a smaller, faster student model – often achieving substantial reductions in latency, memory footprint, and cost. In inference optimization pipelines, KD can often be used in conjunction with other model compression techniques like quantization. The following schematic captures the general idea of KD:">
   <meta property="og:locale" content="en_us">
   <meta property="og:type" content="website">
 <title>2.6 Knowledge Distillation | Inference Optimization</title>
@@ -33,7 +33,7 @@ The following schematic captures the general idea of KD:">
 <link rel="canonical" href="https://neuron-science.github.io/docs/section-2/subsection-6/">
 <link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
   <script defer src="../../../fuse.min.js"></script>
-  <script defer src="../../../en.search.min.7de5366b7dcac6ddccffb157de59d5a536b89a4e5e9bf4f4fe93b39a587785f8.js" integrity="sha256-feU2a33Kxt3M/7FX3lnVpTa4mk5em/T0/pOzmlh3hfg=" crossorigin="anonymous"></script>
+  <script defer src="../../../en.search.min.3c62f5a27fc04c4a5c5420d70c134672d5ef1510a3729f75a5b9a3eddf3bfc0b.js" integrity="sha256-PGL1on/ATEpcVCDXDBNGctXvFRCjcp91pbmj7d87/As=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-2/subsection-6/index.xml" title="Inference Optimization" />
 <!--
 Made with Book Theme
@@ -118,7 +118,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-1/subsection-2/" class="">1.2 Llama family of models</a>
+    <a href="../../../docs/section-1/subsection-2/" class="">1.2 Representative LLM Architectures</a>
   
 
           
@@ -226,7 +226,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-1/" class="">2.1 Efficient Attention Variants</a>
+    <a href="../../../docs/section-2/subsection-1/" class="">2.1 Key-Value Caching</a>
   
 
           
@@ -244,7 +244,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-2/" class="">2.2 Mixture of Experts</a>
+    <a href="../../../docs/section-2/subsection-2/" class="">2.2 Efficient Attention Variants</a>
   
 
           
@@ -262,7 +262,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-3/" class="">2.3 Model Quantization</a>
+    <a href="../../../docs/section-2/subsection-3/" class="">2.3 Mixture of Experts</a>
   
 
           
@@ -280,7 +280,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-4/" class="">2.4 Key-Value Caching</a>
+    <a href="../../../docs/section-2/subsection-4/" class="">2.4 Model Quantization</a>
   
 
           
@@ -460,7 +460,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion</a>
+    <a href="../../../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion and Flash Attention</a>
   
 
           
@@ -497,6 +497,24 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="../../../docs/section-4/subsection-1/" class="">4.1 vLLM</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/subsection-2/" class="">4.2 Framework Comparison</a>
   
 
           
@@ -584,10 +602,10 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown book-article"><h1 id="26-knowledge-distillation">
-  2.6 Knowledge Distillation
+  <article class="markdown book-article"><h1 id="knowledge-distillation">
+  <strong>Knowledge Distillation</strong>
   
-  <a class="anchor" href="#26-knowledge-distillation">#</a>
+  <a class="anchor" href="#knowledge-distillation">#</a>
   
 </h1>
 
@@ -665,7 +683,7 @@ Note that this uses teacher-generate labels instead of human-provided labels.</p
 $$L_{\rm attn}=  \sum_{(l,m)} \lVert A_s^{(m)} - A_t^{(l)} \rVert_F^2$$
 may be used. Here, the attention scores of the $m^{\rm th}$ layer of the student is mapped to the $l^{\rm th}$ layer of the teacher.</p>
 <p>The intuition behind why feature-level KD is effective lies in the fact that LLMs build hierarchical neural representations. For instance, lower-layers learn lexical and morphological features, mid-layers learn syntax and symantics, wheareas higher-layers learn abstraction and world knowledge. While it is difficult for a small student to learn these tructures from scratch, it can learn to imitate them from the teacher.</p>
-<p>While very effective, it should be noted that feature-level KD is rare for distilling knowledge from large-scale LLMs because the computation and memory cost explode. To distill hidden states  for a sequence length $S$, hidden dimension $d$, and across $L$ layers, all hidden states must be stoed, which requires $O(LSd)$ memory, which blows up. Hence, logit-level KD and sequence-level KD are more popular for large scale LLMs. Feature-level KD is more common in vision models and smaller text models of relatively small size ($\leq 3{\rm B}$ params).</p>
+<p>While very effective, it should be noted that feature-level KD is rare for distilling knowledge from large-scale LLMs because the computation and memory cost explode. To distill hidden states  for a sequence length $S$, hidden dimension $d$, and across $L$ layers, all hidden states must be stored, which requires $O(LSd)$ memory, which blows up. Hence, logit-level KD and sequence-level KD are more popular for large scale LLMs. Feature-level KD is more common in vision models and smaller text models of relatively small size ($\leq 3{\rm B}$ params).</p>
 
 
 <h2 id="references">

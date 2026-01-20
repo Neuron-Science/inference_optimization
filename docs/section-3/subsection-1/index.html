@@ -4,24 +4,18 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="
-  3.1 Continuous Batching
+  Continuous Batching
   
   #
   
 
-Batching is one of the oldest and most effective techniques in machine learning
-deployment. Long before LLMs became mainstream, batching was already the key
-enabler that allowed production systems to serve many users quickly and
-cost-effectively. But LLMs introduce new challenges that make traditional
-batching insufficient, especially during decoding. Continuous batching emerged
-as the solution, and it has fundamentally reshaped how modern LLM serving
-systems operate.">
+Batching is a fundamental performance optimization in machine learning where multiple input samples are grouped together and processed simultaneously in a single forward pass. It is one of the oldest and most effective techniques in machine learning deployment. By amortizing fixed overheads (such as kernel launches, memory accesses, and synchronization) and increasing arithmetic intensity, batching improves hardware utilization and throughput. Long before LLMs became mainstream, batching was already the key enabler that allowed production systems to serve many users quickly and cost-effectively. But LLMs introduce new challenges that make traditional batching insufficient, especially during decoding. Continuous batching emerged as the solution, and it has fundamentally reshaped how modern LLM serving systems operate.">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:url" content="https://neuron-science.github.io/docs/section-3/subsection-1/">
   <meta property="og:site_name" content="Inference Optimization">
   <meta property="og:title" content="3.1 Continuous Batching">
-  <meta property="og:description" content="3.1 Continuous Batching # Batching is one of the oldest and most effective techniques in machine learning deployment. Long before LLMs became mainstream, batching was already the key enabler that allowed production systems to serve many users quickly and cost-effectively. But LLMs introduce new challenges that make traditional batching insufficient, especially during decoding. Continuous batching emerged as the solution, and it has fundamentally reshaped how modern LLM serving systems operate.">
+  <meta property="og:description" content="Continuous Batching # Batching is a fundamental performance optimization in machine learning where multiple input samples are grouped together and processed simultaneously in a single forward pass. It is one of the oldest and most effective techniques in machine learning deployment. By amortizing fixed overheads (such as kernel launches, memory accesses, and synchronization) and increasing arithmetic intensity, batching improves hardware utilization and throughput. Long before LLMs became mainstream, batching was already the key enabler that allowed production systems to serve many users quickly and cost-effectively. But LLMs introduce new challenges that make traditional batching insufficient, especially during decoding. Continuous batching emerged as the solution, and it has fundamentally reshaped how modern LLM serving systems operate.">
   <meta property="og:locale" content="en_us">
   <meta property="og:type" content="website">
 <title>3.1 Continuous Batching | Inference Optimization</title>
@@ -30,7 +24,7 @@ systems operate.">
 <link rel="canonical" href="https://neuron-science.github.io/docs/section-3/subsection-1/">
 <link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
   <script defer src="../../../fuse.min.js"></script>
-  <script defer src="../../../en.search.min.7de5366b7dcac6ddccffb157de59d5a536b89a4e5e9bf4f4fe93b39a587785f8.js" integrity="sha256-feU2a33Kxt3M/7FX3lnVpTa4mk5em/T0/pOzmlh3hfg=" crossorigin="anonymous"></script>
+  <script defer src="../../../en.search.min.3c62f5a27fc04c4a5c5420d70c134672d5ef1510a3729f75a5b9a3eddf3bfc0b.js" integrity="sha256-PGL1on/ATEpcVCDXDBNGctXvFRCjcp91pbmj7d87/As=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-3/subsection-1/index.xml" title="Inference Optimization" />
 <!--
 Made with Book Theme
@@ -115,7 +109,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-1/subsection-2/" class="">1.2 Llama family of models</a>
+    <a href="../../../docs/section-1/subsection-2/" class="">1.2 Representative LLM Architectures</a>
   
 
           
@@ -223,7 +217,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-1/" class="">2.1 Efficient Attention Variants</a>
+    <a href="../../../docs/section-2/subsection-1/" class="">2.1 Key-Value Caching</a>
   
 
           
@@ -241,7 +235,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-2/" class="">2.2 Mixture of Experts</a>
+    <a href="../../../docs/section-2/subsection-2/" class="">2.2 Efficient Attention Variants</a>
   
 
           
@@ -259,7 +253,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-3/" class="">2.3 Model Quantization</a>
+    <a href="../../../docs/section-2/subsection-3/" class="">2.3 Mixture of Experts</a>
   
 
           
@@ -277,7 +271,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-4/" class="">2.4 Key-Value Caching</a>
+    <a href="../../../docs/section-2/subsection-4/" class="">2.4 Model Quantization</a>
   
 
           
@@ -457,7 +451,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion</a>
+    <a href="../../../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion and Flash Attention</a>
   
 
           
@@ -494,6 +488,24 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="../../../docs/section-4/subsection-1/" class="">4.1 vLLM</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/subsection-2/" class="">4.2 Framework Comparison</a>
   
 
           
@@ -597,48 +609,34 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown book-article"><h1 id="31-continuous-batching">
-  3.1 Continuous Batching
+  <article class="markdown book-article"><h1 id="continuous-batching">
+  <strong>Continuous Batching</strong>
   
-  <a class="anchor" href="#31-continuous-batching">#</a>
+  <a class="anchor" href="#continuous-batching">#</a>
   
 </h1>
-<p>Batching is one of the oldest and most effective techniques in machine learning
-deployment. Long before LLMs became mainstream, batching was already the key
-enabler that allowed production systems to serve many users quickly and
-cost-effectively. But LLMs introduce new challenges that make traditional
-batching insufficient, especially during decoding. Continuous batching emerged
-as the solution, and it has fundamentally reshaped how modern LLM serving
-systems operate.</p>
-<p>In this section, we first examine how batching works in classical inference
-systems, identify why it breaks for LLMs, and then introduce continuous batching
-as the natural evolution of batching for autoregressive generation workloads.</p>
+<p>Batching is a fundamental performance optimization in machine learning where multiple input samples are grouped together and processed simultaneously in a single forward pass. It is one of the oldest and most effective techniques in machine learning deployment. By amortizing fixed overheads (such as kernel launches, memory accesses, and synchronization) and increasing arithmetic intensity, batching improves hardware utilization and throughput. Long before LLMs became mainstream, batching was already the key enabler that allowed production systems to serve many users quickly and cost-effectively. But LLMs introduce new challenges that make traditional batching insufficient, especially during decoding. <strong>Continuous batching</strong> emerged as the solution, and it has fundamentally reshaped how modern LLM serving systems operate.</p>
+<p>In this section, we first examine how batching works in classical inference systems, identify why it breaks for LLMs, and then introduce continuous batching as the natural evolution of batching for autoregressive generation workloads.</p>
 <h2 id="why-batching-is-essential-in-real-deployment">
   <strong>Why Batching Is Essential in Real Deployment</strong>
   
   <a class="anchor" href="#why-batching-is-essential-in-real-deployment">#</a>
   
 </h2>
-<p>When deploying ML models, one of the first goals is to maximize system
-throughput (i.e., the number of requests a system can serve per second) while
-keeping <strong>latency low</strong>. Batching helps achieve both.</p>
+<p>When deploying ML models, one of the first goals is to maximize system throughput (i.e., the number of requests a system can serve per second) while keeping <strong>latency low</strong>. In this context, latency refers to the end-to-end time it takes for a single request to be served by the system. Batching helps achieve both.</p>
 <h3 id="modern-gpus-encourage-parallelism">
   Modern GPUs Encourage Parallelism
   
   <a class="anchor" href="#modern-gpus-encourage-parallelism">#</a>
   
 </h3>
-<p>High-end GPUs (A100, H100, B100, etc.) are designed to run large matrix
-multiplications at extremely high throughput. They have:</p>
+<p>High-end GPUs (Ampere, Hopper, Blackwell, etc. architectures) are designed to run large matrix multiplications at extremely high throughput. They have:</p>
 <ul>
-<li>Many SMs capable of executing multiple threads concurrently</li>
+<li>Many streaming multiprocessors (SMs) capable of executing multiple threads concurrently</li>
 <li>Gigabytes of high-bandwidth memory</li>
 <li>Wide vector units that prefer large, dense workloads</li>
 </ul>
-<p>A single user request often does not fully utilize the GPU. But if we group
-multiple requests into a single batch, we can use far more of the GPU’s compute
-capacity without significantly increasing the latency for any individual
-request.</p>
+<p>A single user request often does not fully utilize the GPU. But if we group multiple requests into a single batch, we can use far more of the GPU’s compute capacity without significantly increasing the latency for any individual request.</p>
 <h3 id="batching-benefits-both-provider-and-user">
   Batching Benefits Both Provider and User
   
@@ -648,41 +646,32 @@ request.</p>
 <ul>
 <li><strong>Higher throughput</strong>, lowering cost per request</li>
 <li><strong>Better GPU utilization</strong>, reducing servers needed and operational cost</li>
-<li><strong>Shorter queuing delay</strong>, because serving more requests at once drains the queue
-more quickly</li>
+<li><strong>Shorter queuing delay</strong>, because serving more requests at once drains the queue more quickly</li>
 </ul>
-<p>Thus, batching is a win-win: the system becomes cheaper to operate, and users
-see faster responses.</p>
+<p>Thus, batching is a win-win: the system becomes cheaper to operate, and users see faster responses.</p>
 <h2 id="why-llms-make-batching-hard">
   <strong>Why LLMs Make Batching Hard</strong>
   
   <a class="anchor" href="#why-llms-make-batching-hard">#</a>
   
 </h2>
-<p>Transformer-based LLMs behave very differently from traditional models (like
-CNNs) during inference. The core difficulty lies in <strong>autoregressive decoding</strong>,
-where the model generates one token at a time.</p>
+<p>Transformer-based LLMs behave very differently from traditional models (like CNNs) during inference. The core difficulty lies in <strong>autoregressive decoding</strong>, where the model generates one token at a time.</p>
 <h3 id="batching-requires-identical-structure">
   Batching Requires Identical Structure
   
   <a class="anchor" href="#batching-requires-identical-structure">#</a>
   
 </h3>
-<p>To batch multiple requests together, frameworks expect that all requests in the
-batch:</p>
+<p>To batch multiple requests together, frameworks expect that all requests in the batch:</p>
 <ul>
 <li>Have the <strong>same input shape</strong></li>
 <li>Follow the <strong>same execution path</strong></li>
 <li>Produce outputs in <strong>lockstep</strong></li>
 </ul>
-<p>This is fine for tasks with fixed-size inputs (e.g., images).  But
-LLM requests violate almost all of these expectations:</p>
+<p>This is fine for tasks with fixed-size inputs (e.g., images). But LLM requests violate almost all of these expectations:</p>
 <ul>
-<li>LLMs vary in context length. User prompt could be a short sentence or a
-10-page document.</li>
-<li>Number of decoding steps is unknown. Some generations finish in a few tokens
-(e.g., short answers), Others take hundreds or thousands of tokens (e.g.,
-stories, code generation)</li>
+<li>LLMs vary in context length: User prompt could be a short sentence or a 10-page document.</li>
+<li>Number of decoding steps is unknown. Some generations finish in a few tokens (e.g., short answers), Others take hundreds or thousands of tokens (e.g., stories, code generation)</li>
 </ul>
 <h2 id="straw-man-solution-static-batching">
   <strong>Straw-man Solution: Static Batching</strong>
@@ -712,16 +701,11 @@ stories, code generation)</li>
 <ol>
 <li>
 <p><strong>Latency Explosion for Short Requests</strong><br>
-Short requests finish early, but cannot exit the batch until the longest request
-finishes.  A simple, fast task (e.g., a yes or no question)
-gets stuck waiting behind someone generating a 500-token story.  In
-conversational systems, this creates terrible user experience.</p>
+Short requests finish early, but cannot exit the batch until the longest request finishes. A simple, fast task (e.g., a yes or no question) gets stuck waiting behind someone generating a 500-token story. In conversational systems, this creates terrible user experience.</p>
 </li>
 <li>
 <p><strong>Throughput Drops Rapidly</strong><br>
-As some requests finish and others continue, the effective batch size shrinks
-over time.  The GPU ends up running small, inefficient matmuls after a few
-steps.</p>
+As some requests finish and others continue, the effective batch size shrinks over time.  The GPU ends up running small, inefficient matmuls after a few steps.</p>
 </li>
 </ol>
 <p>Static batching is easy to implement but fundamentally mismatched to how LLM decoding works.</p>
@@ -731,14 +715,11 @@ steps.</p>
   <a class="anchor" href="#continuous-batching-the-key-idea">#</a>
   
 </h2>
-<p>Continuous batching borrows the idea from “iteration-level batching” used
-in RNN serving systems [<a href="#batchmaker">1</a>], where sequences can join and leave at
-each recurrent step.</p>
+<p>Continuous batching borrows the idea from “iteration-level batching” used in RNN serving systems [<a href="#batchmaker">1</a>], where sequences can join and leave at each recurrent step.</p>
 <p>The intuition is simple:</p>
 <pre tabindex="0"><code>Instead of batching requests only at the beginning, we should make fine-grained
 decision and rebuild the batch at every decoding step.
-</code></pre><p>In other words, the computation unit to be batched becomes one token generation
-step instead of one request.</p>
+</code></pre><p>In other words, the granularity at which batching takes place becomes one token generation step instead of one request.</p>
 <h3 id="how-continuous-batching-works">
   How Continuous Batching Works
   
@@ -773,14 +754,8 @@ step instead of one request.</p>
 </h3>
 <p>However, Transformer-based LLMs introduce an additional complexity:</p>
 <pre tabindex="0"><code class="language-less" data-lang="less">Each request maintains a growing Key-Value (KV) cache for attention.
-</code></pre><p>Supporting continuous batching for Transformers therefore requires managing KV
-caches of different lengths inside the same batch, which vanilla RNN models do
-not need to handle.</p>
-<p>Early systems such as Orca [<a href="#orca">2</a>] handled this by allocating a large
-batched KV buffer and designing attention mechanisms that handle variable
-context lengths. Modern systems like vLLM [<a href="#vllm">3</a>] typically rely on more
-flexible memory management techniques, such as paged attention (discussed in
-next section), which makes continuous batching scalable and efficient.</p>
+</code></pre><p>Supporting continuous batching for Transformers therefore requires managing KV caches of different lengths inside the same batch, which vanilla RNN models do not need to handle.</p>
+<p>Early systems such as Orca [<a href="#orca">2</a>] handled this by allocating a large batched KV buffer and designing attention mechanisms that handle variable context lengths. Modern systems like vLLM [<a href="#vllm">3</a>] typically rely on more flexible memory management techniques, such as paged attention (discussed in next section), which makes continuous batching scalable and efficient.</p>
 <h2 id="common-deployment-pattern">
   <strong>Common Deployment Pattern</strong>
   
@@ -789,15 +764,10 @@ next section), which makes continuous batching scalable and efficient.</p>
 </h2>
 <p>In practice, nearly all high-performance LLM serving systems use:</p>
 <ul>
-<li>Continuous batching for dynamic scheduling</li>
-<li>A flexible KV memory manager (such as paged attention) to support
-variable-length sequences</li>
+<li>Continuous batching for dynamic scheduling. In this context, scheduling is the per-token decision process that selects which active requests contribute a token to the next decode batch, balancing utilization, latency, fairness, and memory limits.</li>
+<li>A flexible KV memory manager (such as paged attention) to support variable-length sequences</li>
 </ul>
-<p>Together, these two ideas form the backbone of modern high-throughput
-low-latency LLM serving architectures.  While the Transformer architecture
-remains the same, the way we feed data to it drastically changes compute
-efficiency. By rebuilding the batch each token, we can keep GPUs busy, reduce
-latency, and serve far more users with the same hardware.</p>
+<p>Together, these two ideas form the backbone of modern high-throughput low-latency LLM serving architectures. While the Transformer architecture remains the same, the way we feed data to it drastically changes compute efficiency. By rebuilding the batch each token, we can keep GPUs busy, reduce latency, and serve far more users with the same hardware.</p>
 <h2 id="references">
   References
   

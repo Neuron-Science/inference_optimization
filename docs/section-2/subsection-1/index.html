@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="
-  2.1 Efficient Attention Variants
+  Key-Value (KV) Caching
   
   #
   
@@ -16,25 +16,28 @@
   
 
 
-At the heart of the success of transformer architectures, lies the attention mechanism, which allows models to capture long-range dependencies and complex interactions across inputs.
-However, standard self-atention scales quadratically with sequence length, making it prohibitively expensive for large-scale or realtime applications.
-This has spurred a wave of research into efficient attention mechanisms &ndash; techniques that reduce the computational and memory overhead without sacrificing accuracy.
-Some of them are highlighted here.">
+A key optimization for accelerating autoregressive inference in large language models is Key–Value (KV) caching.
+Transformer-based LLM inference happens in two stages: prefill phase, when the prompt is processed, and decoding phase, when tokens are generated one-by-one.
+During prefill, each transformer layer computes attention keys K and values V for every input token.
+Without caching, the model would need to recompute the entire attention stack from scratch at every decoding step—an operation whose cost scales quadratically with the sequence length and quickly prohibits real-time inference.
+KV caching avoids this waste by storing the computed K and V tensors in memory, so that during decoding, the model only needs to compute attention for new tokens and can reuse the cached representations for all past tokens, avoiding redundant computations.
+The result is a drastic improvement in per-token latency and a shift in the performance bottleneck from compute to memory bandwidth.
+More specifically, the quadratic scaling of the attention layer is transformed into a linear scaling at the cost of increased memory utilization.">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:url" content="https://neuron-science.github.io/docs/section-2/subsection-1/">
   <meta property="og:site_name" content="Inference Optimization">
-  <meta property="og:title" content="2.1 Efficient Attention Variants">
-  <meta property="og:description" content="2.1 Efficient Attention Variants # At the heart of the success of transformer architectures, lies the attention mechanism, which allows models to capture long-range dependencies and complex interactions across inputs. However, standard self-atention scales quadratically with sequence length, making it prohibitively expensive for large-scale or realtime applications. This has spurred a wave of research into efficient attention mechanisms – techniques that reduce the computational and memory overhead without sacrificing accuracy. Some of them are highlighted here.">
+  <meta property="og:title" content="2.1 Key-Value Caching">
+  <meta property="og:description" content="Key-Value (KV) Caching # A key optimization for accelerating autoregressive inference in large language models is Key–Value (KV) caching. Transformer-based LLM inference happens in two stages: prefill phase, when the prompt is processed, and decoding phase, when tokens are generated one-by-one. During prefill, each transformer layer computes attention keys K and values V for every input token. Without caching, the model would need to recompute the entire attention stack from scratch at every decoding step—an operation whose cost scales quadratically with the sequence length and quickly prohibits real-time inference. KV caching avoids this waste by storing the computed K and V tensors in memory, so that during decoding, the model only needs to compute attention for new tokens and can reuse the cached representations for all past tokens, avoiding redundant computations. The result is a drastic improvement in per-token latency and a shift in the performance bottleneck from compute to memory bandwidth. More specifically, the quadratic scaling of the attention layer is transformed into a linear scaling at the cost of increased memory utilization.">
   <meta property="og:locale" content="en_us">
   <meta property="og:type" content="website">
-<title>2.1 Efficient Attention Variants | Inference Optimization</title>
+<title>2.1 Key-Value Caching | Inference Optimization</title>
 <link rel="icon" href="../../../favicon.png" >
 <link rel="manifest" href="../../../manifest.json">
 <link rel="canonical" href="https://neuron-science.github.io/docs/section-2/subsection-1/">
 <link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
   <script defer src="../../../fuse.min.js"></script>
-  <script defer src="../../../en.search.min.7de5366b7dcac6ddccffb157de59d5a536b89a4e5e9bf4f4fe93b39a587785f8.js" integrity="sha256-feU2a33Kxt3M/7FX3lnVpTa4mk5em/T0/pOzmlh3hfg=" crossorigin="anonymous"></script>
+  <script defer src="../../../en.search.min.3c62f5a27fc04c4a5c5420d70c134672d5ef1510a3729f75a5b9a3eddf3bfc0b.js" integrity="sha256-PGL1on/ATEpcVCDXDBNGctXvFRCjcp91pbmj7d87/As=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-2/subsection-1/index.xml" title="Inference Optimization" />
 <!--
 Made with Book Theme
@@ -119,7 +122,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-1/subsection-2/" class="">1.2 Llama family of models</a>
+    <a href="../../../docs/section-1/subsection-2/" class="">1.2 Representative LLM Architectures</a>
   
 
           
@@ -227,7 +230,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-1/" class="active">2.1 Efficient Attention Variants</a>
+    <a href="../../../docs/section-2/subsection-1/" class="active">2.1 Key-Value Caching</a>
   
 
           
@@ -245,7 +248,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-2/" class="">2.2 Mixture of Experts</a>
+    <a href="../../../docs/section-2/subsection-2/" class="">2.2 Efficient Attention Variants</a>
   
 
           
@@ -263,7 +266,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-3/" class="">2.3 Model Quantization</a>
+    <a href="../../../docs/section-2/subsection-3/" class="">2.3 Mixture of Experts</a>
   
 
           
@@ -281,7 +284,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-4/" class="">2.4 Key-Value Caching</a>
+    <a href="../../../docs/section-2/subsection-4/" class="">2.4 Model Quantization</a>
   
 
           
@@ -461,7 +464,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion</a>
+    <a href="../../../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion and Flash Attention</a>
   
 
           
@@ -498,6 +501,24 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="../../../docs/section-4/subsection-1/" class="">4.1 vLLM</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/subsection-2/" class="">4.2 Framework Comparison</a>
   
 
           
@@ -549,7 +570,7 @@ https://github.com/alex-shpak/hugo-book
     <img src="../../../svg/menu.svg" class="book-icon" alt="Menu" />
   </label>
 
-  <h3>2.1 Efficient Attention Variants</h3>
+  <h3>2.1 Key-Value Caching</h3>
 
   <label for="toc-control">
     
@@ -565,10 +586,11 @@ https://github.com/alex-shpak/hugo-book
   
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#multi-head-attention-mha"><strong>Multi Head Attention (MHA)</strong></a></li>
-    <li><a href="#grouped-query-attention-gqa"><strong>Grouped Query Attention (GQA)</strong></a></li>
-    <li><a href="#multi-head-latent-attention-mla"><strong>Multi-Head Latent Attention (MLA)</strong></a></li>
-    <li><a href="#sliding-window-attention-swa"><strong>Sliding Window Attention (SWA)</strong></a></li>
+    <li><a href="#causal-attention-enables-computation-reuse"><strong>Causal attention enables computation reuse</strong></a></li>
+    <li><a href="#computation-complexity-with-and-without-kv-cache"><strong>Computation complexity with and without KV cache</strong></a></li>
+    <li><a href="#memory-footprint-of-kv-cache"><strong>Memory footprint of KV cache</strong></a></li>
+    <li><a href="#prefill-vs-decoding"><strong>Prefill vs. Decoding</strong></a></li>
+    <li><a href="#connections-with-efficient-attention-mha-vs-gqa"><strong>Connections with efficient attention: MHA vs. GQA</strong></a></li>
     <li><a href="#references">References</a></li>
   </ul>
 </nav>
@@ -582,10 +604,10 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown book-article"><h1 id="21-efficient-attention-variants">
-  2.1 Efficient Attention Variants
+  <article class="markdown book-article"><h1 id="key-value-kv-caching">
+  <strong>Key-Value (KV) Caching</strong>
   
-  <a class="anchor" href="#21-efficient-attention-variants">#</a>
+  <a class="anchor" href="#key-value-kv-caching">#</a>
   
 </h1>
 
@@ -603,112 +625,103 @@ https://github.com/alex-shpak/hugo-book
 );"></script>
 
 
-<p>At the heart of the success of transformer architectures, lies the attention mechanism, which allows models to capture long-range dependencies and complex interactions across inputs.
-However, standard self-atention scales quadratically with sequence length, making it prohibitively expensive for large-scale or realtime applications.
-This has spurred a wave of research into efficient attention mechanisms &ndash; techniques that reduce the computational and memory overhead without sacrificing accuracy.
-Some of them are highlighted here.</p>
-<h2 id="multi-head-attention-mha">
-  <strong>Multi Head Attention (MHA)</strong>
+<p>A key optimization for accelerating autoregressive inference in large language models is Key–Value (KV) caching.
+Transformer-based LLM inference happens in two stages: <strong>prefill phase</strong>, when the prompt is processed, and <strong>decoding phase</strong>, when tokens are generated one-by-one.
+During prefill, each transformer layer computes attention keys K and values V for every input token.
+Without caching, the model would need to recompute the entire attention stack from scratch at every decoding step—an operation whose cost scales quadratically with the sequence length and quickly prohibits real-time inference.
+KV caching avoids this waste by storing the computed K and V tensors in memory, so that during decoding, the model only needs to compute attention for new tokens and can reuse the cached representations for all past tokens, avoiding redundant computations.
+The result is a drastic improvement in per-token latency and a shift in the performance bottleneck from compute to memory bandwidth.
+More specifically, the quadratic scaling of the attention layer is transformed into a linear scaling at the cost of increased memory utilization.</p>
+<h2 id="causal-attention-enables-computation-reuse">
+  <strong>Causal attention enables computation reuse</strong>
   
-  <a class="anchor" href="#multi-head-attention-mha">#</a>
+  <a class="anchor" href="#causal-attention-enables-computation-reuse">#</a>
   
 </h2>
-<p>MHA is a core optimization, in which instead of computing a single attention distribution over the input sequence, the model&rsquo;s hidden dimension is split into multiple <strong>heads</strong>.
-Each head learns its own set of query, key, and value projection, and the model computes scaled dot-product attention independently for each head, resulting in multiple attenton outputs.
-These outputs are then concatenated and linearly projected back to the model&rsquo;s original dimension.</p>
-<p>Suppose the input to the attention layer is a sequence of hidden states,</p>
-<p>$$X \in \mathbb{R}^{T \times d_{\text{model}}},$$</p>
-<p>where $T$ is the sequence length, and $d_{\text{model}}$ is the embedding dimension.
-For each head $h \in {1, \ldots, H}$ (where $H$ is the number of attention heads), we compute separate query, key, and value matrices via learned linear projections:</p>
-<p>$$Q_h = XW_h^Q, \hspace{3ex} K_h = XW_h^K, \hspace{2ex} V_h = XW_h^V$$</p>
-<p>where $W_h^Q, W_h^K, W_h^V \in \mathbb{R}^{d_{\text{model}} \times d_k}$.
-Here, $d_k = d_{\text{model}}/H$ is the dimension per head.</p>
-<p>Each head performs scaled dot-product attention:</p>
-<p>$$O_h \triangleq \text{Attention}(Q_h, K_h, V_h) = \text{softmax}\left(\frac{Q_hK_h^\top}{\sqrt{d_k}}\right)V_h \in \mathbb{R}^{T \times d_k}.$$</p>
-<p>The outputs from all heads are concatenated to get:</p>
-<p>$$O = \text{Concat}(O_1, O_2, \ldots, O_H) \in \mathbb{R}^{T \times d_{\text{model}}}$$</p>
-<p>A final linear projection matrix $W^O \in \mathbb{R}^{d_{\text{model}} \times d_{\text{model}}}$ yields the final output:</p>
-<p>$$\text{MHA}(X) = OW^O$$</p>
-<p>This parallel attention structure has two key benefits:</p>
-<ol>
-<li>It increases the models&rsquo; representation capacity without increasing computational complexity as much as a single very large attention would,</li>
-<li>It allows the model to capture richer contextual information because different heads can specialize in attenting to different positions or patterns in the sequence. For example, one head might learn to track subject-verb agreement, while another focuses on long-range dependencies.</li>
-</ol>
-<p>The final output provides a more expressive representation that downstream layers can use effectively. MHA (along with GQA, which is described next) is visualized below.</p>
+<p>Consider a transformer decoder-only model with $L$ layers, $H$ attention heads, head dimension $d$, and hidden dimension $D = H \cdot d$.
+For a token sequence $(x_1, \ldots, x_T)$, denote the hidden representation entering layer $\ell$ at index $t$ by $h_t^{(\ell)} \in \mathbb{R}^D$.
+Each layer $\ell$ computes:
+$$Q^\ell_t = W^\ell_Q h^\ell_t, \qquad K^\ell_t = W^\ell_K h^\ell_t, \qquad V^\ell_t = W^\ell_V h^\ell_t,$$
+where $W^\ell_Q, W^\ell_K, W^\ell_V \in \mathbb{R}^{D \times D}$.
+During prefill, this computation is done for all $t \in {1, \ldots, T}$.</p>
+<p>For every layer $\ell$, the cache stores all the past keys and values as:</p>
+<p>$$K^\ell_{\le t} = (K^\ell_1, \dots, K^\ell_t) \in \mathbb{R}^{t \times D}$$</p>
+<p>$$V^\ell_{\le t} = (V^\ell_1, \dots, V^\ell_t) \in \mathbb{R}^{t \times D}.$$</p>
+<p>These are appended <em>once</em> during prefill, then incrementally during decoding. This KV cache built during prefill, is re-used repeatedly during decoding as follows.
+Because of the causal mask, each token&rsquo;s output depends only on representation from previous tokens.
+Since those earlier representations do not change across decoding steps, the output for a previously generated token remains the same at every iteration, making the repeated computation redundant.</p>
+<p>As a concrete example, consider the sentence, <em>The quick brown fox</em> as the input sequence. For simplicity, assume each of these words correspond to a single token. Then the representations for the tokens, <em>The</em>, <em>quick</em>, <em>brown</em>, <em>fox</em> are computed during prefill, populating the KV cache. Suppose we generate the next token to be <em>jumps</em> as a continuation of the prompt <em>The quick brown fox</em>. Output representation of the last token, <em>fox</em>, depends only on the tokens up until that point, i.e., <em>The quick brown fox</em>, so its output representation would not change when the new token <em>jumps</em> is taken into consideration &ndash; enabling reuse of the past representations.</p>
+<p>During the decoding phase, for a new decoding step at token index $t+1$, we compute
+$$Q^\ell_{t+1} = W^\ell_Q h^\ell_{t+1}, \qquad K^\ell_{t+1} = W^\ell_K h^\ell_{t+1}, \qquad V^\ell_{t+1} = W^\ell_V h^\ell_{t+1},$$
+The attention scores for $h^\ell_{t+1}$ with respect to any previous token $i$, denoted as $\alpha_{t+1 ,i}$, is computed as follows:
+$$\alpha^\ell_{t+1, i} = \frac{\text{exp}\left(\frac{(Q^\ell_{t+1})^\top K^\ell_i}{\sqrt{d}}\right)}{\sum_{j=1}^{t+1}\text{exp}\left(\frac{(Q^\ell_{t+1})^\top K^\ell_j}{\sqrt{d}}\right)}$$
+Note that the above computation reuses the cached $K^\ell_{\le t}$ for $i \leq k$.
+The contextualized output is computed by reusing $V^\ell_{\le t}$ as:
+$$z_{t+1}^\ell = \sum_{i=1}^{t+1}\alpha_{t+1,i}^\ell V_i^\ell$$
+Crucially, the model does <em>not</em> recompute $K_i$ or $V_i$ for $i \leq t$; it loads them directly from the KV cache.</p>
+<p>This (visualized below) is repeated for every subsequent auto-regressively decoded token, and the representations are appended to the KV cache (which keeps growing with the sequence length).</p>
 <div style="text-align: center; margin: 2rem 0;">
-  <img src="../../../images/efficient_attention_variants/mha_gqa.png" 
-       alt="MLA and GQA" 
-       style="width: auto; height: auto; object-fit: contain;" />
-  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
-    Comparison of Multi Head Attention (MHA) vs Grouped Query Attention (GQA) (credits: Sebastian Raschka)
-  </p>
-</div>
-<h2 id="grouped-query-attention-gqa">
-  <strong>Grouped Query Attention (GQA)</strong>
-  
-  <a class="anchor" href="#grouped-query-attention-gqa">#</a>
-  
-</h2>
-<p>Where standard MHA has one set of key/value projections per query head, GQA (<a href="https://arxiv.org/abs/2305.13245">Ainslie et al.</a>) reduces the number of key/value heads to save memory and bandwidth during inference, while keeping the same number of query heads for expressivity.
-Let $G$ be the total number of key/value heads (with $G &lt; H$, i.e., the number of query heads).
-Denote by $d_q = d_{\text{model}}/ H$ and $d_{kv} = d_{\text{model}}/G$ be the dimension per query head and per KV head, respectively.</p>
-<p>For each head $h = 1, \ldots, H$, the query is given by $Q_h = XW_h^Q$, where $W_h^Q \in \mathbb{R}^{d_{\text{model}} \times d_q}$.</p>
-<p>For keys and values (fewer heads), for $g = 1, \ldots G$ and $W_g^K, W_g^V \in \mathbb{R}^{d_{\text{model}} \times d_{kv}}$, we have,</p>
-<p>$$K_g = XW_g^K \hspace{2ex} \text{and} \hspace{2ex} V_g = XW_g^V.$$</p>
-<p>Each query head $h$ is assigned to one key/value head $g$.
-For example, if $r = H/G$ (an integer), then $g = \left\lfloor \frac{h}{r} \right\rfloor$.
-This means $r$ query heads share the same key/value pair.
-Subsequently, for each query head $h$, we attend to the key/value head $g$ it&rsquo;s mapped to, to get:</p>
-<p>$$O_h \triangleq \text{Attention}(Q_h, K_g, V_g) = \text{softmax}\left(\frac{Q_hK_g^\top}{\sqrt{d_q}}\right)V_g \in \mathbb{R}^{T \times d_q}.$$</p>
-<p>As in standard MHA,</p>
-<p>$$\text{GQA}(X) = OW^O, \hspace{2ex} W^O \in \mathbb{R}^{d_{\text{model}} \times d_{\text{model}}}, \hspace{2ex} O = \text{Concat}(O_1, O_2, \ldots, O_H) \in \mathbb{R}^{T \times d_{\text{model}}}.$$</p>
-<p>With GQA, the KV cache size is given by,</p>
-<p>$$\text{batchsize } * \text{ seqlen } * \text{ (embed-dim / nheads) } * \text{ nlayers } * \hspace{1px} 2 \hspace{1px} * \text{ precision } * \text{ nKVheads }$$</p>
-<p>GQA offers a balance between efficiency and expressivity in transformer architectures.
-By allowing many query heads to share a smaller number of KV heads, GQA drastically reduce the memory footprint and bandwidth cost of KV caching during autoregressive inference &ndash; often by a factor of $H/G$, where $H$ is the number of query heads and $G$ is the number of KV heads.
-This reduction leads to faster decoding, lower latency, and better scalability to longer context lengths.
-In practice, this enables deploying larger or more capable models under the same memory budget, making GQA a key ingredient in efficient long-context language models like <a href="https://arxiv.org/abs/2307.09288">Llama 2</a> and <a href="https://arxiv.org/abs/2407.21783">Llama 3</a>.</p>
-<h2 id="multi-head-latent-attention-mla">
-  <strong>Multi-Head Latent Attention (MLA)</strong>
-  
-  <a class="anchor" href="#multi-head-latent-attention-mla">#</a>
-  
-</h2>
-<p>As an alternative to GQA, DeepSeek V3/R1 introduced MLA, in which instead of sharing key and value heads like GQA, MLA compresses the key and value tensors into a lower-dimensional space before storing them in the KV cache. At inference, compressed tensors are re-expanded to their original dimensions, trading an extra matrix multiplication for reduced memory footprint, since only the latent states are cached. More specifically, for each token:</p>
-<p>$$Z_t = X_t W_Z,\quad W_Z \in \mathbb{R}^{d \times d_\ell},\quad d_\ell \ll d.$$</p>
-<p>Instead of caching $K_t, V_t \in \mathbb{R}^d$, we cache the latent vector $Z_t \in \mathbb{R}^{d_l}$ once per token. The core of MLA is this low-rank joint compression for attention keys and values to reduce Key-Value (KV) cache during inference. Each attention head $h$ has its own projections from the latent space:</p>
-<p>$$K_t^{(h)} = Z_t W_K^{(h)},\quad V_t^{(h)} = Z_t W_V^{(h)}$$</p>
-<p>Queries are still head-specific, i.e., $Q_t^{(h)} = X_t W_Q^{(h)}$. Once the keys and values are reconstructed, attention is computed as before. Since $d_l \ll d$, this results in a massive reduction in KV cache memory footprint, which is excellent for long-context decoding. As with GQA, this is orthogonal to other KV cache compression techniques like quantization. Moreover, the <a href="https://arxiv.org/abs/2405.04434">DeepSeek V2</a> paper showed some ablation studies that MLA outperforms MHA with MoE architectures. The only downside of MLA is the added computation due to the extra projection FLOPs involved in obtaining $K^{(h)}, V^{(h)}$ from $Z$, but this is not a major concern because autoregressive decoding is memory-bandwidth bound. MLA is visualized below.</p>
-<div style="text-align: center; margin: 2rem 0;">
-  <img src="../../../images/efficient_attention_variants/mla.png" 
-       alt="MLA" 
-       style="width: auto; height: auto; object-fit: contain;" />
-  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
-    Comparison between MLA (used in DeepSeek V3 and R1) and regular MHA (credits: Sebastian Raschka)
-  </p>
-</div>
-<h2 id="sliding-window-attention-swa">
-  <strong>Sliding Window Attention (SWA)</strong>
-  
-  <a class="anchor" href="#sliding-window-attention-swa">#</a>
-  
-</h2>
-<p>In standard full attention, each token attend to <strong>every other token</strong> in the sequence.
-This results in quadratic complexity, i.e., $\mathrm{O}(N^2)$, where $N$ is the sequence length.
-SLiding window Attention (SWA) changes this by <strong>restricting the attention span</strong>.
-In SWA, each token only attends to tokens within a fixed window of size $w$ around it (e.g., for casual SWA, this corresponds to the previous $w$ tokens).
-This reduces the computational complexity to $\mathrm{O}(Nw)$, instead of $\mathrm{O}(N^2)$, which is particularly useful for long contexts such as long documents or streaming scenarios, without blowing up GPU memory.
-With SWA, the KV cache size is given by,</p>
-<p>$$\text{batchsize } * \text{ W } * \text{ (embed-dim / nheads) } * \text{ nlayers } * \hspace{1px} 2 \hspace{1px} * \text{ precision } * \text{ nKVheads. }$$</p>
-<p>That is, SWA reduces the KV cache size by a factor of $\text{W / seqlen}$</p>
-<div style="text-align: center; margin: 2rem 0;">
-  <img src="../../../images/efficient_attention_variants/swa-attention-mechanism.webp" 
+  <img src="../../../images/KV_caching/KV_caching_visualization.png" 
        alt="Sliding Window Attention Mechanism" 
        style="width: auto; height: auto; object-fit: contain;" />
   <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
-    Comparison of standard attention vs sliding window attention (credits: Sebastian Raschka)
+    Every decoding step caches and reuses previously computed keys and values (red). Only blue blocks are new (credits: Pierre Lienhart)
   </p>
 </div>
+<h2 id="computation-complexity-with-and-without-kv-cache">
+  <strong>Computation complexity with and without KV cache</strong>
+  
+  <a class="anchor" href="#computation-complexity-with-and-without-kv-cache">#</a>
+  
+</h2>
+<p>In the absence of KV cache, at each decoding step, attention is recomputed over all previous tokens.
+Hence, for a sequence length of $t$, we have,
+$$\text{Cost (without KV cache)} = \sum_{u=1}^{t+1}\text{O}(uD) = \text{O}(t^2D)$$</p>
+<p>However, <strong>with</strong> KV cache, at time $t+1$, for each layer $\ell$, we need to query $Q_{t+1}^\ell$ , key $K_{t+1}^\ell$, and value $V_{t+1}^\ell$ only for the last token $t+1$, i.e., a compute cost of $\text{O}(D^2)$.
+Additionally, we need to do another single attention matvec with $K_{\le t}^\ell$, which incurs a cost of $\text{O}(tD)$.
+Therefore,
+$$\text{Cost (with KV cache)} = \text{O}(tD + D^2).$$
+This reduces the quadratic growth with repect to $t$ to linear at the price of additional memory.</p>
+<h2 id="memory-footprint-of-kv-cache">
+  <strong>Memory footprint of KV cache</strong>
+  
+  <a class="anchor" href="#memory-footprint-of-kv-cache">#</a>
+  
+</h2>
+<p>For an LLM with $L$ layers, for each layer $\ell$, and token position $i \le T$, the cache stores $K_i^\ell \in \mathbb{R}^{D}$ and $V_i^\ell \in \mathbb{R}^{D}$, each stored in some preciison $b$ bytes (e.g., FP16&ndash;&gt; 2 Bytes, FP8 &ndash;&gt; 1 Byte).
+Therefore, the total KV cache size is
+$$\text{KV Cache memory} = 2\cdot b\cdot L \cdot T \cdot D$$
+This linear dependence on sequence length $T$ is the primary reason why very long-context models need aggressive KV compression.</p>
+<p><strong>Incremental update of KV cache</strong>: At each decoding step, the KV cache is updated as follows:
+$$K^\ell_{\le t+1} = \left[K^\ell_{\le t} \hspace{2px}\vert\hspace{2px} K^\ell_{t+1}\right] \quad \text{and} \quad V^\ell_{\le t+1} = \left[V^\ell_{\le t} \hspace{2px}\vert\hspace{2px} V^\ell_{t+1}\right].$$
+This append operation is $\text{O}(D)$ per layer, trivial compared to the attention read cost.</p>
+<p>Runtimes like vLLM optimize this step with Paged KV layouts so these appends do not cause memory fragmentation or reallocation.</p>
+<h2 id="prefill-vs-decoding">
+  <strong>Prefill vs. Decoding</strong>
+  
+  <a class="anchor" href="#prefill-vs-decoding">#</a>
+  
+</h2>
+<p>During prefill, full self-attention is computed over $T_{\text{input}}$ (input sequence length) tokens which involves multiplying query and key matrices of shape $T_{\text{input}} \times D$ with $D$ as the partition dimension.
+Moreover, computing the values involved multiplying an attention score matrix of shape $T_{\text{input}} \times T_{\text{input}}$ with the value matrix of shape $T_{\text{input}} \times D$.
+So, the cost is given by
+$$\text{Cost (prefill)} = \text{O}(LDT_{\text{input}}^2),$$
+which is dominated by large GEMM operations.
+Succinctly stated, prefill is <strong>compute-bound</strong> and this affect the time-to-first-token (TTFT).</p>
+<p>For decoding each new token $t+1$, each layer $\ell$ needs to read $K^\ell_{\le t} \in \mathbb{R}^{t \times D}$ and $V^\ell_{\le t} \in \mathbb{R}^{t \times D}$.
+This adds up to $2bLtD$ bytes across all layers.
+This is why autoregressive decoding in <strong>memory-bandwidth bound</strong> as attention repeatedly streams through the entire cached context.
+In this decoding regime, runtime is not limited by FLOPs but by the memory-bandwidth, which is proportional to $T$.
+This affects the decoding throughput, measured as output-tokens-per-second (OTPS).</p>
+<p>As a consequence, often prefill and decoding regimes require separately optimized kernels to optimize for overall latency.</p>
+<h2 id="connections-with-efficient-attention-mha-vs-gqa">
+  <strong>Connections with efficient attention: MHA vs. GQA</strong>
+  
+  <a class="anchor" href="#connections-with-efficient-attention-mha-vs-gqa">#</a>
+  
+</h2>
+<p>During autoregressive decoding, generating tokens sequentially isn’t constrained by compute capacity; the real bottleneck is the memory bandwidth required to stream the KV cache from HBM.
+In Multi-Head Attention (MHA), each query head has its own key and value heads (e.g., 64 Q, 64 K, 64 V), whereas, in Grouped Query Attention (GQA), multiple query heads share a smaller number of K/V heads (e.g., 64 Q but only 8 K and 8 V). This design make s abig difference. By drastically reducing the number of K/V heads, GQA shrinks the KV cache by approximately 4-8x in many models. A smaller cache means dramatically less data to stream from HBM at each decoding steps. As a consequence, the memory bandwidth bottleneck is somewhat alleviated. This is a central reason why models like Llama-2/3, Mistral achieved faster decoding over their predecessors. Note, however, GQA is a training-time optimization, i.e., the model architecture is defined beforehand, and models with GQA need to be trained from scratch.</p>
 
 
 <h2 id="references">
@@ -718,13 +731,8 @@ With SWA, the KV cache size is given by,</p>
   
 </h2>
 <ol>
-<li>Sliding Window Attention (SWA) <a href="">https://sebastianraschka.com/llms-from-scratch/ch04/06_swa/</a></li>
-<li>The big LLM architecture comparison <a href="">https://magazine.sebastianraschka.com/p/the-big-llm-architecture-comparison</a></li>
-<li>GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints <a href="">https://arxiv.org/abs/2305.13245</a></li>
-<li>Llama 2: Open Foundation and Fine-Tuned Chat Models <a href="">https://arxiv.org/abs/2307.09288</a></li>
-<li>The Llama 3 Herd of Models <a href="">https://arxiv.org/abs/2407.21783</a></li>
-<li>DeepSeek-V3 Technical Report <a href="">https://arxiv.org/abs/2412.19437</a></li>
-<li>DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model <a href="">https://arxiv.org/abs/2405.04434</a></li>
+<li>LLM Inference Series: 3. KV caching explained, Pierre Lienhart, 2023 <a href="">https://medium.com/@plienhar/llm-inference-series-3-kv-caching-unveiled-048152e461c8</a></li>
+<li>LLM Inference Series: 4. KV caching, a deeper look, Pierre Lienhart, 2024 <a href="">https://medium.com/@plienhar/llm-inference-series-4-kv-caching-a-deeper-look-4ba9a77746c8</a></li>
 </ol>
 </article>
  
@@ -759,8 +767,8 @@ With SWA, the KV cache size is given by,</p>
     <span>
     
       <a href="../../../docs/section-2/subsection-2/" class="flex align-center book-icon">
-        <span>2.2 Mixture of Experts</span>
-        <img src="../../../svg/forward.svg" class="book-icon" alt="Next" title="2.2 Mixture of Experts" />
+        <span>2.2 Efficient Attention Variants</span>
+        <img src="../../../svg/forward.svg" class="book-icon" alt="Next" title="2.2 Efficient Attention Variants" />
       </a>
     
     </span>
@@ -795,10 +803,11 @@ With SWA, the KV cache size is given by,</p>
   
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#multi-head-attention-mha"><strong>Multi Head Attention (MHA)</strong></a></li>
-    <li><a href="#grouped-query-attention-gqa"><strong>Grouped Query Attention (GQA)</strong></a></li>
-    <li><a href="#multi-head-latent-attention-mla"><strong>Multi-Head Latent Attention (MLA)</strong></a></li>
-    <li><a href="#sliding-window-attention-swa"><strong>Sliding Window Attention (SWA)</strong></a></li>
+    <li><a href="#causal-attention-enables-computation-reuse"><strong>Causal attention enables computation reuse</strong></a></li>
+    <li><a href="#computation-complexity-with-and-without-kv-cache"><strong>Computation complexity with and without KV cache</strong></a></li>
+    <li><a href="#memory-footprint-of-kv-cache"><strong>Memory footprint of KV cache</strong></a></li>
+    <li><a href="#prefill-vs-decoding"><strong>Prefill vs. Decoding</strong></a></li>
+    <li><a href="#connections-with-efficient-attention-mha-vs-gqa"><strong>Connections with efficient attention: MHA vs. GQA</strong></a></li>
     <li><a href="#references">References</a></li>
   </ul>
 </nav>

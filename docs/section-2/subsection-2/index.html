@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="
-  2.2 Mixture of Experts
+  Efficient Attention Variants
   
   #
   
@@ -16,23 +16,25 @@
   
 
 
-Scaling Laws for modern LLMs dictate that increasing the model size benefits generalization.
-A dense model with $N$ parameters executes all parameters per forward pass &ndash; making inference linearly more expensive as models scale in size.">
+At the heart of the success of transformer architectures, lies the attention mechanism, which allows models to capture long-range dependencies and complex interactions across inputs.
+However, standard self-atention scales quadratically with sequence length, making it prohibitively expensive for large-scale or realtime applications.
+This has spurred a wave of research into efficient attention mechanisms &ndash; techniques that reduce the computational and memory overhead without sacrificing accuracy.
+Some of them are highlighted here.">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:url" content="https://neuron-science.github.io/docs/section-2/subsection-2/">
   <meta property="og:site_name" content="Inference Optimization">
-  <meta property="og:title" content="2.2 Mixture of Experts">
-  <meta property="og:description" content="2.2 Mixture of Experts # Scaling Laws for modern LLMs dictate that increasing the model size benefits generalization. A dense model with $N$ parameters executes all parameters per forward pass – making inference linearly more expensive as models scale in size.">
+  <meta property="og:title" content="2.2 Efficient Attention Variants">
+  <meta property="og:description" content="Efficient Attention Variants # At the heart of the success of transformer architectures, lies the attention mechanism, which allows models to capture long-range dependencies and complex interactions across inputs. However, standard self-atention scales quadratically with sequence length, making it prohibitively expensive for large-scale or realtime applications. This has spurred a wave of research into efficient attention mechanisms – techniques that reduce the computational and memory overhead without sacrificing accuracy. Some of them are highlighted here.">
   <meta property="og:locale" content="en_us">
   <meta property="og:type" content="website">
-<title>2.2 Mixture of Experts | Inference Optimization</title>
+<title>2.2 Efficient Attention Variants | Inference Optimization</title>
 <link rel="icon" href="../../../favicon.png" >
 <link rel="manifest" href="../../../manifest.json">
 <link rel="canonical" href="https://neuron-science.github.io/docs/section-2/subsection-2/">
 <link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
   <script defer src="../../../fuse.min.js"></script>
-  <script defer src="../../../en.search.min.7de5366b7dcac6ddccffb157de59d5a536b89a4e5e9bf4f4fe93b39a587785f8.js" integrity="sha256-feU2a33Kxt3M/7FX3lnVpTa4mk5em/T0/pOzmlh3hfg=" crossorigin="anonymous"></script>
+  <script defer src="../../../en.search.min.3c62f5a27fc04c4a5c5420d70c134672d5ef1510a3729f75a5b9a3eddf3bfc0b.js" integrity="sha256-PGL1on/ATEpcVCDXDBNGctXvFRCjcp91pbmj7d87/As=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-2/subsection-2/index.xml" title="Inference Optimization" />
 <!--
 Made with Book Theme
@@ -117,7 +119,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-1/subsection-2/" class="">1.2 Llama family of models</a>
+    <a href="../../../docs/section-1/subsection-2/" class="">1.2 Representative LLM Architectures</a>
   
 
           
@@ -225,7 +227,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-1/" class="">2.1 Efficient Attention Variants</a>
+    <a href="../../../docs/section-2/subsection-1/" class="">2.1 Key-Value Caching</a>
   
 
           
@@ -243,7 +245,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-2/" class="active">2.2 Mixture of Experts</a>
+    <a href="../../../docs/section-2/subsection-2/" class="active">2.2 Efficient Attention Variants</a>
   
 
           
@@ -261,7 +263,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-3/" class="">2.3 Model Quantization</a>
+    <a href="../../../docs/section-2/subsection-3/" class="">2.3 Mixture of Experts</a>
   
 
           
@@ -279,7 +281,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-4/" class="">2.4 Key-Value Caching</a>
+    <a href="../../../docs/section-2/subsection-4/" class="">2.4 Model Quantization</a>
   
 
           
@@ -459,7 +461,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion</a>
+    <a href="../../../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion and Flash Attention</a>
   
 
           
@@ -496,6 +498,24 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="../../../docs/section-4/subsection-1/" class="">4.1 vLLM</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/subsection-2/" class="">4.2 Framework Comparison</a>
   
 
           
@@ -547,7 +567,7 @@ https://github.com/alex-shpak/hugo-book
     <img src="../../../svg/menu.svg" class="book-icon" alt="Menu" />
   </label>
 
-  <h3>2.2 Mixture of Experts</h3>
+  <h3>2.2 Efficient Attention Variants</h3>
 
   <label for="toc-control">
     
@@ -563,18 +583,11 @@ https://github.com/alex-shpak/hugo-book
   
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#moe-architecture-overview"><strong>MoE architecture overview</strong></a>
-      <ul>
-        <li><a href="#routing"><strong>Routing</strong></a></li>
-      </ul>
-    </li>
-    <li><a href="#why-moe-improves-inference-efficiency"><strong>Why MoE improves inference efficiency</strong></a></li>
-    <li><a href="#moe-inference-optimization"><strong>MoE inference optimization</strong></a>
-      <ul>
-        <li><a href="#parallelism"><strong>Parallelism</strong></a></li>
-        <li><a href="#expert-compute-optimizations"><strong>Expert-compute optimizations</strong></a></li>
-      </ul>
-    </li>
+    <li><a href="#multi-head-attention-mha"><strong>Multi Head Attention (MHA)</strong></a></li>
+    <li><a href="#grouped-query-attention-gqa"><strong>Grouped Query Attention (GQA)</strong></a></li>
+    <li><a href="#multi-head-latent-attention-mla"><strong>Multi-Head Latent Attention (MLA)</strong></a></li>
+    <li><a href="#sliding-window-attention-swa"><strong>Sliding Window Attention (SWA)</strong></a></li>
+    <li><a href="#sparse-attention"><strong>Sparse Attention</strong></a></li>
     <li><a href="#references">References</a></li>
   </ul>
 </nav>
@@ -588,10 +601,10 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown book-article"><h1 id="22-mixture-of-experts">
-  2.2 Mixture of Experts
+  <article class="markdown book-article"><h1 id="efficient-attention-variants">
+  <strong>Efficient Attention Variants</strong>
   
-  <a class="anchor" href="#22-mixture-of-experts">#</a>
+  <a class="anchor" href="#efficient-attention-variants">#</a>
   
 </h1>
 
@@ -609,122 +622,135 @@ https://github.com/alex-shpak/hugo-book
 );"></script>
 
 
-<p>Scaling Laws for modern LLMs dictate that increasing the model size benefits generalization.
-A dense model with $N$ parameters executes <strong>all</strong> parameters per forward pass &ndash; making inference linearly more expensive as models scale in size.</p>
-<p>The <strong>Mixture-of-Experts (MoE)</strong> architecture decoduples <em>model size</em> from <em>compute</em> by activating only a small, routed subset of parameters per token.
-A model might store $1\text{T}$ parameters, yet compute on only $10 - 20\text{B}$ per token.
-This provides:</p>
+<p>At the heart of the success of transformer architectures, lies the attention mechanism, which allows models to capture long-range dependencies and complex interactions across inputs.
+However, standard self-atention scales quadratically with sequence length, making it prohibitively expensive for large-scale or realtime applications.
+This has spurred a wave of research into efficient attention mechanisms &ndash; techniques that reduce the computational and memory overhead without sacrificing accuracy.
+Some of them are highlighted here.</p>
+<h2 id="multi-head-attention-mha">
+  <strong>Multi Head Attention (MHA)</strong>
+  
+  <a class="anchor" href="#multi-head-attention-mha">#</a>
+  
+</h2>
+<p>MHA is a core optimization, in which instead of computing a single attention distribution over the input sequence, the model&rsquo;s hidden dimension is split into multiple <strong>heads</strong>.
+Each head learns its own set of query, key, and value projection, and the model computes scaled dot-product attention independently for each head, resulting in multiple attenton outputs.
+These outputs are then concatenated and linearly projected back to the model&rsquo;s original dimension.</p>
+<p>Suppose the input to the attention layer is a sequence of hidden states,</p>
+<p>$$X \in \mathbb{R}^{T \times d_{\text{model}}},$$</p>
+<p>where $T$ is the sequence length, and $d_{\text{model}}$ is the embedding dimension.
+For each head $h \in {1, \ldots, H}$ (where $H$ is the number of attention heads), we compute separate query, key, and value matrices via learned linear projections:</p>
+<p>$$Q_h = XW_h^Q, \hspace{3ex} K_h = XW_h^K, \hspace{2ex} V_h = XW_h^V$$</p>
+<p>where $W_h^Q, W_h^K, W_h^V \in \mathbb{R}^{d_{\text{model}} \times d_k}$.
+Here, $d_k = d_{\text{model}}/H$ is the dimension per head.</p>
+<p>Each head performs scaled dot-product attention:</p>
+<p>$$O_h \triangleq \text{Attention}(Q_h, K_h, V_h) = \text{softmax}\left(\frac{Q_hK_h^\top}{\sqrt{d_k}}\right)V_h \in \mathbb{R}^{T \times d_k}.$$</p>
+<p>The outputs from all heads are concatenated to get:</p>
+<p>$$O = \text{Concat}(O_1, O_2, \ldots, O_H) \in \mathbb{R}^{T \times d_{\text{model}}}$$</p>
+<p>A final linear projection matrix $W^O \in \mathbb{R}^{d_{\text{model}} \times d_{\text{model}}}$ yields the final output:</p>
+<p>$$\text{MHA}(X) = OW^O$$</p>
+<p>This parallel attention structure has two key benefits:</p>
+<ol>
+<li>It increases the models&rsquo; representation capacity without increasing computational complexity as much as a single very large attention would,</li>
+<li>It allows the model to capture richer contextual information because different heads can specialize in attenting to different positions or patterns in the sequence. For example, one head might learn to track subject-verb agreement, while another focuses on long-range dependencies.</li>
+</ol>
+<p>The final output provides a more expressive representation that downstream layers can use effectively. MHA (along with GQA, which is described next) is visualized below.</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/efficient_attention_variants/mha_gqa.png" 
+       alt="MLA and GQA" 
+       style="width: auto; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Comparison of Multi Head Attention (MHA) vs Grouped Query Attention (GQA) (credits: Sebastian Raschka)
+  </p>
+</div>
+<h2 id="grouped-query-attention-gqa">
+  <strong>Grouped Query Attention (GQA)</strong>
+  
+  <a class="anchor" href="#grouped-query-attention-gqa">#</a>
+  
+</h2>
+<p>Where standard MHA has one set of key/value projections per query head, GQA [<a href="#gqa">3</a>] reduces the number of key/value heads to save memory and bandwidth during inference, while keeping the same number of query heads for expressivity.
+Let $G$ be the total number of key/value heads (with $G &lt; H$, i.e., the number of query heads).
+Denote by $d_q = d_{\text{model}}/ H$ and $d_{kv} = d_q$ be the dimension per query head and per KV head, respectively.</p>
+<p>For each head $h = 1, \ldots, H$, the query is given by $Q_h = XW_h^Q$, where $W_h^Q \in \mathbb{R}^{d_{\text{model}} \times d_q}$.</p>
+<p>For keys and values (fewer heads), for $g = 1, \ldots G$ and $W_g^K, W_g^V \in \mathbb{R}^{d_{\text{model}} \times d_{kv}}$, we have,</p>
+<p>$$K_g = XW_g^K \hspace{2ex} \text{and} \hspace{2ex} V_g = XW_g^V.$$</p>
+<p>Each query head $h$ is assigned to one key/value head $g$.
+For example, if $r = H/G$ (an integer), then $g = \left\lfloor \frac{h}{r} \right\rfloor$.
+This means $r$ query heads share the same key/value pair.
+Subsequently, for each query head $h$, we attend to the key/value head $g$ it&rsquo;s mapped to, to get:</p>
+<p>$$O_h \triangleq \text{Attention}(Q_h, K_g, V_g) = \text{softmax}\left(\frac{Q_hK_g^\top}{\sqrt{d_q}}\right)V_g \in \mathbb{R}^{T \times d_q}.$$</p>
+<p>As in standard MHA,</p>
+<p>$$\text{GQA}(X) = OW^O, \hspace{2ex} W^O \in \mathbb{R}^{d_{\text{model}} \times d_{\text{model}}}, \hspace{2ex} O = \text{Concat}(O_1, O_2, \ldots, O_H) \in \mathbb{R}^{T \times d_{\text{model}}}.$$</p>
+<p>With GQA, the KV cache size is given by,</p>
+<p>$$\text{batchsize } * \text{ seqlen } * \text{ (embed-dim / nheads) } * \text{ nlayers } * \hspace{1px} 2 \hspace{1px} * \text{ precision } * \text{ nKVheads }$$</p>
+<p>GQA offers a balance between efficiency and expressivity in transformer architectures.
+By allowing many query heads to share a smaller number of KV heads, GQA drastically reduce the memory footprint and bandwidth cost of KV caching during autoregressive inference &ndash; often by a factor of $H/G$, where $H$ is the number of query heads and $G$ is the number of KV heads.
+This reduction leads to faster decoding, lower latency, and better scalability to longer context lengths.
+In practice, this enables deploying larger or more capable models under the same memory budget, making GQA a key ingredient in efficient long-context language models like Llama 2 [<a href="#llama-2">4</a>] and Llama 3 [<a href="#llama-3">5</a>].</p>
+<h2 id="multi-head-latent-attention-mla">
+  <strong>Multi-Head Latent Attention (MLA)</strong>
+  
+  <a class="anchor" href="#multi-head-latent-attention-mla">#</a>
+  
+</h2>
+<p>As an alternative to GQA, DeepSeek V3/R1 introduced MLA, in which instead of sharing key and value heads like GQA, MLA compresses the key and value tensors into a lower-dimensional space before storing them in the KV cache. At inference, compressed tensors are re-expanded to their original dimensions, trading an extra matrix multiplication for reduced memory footprint, since only the latent states are cached. More specifically, for each token:</p>
+<p>$$Z_t = X_t W_Z,\quad W_Z \in \mathbb{R}^{d \times d_\ell},\quad d_\ell \ll d.$$</p>
+<p>Instead of caching $K_t, V_t \in \mathbb{R}^d$, we cache the latent vector $Z_t \in \mathbb{R}^{d_\ell}$ once per token. The core of MLA is this low-rank joint compression for attention keys and values to reduce Key-Value (KV) cache during inference. Each attention head $h$ has its own projections from the latent space:</p>
+<p>$$K_t^{(h)} = Z_t W_K^{(h)},\quad V_t^{(h)} = Z_t W_V^{(h)}$$</p>
+<p>Queries are still head-specific, i.e., $Q_t^{(h)} = X_t W_Q^{(h)}$. Once the keys and values are reconstructed, attention is computed as before. Since $d_\ell \ll d$, this results in a massive reduction in KV cache memory footprint, which is excellent for long-context decoding. As with GQA, this is orthogonal to other KV cache compression techniques like quantization. Moreover, the DeepSeek V2 [<a href="#deepseek-v2">7</a>] paper showed some ablation studies that MLA outperforms MHA with MoE architectures. The only downside of MLA is the added computation due to the extra projection FLOPs involved in obtaining $K^{(h)}, V^{(h)}$ from $Z$, but this is not a major concern because autoregressive decoding is memory-bandwidth bound. MLA is visualized below.</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/efficient_attention_variants/mla.png" 
+       alt="MLA" 
+       style="width: auto; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Comparison between MLA (used in DeepSeek V3 and R1) and regular MHA (credits: Sebastian Raschka)
+  </p>
+</div>
+<h2 id="sliding-window-attention-swa">
+  <strong>Sliding Window Attention (SWA)</strong>
+  
+  <a class="anchor" href="#sliding-window-attention-swa">#</a>
+  
+</h2>
+<p>In standard full attention, each token attend to <strong>every other token</strong> in the sequence.
+This results in quadratic complexity, i.e., $\mathrm{O}(N^2)$, where $N$ is the sequence length.
+Sliding window Attention (SWA) changes this by <strong>restricting the attention span</strong>.
+In SWA, each token only attends to tokens within a fixed window of size $w$ around it (e.g., for casual SWA, this corresponds to the previous $w$ tokens).
+This reduces the computational complexity to $\mathrm{O}(Nw)$, instead of $\mathrm{O}(N^2)$, which is particularly useful for long contexts such as long documents or streaming scenarios, without blowing up GPU memory.
+With SWA, the KV cache size is given by,</p>
+<p>$$\text{batchsize } * \text{ W } * \text{ (embed-dim / nheads) } * \text{ nlayers } * \hspace{1px} 2 \hspace{1px} * \text{ precision } * \text{ nKVheads. }$$</p>
+<p>That is, SWA reduces the KV cache size by a factor of $\text{W / seqlen}$</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/efficient_attention_variants/swa-attention-mechanism.webp" 
+       alt="Sliding Window Attention Mechanism" 
+       style="width: auto; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Comparison of standard attention vs sliding window attention (credits: Sebastian Raschka)
+  </p>
+</div>
+<h2 id="sparse-attention">
+  <strong>Sparse Attention</strong>
+  
+  <a class="anchor" href="#sparse-attention">#</a>
+  
+</h2>
+<p>Sparse attention generalizes the SWA by relaxing the constraint of sliding window and allowing attention to be computed over arbitrary subsets of token pairs, as long as the pattern is structured or constrained. From this perspective, SWA corresponds to a particular sparsity pattern—one that is local, uniform, and easy to implement—while sparse attention encompasses a broader family of patterns that selectively introduce non-local interactions. Generally, sparse attention restricts which token pairs can attend to each other, reducing the effective attention matrix size while preserving task-relevant context. From an inference perspective, sparse attention is attractive because it:</p>
 <ul>
-<li>Higher parameter count $\implies$ Better quality of output</li>
-<li>Lower per-token FLOPs $\implies$ Cheaper inference</li>
-<li>Better scaling with parallel hadrware (experts can be sharded across devices)</li>
+<li>Reduces FLOPs and memory bandwidth</li>
+<li>Lowers KV-cache growth for long contexts</li>
+<li>Enables better cache locality and kernel fusion opportunities</li>
+<li>Makes long-context inference feasible on fixed hardware budgets</li>
 </ul>
-<p>This trade-off makes MoEs fundamentally appealing for high-throughput inference.</p>
-<h2 id="moe-architecture-overview">
-  <strong>MoE architecture overview</strong>
-  
-  <a class="anchor" href="#moe-architecture-overview">#</a>
-  
-</h2>
-<p>An MoE layer replaces the standard feedforward network (FFN) block in a transformer.
-Instead of one FFN layer, we have $E$ experts, each of which is an independent MLP.
-This is demonstrated below:</p>
+<p>At inference time, this generalization enables a richer tradeoff between <em>expressivity</em> and <em>efficiency</em>. By activating only a subset of attention links, such as combining local windows with strided, global, or block-structured connections, sparse attention reduces the quadratic cost of dense attention while preserving important long-range dependencies. However, unlike SWA, which maps cleanly to regular kernels and predictable memory access, general sparse patterns introduce additional systems challenges, including irregular memory access, and kernel specialization. As a result, sparse attention shifts the optimization focus from algorithmic complexity alone to hardware and runtime-aware execution, making it a nontrivial tool for scalable long-context inference.</p>
 <div style="text-align: center; margin: 2rem 0;">
-  <img src="../../../images/mixture_of_experts/MoE_architecture.png" 
-       alt="Sliding Window Attention Mechanism" 
-       style="width: 70%; height: auto; object-fit: contain;" />
+  <img src="../../../images/efficient_attention_variants/sparse_attention.png" 
+       alt="Sparse Attention Mechanisms" 
+       style="width: auto; height: auto; object-fit: contain;" />
   <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
-    MoE layers replace standard FFN layers. MHA modules are remain unchanged (credits: Lepikhin et. al.)
+    Sparse Attention Mechanisms selectively attend to specific past tokens (credits: klu.ai/glossary)
   </p>
 </div>
-<p>In the figure above, every alternate transformer block has an MoE layer.</p>
-<h3 id="routing">
-  <strong>Routing</strong>
-  
-  <a class="anchor" href="#routing">#</a>
-  
-</h3>
-<p>For each input token representation $h \in \mathbb{R}^d$, a lightweight gating function first computes the scores:</p>
-<p>$$g = W_gh, \quad \text{where} \quad W_g \in \mathbb{R}^{E \times d}.$$</p>
-<p>Next, it selects the top-$k$ experts (typically $k = 1$ of $k = 2$), and routes the token&rsquo;s hidden state to those experts.
-Formally,</p>
-<p>$$G(h) = \text{Softmax}\left(\text{TopK}(g,k)\right).$$</p>
-<p>Here, $\text{TopK}(g,k) = g_i, \text{if } g_i \text{ is in the top-k elements}, -\infty \text{ otherwise}$.
-Subsequently,</p>
-<p>$$\text{MoE}(h) = \sum_{i = 1}^nG(h)_i E_i(h), \text{ where } E_i(h) \text{ is the output of expert } i.$$</p>
-<p>Note that each selected expert proceses on the tokens routed to it.
-Experts operate in parallel across acelerator shards.
-The outputs are combined using the gating weights.
-The above computation is visualized below:</p>
-<div style="text-align: center; margin: 2rem 0;">
-  <img src="../../../images/mixture_of_experts/MoE_gating.png" 
-       alt="Sliding Window Attention Mechanism" 
-       style="width: 70%; height: auto; object-fit: contain;" />
-  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
-    MoE layer computation (credits: Fedus et. al.)
-  </p>
-</div>
-<h2 id="why-moe-improves-inference-efficiency">
-  <strong>Why MoE improves inference efficiency</strong>
-  
-  <a class="anchor" href="#why-moe-improves-inference-efficiency">#</a>
-  
-</h2>
-<p>A transformer FFN (dense or expert MLP) typically consists of three linear layers: <strong>Gate projection</strong> $W_{\text{gate}} \in \mathbb{R}^{d \times f}$, <strong>Up projection</strong> $(W_{\text{up}} \in \mathbb{R}^{d \times f})$ (sometimes fused with the gate matrix), and <strong>Down projection</strong> $(W_{\text{down}} \in \mathbb{R}^{f \times d})$/.
-These projections expand the hidden dimension from $d$ to a larger dimension $f$, apply a non-linear activation (e.g., SiLU or GELU), then contract back.
-The <strong>expansion ratio</strong> $(r)$, i.e., $f/d$ refers to how much the hidden dimension expands inside the FFN relative to the model dimension.</p>
-<p>Since the FFN cost is dominated by the matmuls $d \times f$ (gate, up) and $f \times d$ (down), the compute FLOPs scales as $\mathrm{O}\left(3rd^2\right)$.
-For an MoE with $E$ experts, top-$k$ routing has $\mathrm{O}\left(3krd^2\right)$ FLOPs per expert.
-Since we invoke a fixed number of experts ($k$ per token &ndash; for e.g., $k = 1$), the compute per token stays constant, even as $E$ increases, allowing models size to scale without scalig compute.
-In other words, the number of activated parameters during inferences tays fixed, even though the total model size can scale up.</p>
-<p><strong>Memory trade-off</strong>: Since al lexperts&rsquo; weights need to be stored, this increases VRAM usage as expected due to increasing model size.</p>
-<h2 id="moe-inference-optimization">
-  <strong>MoE inference optimization</strong>
-  
-  <a class="anchor" href="#moe-inference-optimization">#</a>
-  
-</h2>
-<h3 id="parallelism">
-  <strong>Parallelism</strong>
-  
-  <a class="anchor" href="#parallelism">#</a>
-  
-</h3>
-<p>MOE layers introduce a unique structure: a large bank of independent FFN <em>experts</em> &ndash; only a few of which activate per token, and hence they introduce a new dimension of parallelism.
-The two main strategies to parallelize MoE computation are &ndash; <strong>tensor parallelism</strong> and <strong>expert parallelism</strong>.
-Understanding when each is appropriate is essential for building efficient MoE inference systems.</p>
-<p><strong>Tensor parallelism</strong> (TP) splits the weights matrices inside an expert across multiple devices.
-Each device holds a slice of the weight matrices, and all devices jointly compute the expert&rsquo;s output.
-TP enables very large experts, i.e., when $d$ and $f$ are large, and larger GEMMs are spread across multiple devices, enabling higher tensor-core utilization.
-However, TP also requires <em>collective communication</em> (all-reduce, reduce-scatter) to compute the final MoE layer output.
-These collectives are latency-sensitive, and if the inter-device interconnect does not have a high-enough bandwidth, these collectives can be memory-bandwidth bound, severely undermining any improvement in GEMM throughput.</p>
-<p><strong>Expert parallelism</strong> (EP) partitions the experts themselves across devices, and is usually preferred when the number of experts is large.
-Each device holds a subset of experts, but holds all parameters for those experts.
-To do a forward pass through an MoE layer with EP, tokens enter the MoE layer on their originating device.
-Then, the gate selects expert IDs for each token, and the tokens are sent (<strong>all-to-all</strong>) to devices that own the chosen experts.
-Subsequently, each device computes its local experts&rsquo; MLPs without further splitting, and the token outputs are returned (<strong>all-to-all</strong>) back to their original devices.
-routing tokens to their selected experts on other devices requires efficient inter-device communication, and is often the performance bottleneck.</p>
-<p>Roughly stated, EP is preferred for a <em>large number of small experts</em> (e.g., DeepSeek-MoE), whereas TP is preferred for a <em>small number of large experts</em> (e.g., Llama-4).
-Depending on requirements, it is also possible to combine EP + TP together in a hybrid 2D parallelism strategy. In any case, strategies to minimize the inter-device communication latency invariably helps optimize the inference latency.</p>
-<h3 id="expert-compute-optimizations">
-  <strong>Expert-compute optimizations</strong>
-  
-  <a class="anchor" href="#expert-compute-optimizations">#</a>
-  
-</h3>
-<p>While MoE does reduce the <em>compute per token</em> in terms of FLOPs, it introduces many small, fragmented computations that can be inefficient by default.
-For instance, each expert performs gate projection, up project, non-linear activation, and down projection.
-Naively, this yields <em>multiple small kernels</em>, each with separate memory loads/stores, kernel launch overhead, and poor likelihood of hitting high tensor-core occupancy.
-<strong>FusedMoE</strong> kernels, which ar eused by popular LLM serving frameworks like vLLM, use a single fused kernels that implements $\text{SwiGLU}\left(W_{\text{up}}h, W_{\text{gate}}h\right)$ followed by $W_{\text{down}}$ in <strong>one</strong> kernel invocation.
-This reduces the kernel launch overhead, enables intermediate activates to be stored on SRAM avoiding redundant HBM reads/writes, and improves the tensor-core utilization.</p>
-<p><strong>Expert-weight quantization</strong>: Moreover, since expert weights have a high memory footprint, and loading them from HBM is often the bottleneck, several recent models have opted to quantize the expert weights to low-precision formats.
-For example, expert weights in GPT-OSS (from OpenAI) are quantized to MXFP4, Kimi-K2 Thinking (from MoonshotAI) has INT4 expert weights.
-These weights are natively quantized, and the effects of quantization error are mitigated using quantization-aware-training.
-The quantized weights are dequantized on-the-fly to a higher precision (such as BF16) inside fused kernels for compute.</p>
-<p>To summarize, MoE architectures offer an attractive path to scaling model capacity without proportionally increasing inference cost.
-But achieving this theoretical efficiency in practice requires far more than sparsely activating experts: it hinges on carefully engineering the dataflow, minimizing the overhead of routing, and exploiting the right mix of expert and tensor parallelism.
-When these optimizations align with hardware topology and memory bandwidth constraints, MoE models can deliver dense-model quality at a fraction of the compute per token.
-Ultimately, MoEs exemplify the broader theme of inference optimization, i.e., performance emerges not only from algorithmic design, but from thoughtful co-design of model structure, parallelism strategy, communication patterns, and low-level kernels.</p>
+<p>A number of influential papers have explored such mechanisms in practice. For example, Longformer [<a href="#longformer">8</a>] introduces a hybrid sparse pattern combining local windows with a small number of global tokens to preserve important long-range context while keeping computation linear in sequence length. BigBird [<a href="#bigbird">9</a>] proposes block-sparse attention with local, random, and global components to approximate full attention with linear complexity. We do not exhaustively cover the different sparse attention mechanisms.</p>
 
 
 <h2 id="references">
@@ -734,9 +760,33 @@ Ultimately, MoEs exemplify the broader theme of inference optimization, i.e., pe
   
 </h2>
 <ol>
-<li>Mixture of Experts Explained, HuggingFace blog, Dec 2023 <a href="">https://huggingface.co/blog/moe</a></li>
-<li>Lepikhin et. al., GShard: Scaling Giant Models with Conditional Computation and Automatic Sharding, 2020 <a href="">https://arxiv.org/abs/2006.16668</a></li>
-<li>Fedus, Dean and Zoph, A Review of Sparse Expert Models in Deep Learning, 2022 <a href="">https://arxiv.org/abs/2209.01667</a></li>
+<li>
+<p>Sliding Window Attention (SWA) <a href="">https://sebastianraschka.com/llms-from-scratch/ch04/06_swa/</a></p>
+</li>
+<li>
+<p>The big LLM architecture comparison <a href="">https://magazine.sebastianraschka.com/p/the-big-llm-architecture-comparison</a></p>
+</li>
+<li>
+<p><a id="gqa"></a> GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints <a href="https://arxiv.org/abs/2305.13245">https://arxiv.org/abs/2305.13245</a></p>
+</li>
+<li>
+<p><a id="llama-2"></a>Llama 2: Open Foundation and Fine-Tuned Chat Models <a href="https://arxiv.org/abs/2307.09288">https://arxiv.org/abs/2307.09288</a></p>
+</li>
+<li>
+<p><a id="llama-3"></a>The Llama 3 Herd of Models <a href="https://arxiv.org/abs/2407.21783">https://arxiv.org/abs/2407.21783</a></p>
+</li>
+<li>
+<p><a id="deepseek-v3"></a>DeepSeek-V3 Technical Report <a href="https://arxiv.org/abs/2412.19437">https://arxiv.org/abs/2412.19437</a></p>
+</li>
+<li>
+<p><a id="deepseek-v2"></a>DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model <a href="https://arxiv.org/abs/2405.04434">https://arxiv.org/abs/2405.04434</a></p>
+</li>
+<li>
+<p><a id="longformer"></a>Longformer: The Long-Document Transformer, Beltagy et. al., 2020 <a href="https://arxiv.org/abs/2004.05150">https://arxiv.org/abs/2004.05150</a></p>
+</li>
+<li>
+<p><a id="bigbird"></a>Big Bird: Transformers for Longer Sequences, Zaheer et; al., 2021 <a href="https://arxiv.org/abs/2007.14062">https://arxiv.org/abs/2007.14062</a></p>
+</li>
 </ol>
 </article>
  
@@ -763,16 +813,16 @@ Ultimately, MoEs exemplify the broader theme of inference optimization, i.e., pe
     <span>
     
       <a href="../../../docs/section-2/subsection-1/" class="flex align-center book-icon">
-        <img src="../../../svg/backward.svg" class="book-icon" alt="Previous" title="2.1 Efficient Attention Variants" />
-        <span>2.1 Efficient Attention Variants</span>
+        <img src="../../../svg/backward.svg" class="book-icon" alt="Previous" title="2.1 Key-Value Caching" />
+        <span>2.1 Key-Value Caching</span>
       </a>
     
     </span>
     <span>
     
       <a href="../../../docs/section-2/subsection-3/" class="flex align-center book-icon">
-        <span>2.3 Model Quantization</span>
-        <img src="../../../svg/forward.svg" class="book-icon" alt="Next" title="2.3 Model Quantization" />
+        <span>2.3 Mixture of Experts</span>
+        <img src="../../../svg/forward.svg" class="book-icon" alt="Next" title="2.3 Mixture of Experts" />
       </a>
     
     </span>
@@ -807,18 +857,11 @@ Ultimately, MoEs exemplify the broader theme of inference optimization, i.e., pe
   
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#moe-architecture-overview"><strong>MoE architecture overview</strong></a>
-      <ul>
-        <li><a href="#routing"><strong>Routing</strong></a></li>
-      </ul>
-    </li>
-    <li><a href="#why-moe-improves-inference-efficiency"><strong>Why MoE improves inference efficiency</strong></a></li>
-    <li><a href="#moe-inference-optimization"><strong>MoE inference optimization</strong></a>
-      <ul>
-        <li><a href="#parallelism"><strong>Parallelism</strong></a></li>
-        <li><a href="#expert-compute-optimizations"><strong>Expert-compute optimizations</strong></a></li>
-      </ul>
-    </li>
+    <li><a href="#multi-head-attention-mha"><strong>Multi Head Attention (MHA)</strong></a></li>
+    <li><a href="#grouped-query-attention-gqa"><strong>Grouped Query Attention (GQA)</strong></a></li>
+    <li><a href="#multi-head-latent-attention-mla"><strong>Multi-Head Latent Attention (MLA)</strong></a></li>
+    <li><a href="#sliding-window-attention-swa"><strong>Sliding Window Attention (SWA)</strong></a></li>
+    <li><a href="#sparse-attention"><strong>Sparse Attention</strong></a></li>
     <li><a href="#references">References</a></li>
   </ul>
 </nav>

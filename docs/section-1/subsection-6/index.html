@@ -31,7 +31,7 @@ With an understanding of the underlying AI infrastructure (from on-chip compute 
 <link rel="canonical" href="https://neuron-science.github.io/docs/section-1/subsection-6/">
 <link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
   <script defer src="../../../fuse.min.js"></script>
-  <script defer src="../../../en.search.min.7de5366b7dcac6ddccffb157de59d5a536b89a4e5e9bf4f4fe93b39a587785f8.js" integrity="sha256-feU2a33Kxt3M/7FX3lnVpTa4mk5em/T0/pOzmlh3hfg=" crossorigin="anonymous"></script>
+  <script defer src="../../../en.search.min.3c62f5a27fc04c4a5c5420d70c134672d5ef1510a3729f75a5b9a3eddf3bfc0b.js" integrity="sha256-PGL1on/ATEpcVCDXDBNGctXvFRCjcp91pbmj7d87/As=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-1/subsection-6/index.xml" title="Inference Optimization" />
 <!--
 Made with Book Theme
@@ -116,7 +116,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-1/subsection-2/" class="">1.2 Llama family of models</a>
+    <a href="../../../docs/section-1/subsection-2/" class="">1.2 Representative LLM Architectures</a>
   
 
           
@@ -224,7 +224,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-1/" class="">2.1 Efficient Attention Variants</a>
+    <a href="../../../docs/section-2/subsection-1/" class="">2.1 Key-Value Caching</a>
   
 
           
@@ -242,7 +242,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-2/" class="">2.2 Mixture of Experts</a>
+    <a href="../../../docs/section-2/subsection-2/" class="">2.2 Efficient Attention Variants</a>
   
 
           
@@ -260,7 +260,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-3/" class="">2.3 Model Quantization</a>
+    <a href="../../../docs/section-2/subsection-3/" class="">2.3 Mixture of Experts</a>
   
 
           
@@ -278,7 +278,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-2/subsection-4/" class="">2.4 Key-Value Caching</a>
+    <a href="../../../docs/section-2/subsection-4/" class="">2.4 Model Quantization</a>
   
 
           
@@ -458,7 +458,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../../../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion</a>
+    <a href="../../../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion and Flash Attention</a>
   
 
           
@@ -495,6 +495,24 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="../../../docs/section-4/subsection-1/" class="">4.1 vLLM</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/subsection-2/" class="">4.2 Framework Comparison</a>
   
 
           
@@ -564,15 +582,15 @@ https://github.com/alex-shpak/hugo-book
   <ul>
     <li><a href="#sharded-matrix-multiplication"><strong>Sharded Matrix Multiplication</strong></a>
       <ul>
-        <li><a href="#case-1-neither-input-is-sharded-along-the-contraction-dimension"><strong>Case 1: Neither Input Is Sharded Along the Contraction Dimension</strong></a></li>
-        <li><a href="#case-2-one-input-has-a-sharded-contracting-dimension"><strong>Case 2: One input has a sharded contracting dimension</strong></a></li>
-        <li><a href="#case-3-both-inputs-sharded-along-the-contraction-dimension"><strong>Case 3: Both inputs sharded along the contraction dimension</strong></a></li>
-        <li><a href="#case-4-both-inputs-have-a-non-contracting-dimension-sharded-along-the-same-axis"><strong>Case 4: Both inputs have a non-contracting dimension sharded along the same axis</strong></a></li>
+        <li><a href="#case-1-neither-input-is-sharded-along-the-contraction-dimension">Case 1: Neither Input Is Sharded Along the Contraction Dimension</a></li>
+        <li><a href="#case-2-one-input-has-a-sharded-contracting-dimension">Case 2: One input has a sharded contracting dimension</a></li>
+        <li><a href="#case-3-both-inputs-sharded-along-the-contraction-dimension">Case 3: Both inputs sharded along the contraction dimension</a></li>
+        <li><a href="#case-4-both-inputs-have-a-non-contracting-dimension-sharded-along-the-same-axis">Case 4: Both inputs have a non-contracting dimension sharded along the same axis</a></li>
       </ul>
     </li>
     <li><a href="#beyond-allgather-and-allreduce-reducescatter-and-all-to-all"><strong>Beyond AllGather and AllReduce: ReduceScatter and All-to-All</strong></a>
       <ul>
-        <li><a href="#reducescatter-reduce-first-then-distribute"><strong>ReduceScatter: Reduce First, Then Distribute</strong></a></li>
+        <li><a href="#reducescatter-reduce-first-then-distribute">ReduceScatter: Reduce First, Then Distribute</a></li>
       </ul>
     </li>
     <li><a href="#all-to-all-general-data-redistribution-across-devices"><strong>All-to-All: General Data Redistribution Across Devices</strong></a></li>
@@ -590,7 +608,7 @@ https://github.com/alex-shpak/hugo-book
       
       
   <article class="markdown book-article"><h1 id="parallelism-strategies-and-communication-collectives">
-  Parallelism Strategies and Communication Collectives
+  <strong>Parallelism Strategies and Communication Collectives</strong>
   
   <a class="anchor" href="#parallelism-strategies-and-communication-collectives">#</a>
   
@@ -620,7 +638,7 @@ https://github.com/alex-shpak/hugo-book
 </h2>
 <p>Consider a standard matrix multiplication $$C = AB,$$ where $$A \in \mathbb{R}^{m \times k}, \quad B \in \mathbb{R}^{k \times n}, \quad C \in \mathbb{R}^{m \times n}.$$ The index $k$ is called the <strong>contraction dimension</strong>, since matrix multiplication contracts (sums) over this shared dimension: $$C_{ij} = \sum_{p=1}^{k} A_{ip} , B_{pj}.$$ When matrices are too large to fit on a single accelerator, they must be sharded—that is, partitioned across multiple devices along one or more dimensions. How the matrices $A$ and $B$ are sharded determines how the matmul is computed and which communication primitives are involved. The following subsections considers the different sharding strategies. The reader is referred to <a href="https://jax-ml.github.io/scaling-book/sharding/">[1]</a> for a detailed description.</p>
 <h3 id="case-1-neither-input-is-sharded-along-the-contraction-dimension">
-  <strong>Case 1: Neither Input Is Sharded Along the Contraction Dimension</strong>
+  Case 1: Neither Input Is Sharded Along the Contraction Dimension
   
   <a class="anchor" href="#case-1-neither-input-is-sharded-along-the-contraction-dimension">#</a>
   
@@ -635,7 +653,7 @@ B^{(p)} \in \mathbb{R}^{k \times \frac{n}{P}}$$</p>
 <p>Because there is no sharding along the contraction dimension, no partial sums need to be combined across devices. Each device computes a disjoint tile of the output matrix, and the global result is generated sharded across the $P$ devices. No <strong>communication primitives</strong> are required to compute the result.</p>
 <p>This case represents the ideal scenario for inference performance: computation is fully local, communication-free, and scales linearly with the number of devices.</p>
 <h3 id="case-2-one-input-has-a-sharded-contracting-dimension">
-  <strong>Case 2: One input has a sharded contracting dimension</strong>
+  Case 2: One input has a sharded contracting dimension
   
   <a class="anchor" href="#case-2-one-input-has-a-sharded-contracting-dimension">#</a>
   
@@ -651,7 +669,7 @@ B^{(p)} \in \mathbb{R}^{k \times \frac{n}{P}}$$</p>
 <p>The key characteristic of this case is that communication occurs before computation. The AllGather materializes the missing contraction dimension so that the matrix multiplication can be executed locally without producing partial sums. This pattern is common when one operand is partitioned for memory reasons, but the computation requires full visibility across the contraction axis.</p>
 <p><strong>AllGather</strong>: AllGather is a collective communication primitive used to assemble a distributed tensor from its shards and make the full tensor available on every participating device. Each device starts with a local slice of a larger tensor, typically partitioned along some dimension. After an AllGather operation, every device holds the concatenation of all slices along that dimension. Conceptually, AllGather is the inverse of sharding: it temporarily reconstructs a globally complete tensor from pieces that are distributed across devices. In inference workloads, this pattern often appears when activations or weights are sharded for memory capacity reasons, but the computation requires full visibility across the contraction dimension. Understanding when AllGather is necessary (along with its cost) is essential for reasoning about the performance tradeoffs of different sharding strategies.</p>
 <h3 id="case-3-both-inputs-sharded-along-the-contraction-dimension">
-  <strong>Case 3: Both inputs sharded along the contraction dimension</strong>
+  Case 3: Both inputs sharded along the contraction dimension
   
   <a class="anchor" href="#case-3-both-inputs-sharded-along-the-contraction-dimension">#</a>
   
@@ -667,7 +685,7 @@ $$</p>
 <p>The summation is implemented using an AllReduce operation (described later), with summation as the reduction operator. Unlike AllGather, communication here occurs after computation. Each device performs a local GEMM first, then participates in an AllReduce to combine partial results into the full output matrix. This pattern is fundamental to tensor-parallel linear layers and is widely used in both training and inference, as it balances computation and communication while avoiding materializing full inputs on every device.</p>
 <p><strong>AllGather</strong>: AllReduce is a collective communication primitive used to <strong>combine distributed tensors by applying a reduction operation and making the reduced result available on every participating device</strong>. Each device begins with a local tensor of identical shape, and AllReduce aggregates these tensors elementwise using an operator such as sum, max, or mean. After the operation completes, every device holds the same reduced tensor, not just a partial result.</p>
 <h3 id="case-4-both-inputs-have-a-non-contracting-dimension-sharded-along-the-same-axis">
-  <strong>Case 4: Both inputs have a non-contracting dimension sharded along the same axis</strong>
+  Case 4: Both inputs have a non-contracting dimension sharded along the same axis
   
   <a class="anchor" href="#case-4-both-inputs-have-a-non-contracting-dimension-sharded-along-the-same-axis">#</a>
   
@@ -692,7 +710,7 @@ $$</p>
 </h2>
 <p>So far, we have focused on sharded matrix multiplications that require either materializing missing data before computation (AllGather) or combining partial results after computation (AllReduce). These two primitives already cover many common tensor-parallel patterns in LLM inference. However, modern inference systems often require more communication-efficient or more flexible data rearrangements, especially when scaling to larger device counts or supporting architectures such as Mixture-of-Experts (MoE). This motivates two additional collectives: ReduceScatter and All-to-All, which generalize and refine the communication patterns we have seen so far.</p>
 <h3 id="reducescatter-reduce-first-then-distribute">
-  <strong>ReduceScatter: Reduce First, Then Distribute</strong>
+  ReduceScatter: Reduce First, Then Distribute
   
   <a class="anchor" href="#reducescatter-reduce-first-then-distribute">#</a>
   
@@ -802,15 +820,15 @@ $$</p>
   <ul>
     <li><a href="#sharded-matrix-multiplication"><strong>Sharded Matrix Multiplication</strong></a>
       <ul>
-        <li><a href="#case-1-neither-input-is-sharded-along-the-contraction-dimension"><strong>Case 1: Neither Input Is Sharded Along the Contraction Dimension</strong></a></li>
-        <li><a href="#case-2-one-input-has-a-sharded-contracting-dimension"><strong>Case 2: One input has a sharded contracting dimension</strong></a></li>
-        <li><a href="#case-3-both-inputs-sharded-along-the-contraction-dimension"><strong>Case 3: Both inputs sharded along the contraction dimension</strong></a></li>
-        <li><a href="#case-4-both-inputs-have-a-non-contracting-dimension-sharded-along-the-same-axis"><strong>Case 4: Both inputs have a non-contracting dimension sharded along the same axis</strong></a></li>
+        <li><a href="#case-1-neither-input-is-sharded-along-the-contraction-dimension">Case 1: Neither Input Is Sharded Along the Contraction Dimension</a></li>
+        <li><a href="#case-2-one-input-has-a-sharded-contracting-dimension">Case 2: One input has a sharded contracting dimension</a></li>
+        <li><a href="#case-3-both-inputs-sharded-along-the-contraction-dimension">Case 3: Both inputs sharded along the contraction dimension</a></li>
+        <li><a href="#case-4-both-inputs-have-a-non-contracting-dimension-sharded-along-the-same-axis">Case 4: Both inputs have a non-contracting dimension sharded along the same axis</a></li>
       </ul>
     </li>
     <li><a href="#beyond-allgather-and-allreduce-reducescatter-and-all-to-all"><strong>Beyond AllGather and AllReduce: ReduceScatter and All-to-All</strong></a>
       <ul>
-        <li><a href="#reducescatter-reduce-first-then-distribute"><strong>ReduceScatter: Reduce First, Then Distribute</strong></a></li>
+        <li><a href="#reducescatter-reduce-first-then-distribute">ReduceScatter: Reduce First, Then Distribute</a></li>
       </ul>
     </li>
     <li><a href="#all-to-all-general-data-redistribution-across-devices"><strong>All-to-All: General Data Redistribution Across Devices</strong></a></li>
