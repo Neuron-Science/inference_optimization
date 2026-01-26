@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
 <head>
-	<meta name="generator" content="Hugo 0.152.2">
+	<meta name="generator" content="Hugo 0.152.2"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="
@@ -24,7 +24,7 @@ State-of-the-art Generative AI (GenAI) models now span diverse modalities includ
 The tutorial is organized into three sessions that collectively build a comprehensive understanding of efficient inference for GenAI models. Session 1 provides an overview of the diverse architectural classes of GenAI models, ranging from decoder-only LLMs to multimodal models. This is followed by an introduction to the multi-layered inference stack, spanning high-level ML frameworks such as PyTorch to low-level hardware instructions — an understanding of which is essential for systematically uncovering performance bottlenecks. This will be accompanied with a demonstration of profiling techniques to analyze these bottlenecks. Session 2 dives into algorithmic, modeling, and systems-level optimizations, covering techniques like efficient attention variants, quantization, speculative decoding, and kernel fusion — while examining how each of these techniques alleviates the bottlenecks discussed in Session 1. Session 3 concludes the tutorial by focusing on practical tools and frameworks that implement many of the previously discussed optimization techniques with accompanying demos. It will highlight vLLM for high-throughput LLM serving, and TensorRT for hardware-optimized compilation across modalities. Together, these sessions will equip participants with the technical depth and tooling needed to deploy GenAI models efficiently in real-world systems.">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
-<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://neuron-science.github.io/">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/">
   <meta property="og:site_name" content="Inference Optimization">
   <meta property="og:title" content="Inference Optimization">
   <meta property="og:description" content="[Tutorial TH08] Algorithms and Systems for Efficient Inference in Generative AI Tuesday, January 20, 2026 from 2:00pm to 6:00pm Venue: Singapore EXPO, 1 Expo Dr, Singapore 486150 Room: Garnet 218 Tutorial Abstract State-of-the-art Generative AI (GenAI) models now span diverse modalities including language, vision, and audio, and are being deployed across an increasingly wide range of applications. However, their growing size and complexity pose significant challenges for efficient inference, particularly in real-time or resource-constrained settings. This tutorial will introduce participants to a range of techniques that enable high-performance, scalable inference without compromising model accuracy. It will cover practical tools, open-source serving frameworks, and deployment considerations across different hardware platforms, and the underlying principles will be broadly applicable to emerging model architectures. These methods will be illustrated through concrete scenarios, such as low-latency serving of large language models (LLMs), on-device deployment of quantized models, and performance tuning for cost-sensitive applications. The tutorial is organized into three sessions that collectively build a comprehensive understanding of efficient inference for GenAI models. Session 1 provides an overview of the diverse architectural classes of GenAI models, ranging from decoder-only LLMs to multimodal models. This is followed by an introduction to the multi-layered inference stack, spanning high-level ML frameworks such as PyTorch to low-level hardware instructions — an understanding of which is essential for systematically uncovering performance bottlenecks. This will be accompanied with a demonstration of profiling techniques to analyze these bottlenecks. Session 2 dives into algorithmic, modeling, and systems-level optimizations, covering techniques like efficient attention variants, quantization, speculative decoding, and kernel fusion — while examining how each of these techniques alleviates the bottlenecks discussed in Session 1. Session 3 concludes the tutorial by focusing on practical tools and frameworks that implement many of the previously discussed optimization techniques with accompanying demos. It will highlight vLLM for high-throughput LLM serving, and TensorRT for hardware-optimized compilation across modalities. Together, these sessions will equip participants with the technical depth and tooling needed to deploy GenAI models efficiently in real-world systems.">
@@ -33,11 +33,11 @@ The tutorial is organized into three sessions that collectively build a comprehe
 <title> | Inference Optimization</title>
 <link rel="icon" href="./favicon.png" >
 <link rel="manifest" href="./manifest.json">
-<link rel="canonical" href="https://neuron-science.github.io/">
+<link rel="canonical" href="http://localhost:1313/">
 <link rel="stylesheet" href="./book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
   <script defer src="./fuse.min.js"></script>
-  <script defer src="./en.search.min.49d756c3d6fa260a59256ad4058fb4c8e5430a06c3b13d9fe8d00bbcb6a3761a.js" integrity="sha256-SddWw9b6JgpZJWrUBY&#43;0yOVDCgbDsT2f6NALvLajdho=" crossorigin="anonymous"></script>
-<link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/index.xml" title="Inference Optimization" />
+  <script defer src="./en.search.min.d1f97ec24a2dde3ea678194f62541c4b126dd4fe1bbfc9d16d77ccd932ab6786.js" integrity="sha256-0fl&#43;wkot3j6meBlPYlQcSxJt1P4bv8nRbXfM2TKrZ4Y=" crossorigin="anonymous"></script>
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/index.xml" title="Inference Optimization" />
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -474,6 +474,11 @@ https://github.com/alex-shpak/hugo-book
         </li>
       
     
+  </ul>
+
+        </li>
+      
+    
       
         <li>
           
@@ -481,7 +486,20 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="./docs/section-3/subsection-8/" class="">3.8 vLLM</a>
+    <a href="./docs/section-4/" class="">Open-Source Frameworks and Tools</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="./docs/section-4/subsection-1/" class="">4.1 vLLM</a>
   
 
           
@@ -499,7 +517,25 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="./docs/section-3/subsection-9/" class="">3.9 Framework Comparison</a>
+    <a href="./docs/section-4/subsection-2/" class="">4.2 SGLang</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="./docs/section-4/subsection-3/" class="">4.3 Framework Comparison</a>
   
 
           

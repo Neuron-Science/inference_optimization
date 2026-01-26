@@ -1,31 +1,50 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
 <head>
+	<meta name="generator" content="Hugo 0.152.2"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="">
+<meta name="description" content="
+[Tutorial TH08] Algorithms and Systems for Efficient Inference in Generative AI
+
+
+Tuesday, January 20, 2026 from 2:00pm to 6:00pm
+
+
+Venue: Singapore EXPO, 1 Expo Dr, Singapore 486150
+
+
+Room: Garnet 218
+
+
+Tutorial Abstract
+
+
+State-of-the-art Generative AI (GenAI) models now span diverse modalities including language, vision, and audio, and are being deployed across an increasingly wide range of applications. However, their growing size and complexity pose significant challenges for efficient inference, particularly in real-time or resource-constrained settings. This tutorial will introduce participants to a range of techniques that enable high-performance, scalable inference without compromising model accuracy. It will cover practical tools, open-source serving frameworks, and deployment considerations across different hardware platforms, and the underlying principles will be broadly applicable to emerging model architectures. These methods will be illustrated through concrete scenarios, such as low-latency serving of large language models (LLMs), on-device deployment of quantized models, and performance tuning for cost-sensitive applications.
+The tutorial is organized into three sessions that collectively build a comprehensive understanding of efficient inference for GenAI models. Session 1 provides an overview of the diverse architectural classes of GenAI models, ranging from decoder-only LLMs to multimodal models. This is followed by an introduction to the multi-layered inference stack, spanning high-level ML frameworks such as PyTorch to low-level hardware instructions — an understanding of which is essential for systematically uncovering performance bottlenecks. This will be accompanied with a demonstration of profiling techniques to analyze these bottlenecks. Session 2 dives into algorithmic, modeling, and systems-level optimizations, covering techniques like efficient attention variants, quantization, speculative decoding, and kernel fusion — while examining how each of these techniques alleviates the bottlenecks discussed in Session 1. Session 3 concludes the tutorial by focusing on practical tools and frameworks that implement many of the previously discussed optimization techniques with accompanying demos. It will highlight vLLM for high-throughput LLM serving, and TensorRT for hardware-optimized compilation across modalities. Together, these sessions will equip participants with the technical depth and tooling needed to deploy GenAI models efficiently in real-world systems.">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
-<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://neuron-science.github.io/tags/">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/">
   <meta property="og:site_name" content="Inference Optimization">
-  <meta property="og:title" content="Tags">
+  <meta property="og:title" content="Inference Optimization">
+  <meta property="og:description" content="[Tutorial TH08] Algorithms and Systems for Efficient Inference in Generative AI Tuesday, January 20, 2026 from 2:00pm to 6:00pm Venue: Singapore EXPO, 1 Expo Dr, Singapore 486150 Room: Garnet 218 Tutorial Abstract State-of-the-art Generative AI (GenAI) models now span diverse modalities including language, vision, and audio, and are being deployed across an increasingly wide range of applications. However, their growing size and complexity pose significant challenges for efficient inference, particularly in real-time or resource-constrained settings. This tutorial will introduce participants to a range of techniques that enable high-performance, scalable inference without compromising model accuracy. It will cover practical tools, open-source serving frameworks, and deployment considerations across different hardware platforms, and the underlying principles will be broadly applicable to emerging model architectures. These methods will be illustrated through concrete scenarios, such as low-latency serving of large language models (LLMs), on-device deployment of quantized models, and performance tuning for cost-sensitive applications. The tutorial is organized into three sessions that collectively build a comprehensive understanding of efficient inference for GenAI models. Session 1 provides an overview of the diverse architectural classes of GenAI models, ranging from decoder-only LLMs to multimodal models. This is followed by an introduction to the multi-layered inference stack, spanning high-level ML frameworks such as PyTorch to low-level hardware instructions — an understanding of which is essential for systematically uncovering performance bottlenecks. This will be accompanied with a demonstration of profiling techniques to analyze these bottlenecks. Session 2 dives into algorithmic, modeling, and systems-level optimizations, covering techniques like efficient attention variants, quantization, speculative decoding, and kernel fusion — while examining how each of these techniques alleviates the bottlenecks discussed in Session 1. Session 3 concludes the tutorial by focusing on practical tools and frameworks that implement many of the previously discussed optimization techniques with accompanying demos. It will highlight vLLM for high-throughput LLM serving, and TensorRT for hardware-optimized compilation across modalities. Together, these sessions will equip participants with the technical depth and tooling needed to deploy GenAI models efficiently in real-world systems.">
   <meta property="og:locale" content="en_us">
   <meta property="og:type" content="website">
-<title>Tags | Inference Optimization</title>
-<link rel="icon" href="../favicon.png" >
-<link rel="manifest" href="../manifest.json">
-<link rel="canonical" href="https://neuron-science.github.io/tags/">
-<link rel="stylesheet" href="../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
-  <script defer src="../fuse.min.js"></script>
-  <script defer src="../en.search.min.49d756c3d6fa260a59256ad4058fb4c8e5430a06c3b13d9fe8d00bbcb6a3761a.js" integrity="sha256-SddWw9b6JgpZJWrUBY&#43;0yOVDCgbDsT2f6NALvLajdho=" crossorigin="anonymous"></script>
-<link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/tags/index.xml" title="Inference Optimization" />
+<title> | Inference Optimization</title>
+<link rel="icon" href="./favicon.png" >
+<link rel="manifest" href="./manifest.json">
+<link rel="canonical" href="http://localhost:1313/">
+<link rel="stylesheet" href="./book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
+  <script defer src="./fuse.min.js"></script>
+  <script defer src="./en.search.min.d1f97ec24a2dde3ea678194f62541c4b126dd4fe1bbfc9d16d77ccd932ab6786.js" integrity="sha256-0fl&#43;wkot3j6meBlPYlQcSxJt1P4bv8nRbXfM2TKrZ4Y=" crossorigin="anonymous"></script>
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/index.xml" title="Inference Optimization" />
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
 -->
   
 </head>
-<body dir="ltr" class="book-kind-taxonomy book-type-tags book-layout-">
+<body dir="ltr" class="book-kind-home book-type-page book-layout-">
   <input type="checkbox" class="hidden toggle" id="menu-control" />
   <input type="checkbox" class="hidden toggle" id="toc-control" />
   <main class="container flex">
@@ -35,7 +54,7 @@ https://github.com/alex-shpak/hugo-book
     
   <nav>
 <h2 class="book-brand">
-  <a class="flex align-center" href="../"><span>Inference Optimization</span>
+  <a class="flex align-center" href="./"><span>Inference Optimization</span>
   </a>
 </h2>
 
@@ -71,7 +90,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../docs/section-1/" class="">Foundations of Generative Inference</a>
+    <a href="./docs/section-1/" class="">Foundations of Generative Inference</a>
   
 
           
@@ -84,25 +103,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../docs/section-1/subsection-1/" class="">1.1 Overview of Transformer Architecture</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="../docs/section-1/subsection-2/" class="">1.2 Representative LLM Architectures</a>
+    <a href="./docs/section-1/subsection-1/" class="">1.1 Overview of Transformer Architecture</a>
   
 
           
@@ -120,7 +121,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../docs/section-1/subsection-3/" class="">1.3 Hardware Accelerators for Generative AI</a>
+    <a href="./docs/section-1/subsection-2/" class="">1.2 Representative LLM Architectures</a>
   
 
           
@@ -138,7 +139,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../docs/section-1/subsection-4/" class="">1.4 Roofline Analysis</a>
+    <a href="./docs/section-1/subsection-3/" class="">1.3 Hardware Accelerators for Generative AI</a>
   
 
           
@@ -156,7 +157,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../docs/section-1/subsection-5/" class="">1.5 Measuring Inference Efficiency</a>
+    <a href="./docs/section-1/subsection-4/" class="">1.4 Roofline Analysis</a>
   
 
           
@@ -174,43 +175,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../docs/section-1/subsection-6/" class="">1.6 Parallelism Strategies and Communication Collectives</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="../docs/section-2/" class="">Algorithmic and Modeling-Level Inference Optimization</a>
-  
-
-          
-  <ul>
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="../docs/section-2/subsection-1/" class="">2.1 Key-Value Caching</a>
+    <a href="./docs/section-1/subsection-5/" class="">1.5 Measuring Inference Efficiency</a>
   
 
           
@@ -228,79 +193,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../docs/section-2/subsection-2/" class="">2.2 Efficient Attention Variants</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="../docs/section-2/subsection-3/" class="">2.3 Mixture of Experts</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="../docs/section-2/subsection-4/" class="">2.4 Model Quantization</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="../docs/section-2/subsection-5/" class="">2.5 Speculative Decoding</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="../docs/section-2/subsection-6/" class="">2.6 Knowledge Distillation</a>
+    <a href="./docs/section-1/subsection-6/" class="">1.6 Parallelism Strategies and Communication Collectives</a>
   
 
           
@@ -323,7 +216,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../docs/section-3/" class="">Systems-Level Inference Optimization</a>
+    <a href="./docs/section-2/" class="">Algorithmic and Modeling-Level Inference Optimization</a>
   
 
           
@@ -336,25 +229,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../docs/section-3/subsection-1/" class="">3.1 Continuous Batching</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="../docs/section-3/subsection-2/" class="">3.2 Paged Attention</a>
+    <a href="./docs/section-2/subsection-1/" class="">2.1 Key-Value Caching</a>
   
 
           
@@ -372,7 +247,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../docs/section-3/subsection-3/" class="">3.3 Chunked Prefill</a>
+    <a href="./docs/section-2/subsection-2/" class="">2.2 Efficient Attention Variants</a>
   
 
           
@@ -390,7 +265,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../docs/section-3/subsection-4/" class="">3.4 Disaggregated Inference</a>
+    <a href="./docs/section-2/subsection-3/" class="">2.3 Mixture of Experts</a>
   
 
           
@@ -408,7 +283,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../docs/section-3/subsection-5/" class="">3.5 Multi-LoRA Serving</a>
+    <a href="./docs/section-2/subsection-4/" class="">2.4 Model Quantization</a>
   
 
           
@@ -426,7 +301,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../docs/section-3/subsection-6/" class="">3.6 Compute Graph Optimization</a>
+    <a href="./docs/section-2/subsection-5/" class="">2.5 Speculative Decoding</a>
   
 
           
@@ -444,7 +319,43 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion and Flash Attention</a>
+    <a href="./docs/section-2/subsection-6/" class="">2.6 Knowledge Distillation</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="./docs/section-3/" class="">Systems-Level Inference Optimization</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="./docs/section-3/subsection-1/" class="">3.1 Continuous Batching</a>
   
 
           
@@ -462,7 +373,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../docs/section-3/subsection-8/" class="">3.8 vLLM</a>
+    <a href="./docs/section-3/subsection-2/" class="">3.2 Paged Attention</a>
   
 
           
@@ -480,7 +391,151 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="../docs/section-3/subsection-9/" class="">3.9 Framework Comparison</a>
+    <a href="./docs/section-3/subsection-3/" class="">3.3 Chunked Prefill</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="./docs/section-3/subsection-4/" class="">3.4 Disaggregated Inference</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="./docs/section-3/subsection-5/" class="">3.5 Multi-LoRA Serving</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="./docs/section-3/subsection-6/" class="">3.6 Compute Graph Optimization</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="./docs/section-3/subsection-7/" class="">3.7 Kernel Fusion and Flash Attention</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="./docs/section-4/" class="">Open-Source Frameworks and Tools</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="./docs/section-4/subsection-1/" class="">4.1 vLLM</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="./docs/section-4/subsection-2/" class="">4.2 SGLang</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="./docs/section-4/subsection-3/" class="">4.3 Framework Comparison</a>
   
 
           
@@ -529,10 +584,10 @@ https://github.com/alex-shpak/hugo-book
         
   <div class="flex align-center justify-between">
   <label for="menu-control">
-    <img src="../svg/menu.svg" class="book-icon" alt="Menu" />
+    <img src="./svg/menu.svg" class="book-icon" alt="Menu" />
   </label>
 
-  <h3>Tags</h3>
+  <h3></h3>
 
   <label for="toc-control">
     
@@ -555,7 +610,135 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown book-article"></article>
+  <article class="markdown book-article"><div style="text-align: center; font-weight: bold; font-size: 2.5em; margin: 1em 0;">
+[Tutorial TH08] Algorithms and Systems for Efficient Inference in Generative AI
+</div>
+<div style="text-align: center; font-size: 1.5em; margin: 0em 0;">
+Tuesday, January 20, 2026 from 2:00pm to 6:00pm
+</div>
+<div style="text-align: center; font-size: 1.5em; margin: 0em 0;">
+Venue: Singapore EXPO, 1 Expo Dr, Singapore 486150
+</div>
+<div style="text-align: center; font-size: 1.5em; margin: 0em 0;">
+Room: Garnet 218
+</div>
+<div style="text-align: center; font-weight: bold; font-size: 2em; margin: 2.5em 0 1em 0;">
+Tutorial Abstract
+</div>
+<div style="text-align: justify; font-size: 1em; margin: 0em 8em;">
+State-of-the-art Generative AI (GenAI) models now span diverse modalities including language, vision, and audio, and are being deployed across an increasingly wide range of applications. However, their growing size and complexity pose significant challenges for efficient inference, particularly in real-time or resource-constrained settings. This tutorial will introduce participants to a range of techniques that enable high-performance, scalable inference without compromising model accuracy. It will cover practical tools, open-source serving frameworks, and deployment considerations across different hardware platforms, and the underlying principles will be broadly applicable to emerging model architectures. These methods will be illustrated through concrete scenarios, such as low-latency serving of large language models (LLMs), on-device deployment of quantized models, and performance tuning for cost-sensitive applications.
+<p>The tutorial is organized into three sessions that collectively build a comprehensive understanding of efficient inference for GenAI models. Session 1 provides an overview of the diverse architectural classes of GenAI models, ranging from decoder-only LLMs to multimodal models. This is followed by an introduction to the multi-layered inference stack, spanning high-level ML frameworks such as PyTorch to low-level hardware instructions — an understanding of which is essential for systematically uncovering performance bottlenecks. This will be accompanied with a demonstration of profiling techniques to analyze these bottlenecks. Session 2 dives into algorithmic, modeling, and systems-level optimizations, covering techniques like efficient attention variants, quantization, speculative decoding, and kernel fusion — while examining how each of these techniques alleviates the bottlenecks discussed in Session 1. Session 3 concludes the tutorial by focusing on practical tools and frameworks that implement many of the previously discussed optimization techniques with accompanying demos. It will highlight vLLM for high-throughput LLM serving, and TensorRT for hardware-optimized compilation across modalities. Together, these sessions will equip participants with the technical depth and tooling needed to deploy GenAI models efficiently in real-world systems.</p>
+<p>This tutorial is designed for researchers and practitioners in AI who are interested in understanding and improving the efficiency of GenAI models. It will be particularly valuable for those with expertise in a specific layer of the inference stack, such as modeling, quantization, or infrastructure, and are seeking to develop a holistic perspective connecting algorithmic techniques with system-level and hardware-aware optimizations. Attendees are expected to have basic familiarity with deep learning frameworks (e.g., PyTorch). Prior experience with LLM architectures and deployment is beneficial, but not required.</p>
+</div>
+<div style="text-align: center; font-weight: bold; font-size: 2em; margin: 2.5em 0 1em 0;">
+<a href="./AAAI2026_inf_opt_slides.pdf">Tutorial Slides</a>
+</div>
+<div style="text-align: center; font-weight: bold; font-size: 2em; margin: 2.5em 0 1em 0;">
+Speakers' Bio
+</div>
+<div style="display: flex; align-items: flex-start; margin: 2em 0 2em 4em; gap: 2em;">
+  <div style="flex: 0 0 200px; margin-top: 1.5em;">
+    <img src="./images/contributors/rajarshi_saha.png" alt="Rajarshi Saha" style="width: 180px; height: 180px; object-fit: cover; object-position: center 30%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1; text-align: justify;">
+    <p><strong>Rajarshi Saha</strong> is an Applied Scientist at AWS AI Research and Education, where he focuses on developing algorithms for resource-efficient training and inference of large foundation models. His research broadly explores theoretical approaches to challenges in this space, with an emphasis on investigating optimality and developing theoretically-backed practical algorithms. Before joining AWS, he earned a PhD in Electrical Engineering from Stanford University. Prior to that, he completed his Bachelors’ and Masters’ from Indian Institute of Technology (IIT) Kharagpur, where he received the Best Undergraduate Thesis award, along with the Prime Minister of India Gold Medal as the class valedictorian.</p>
+  </div>
+</div>
+<div style="display: flex; align-items: flex-start; margin: 2em 0 2em 4em; gap: 2em;">
+  <div style="flex: 0 0 200px; margin-top: 0.5em;">
+    <img src="./images/contributors/aninda_manocha.png" alt="Aninda Manocha" style="width: 180px; height: 180px; object-fit: cover; object-position: center 30%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1; text-align: justify;">
+    <p><strong>Aninda Manocha</strong> is an Applied Scientist at AWS AI Research and Education, where she works on memory management for LLM inference and optimized Neuron Kernel Interface (NKI) kernel generation design. Previously, she worked as a memory subsystem architect at Rivos, a RISC-V chip startup. She received her PhD in Computer Science at Princeton University with a focus on Computer Architecture, where her dissertation work optimized the mapping of irregular applications with sparse, memory-bound characteristics onto modern hardware.</p>
+  </div>
+</div>
+<div style="display: flex; align-items: flex-start; margin: 2em 0 2em 4em; gap: 2em;">
+  <div style="flex: 0 0 200px; margin-top: 3em;"">
+    <img src="./images/contributors/youngsuk_park.png" alt="Youngsuk Park" style="width: 180px; height: 180px; object-fit: cover; object-position: center 30%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1; text-align: justify;">
+    <p><strong>Youngsuk Park</strong> is a Senior Applied Scientist & Manager at AWS Annapurna Labs, leading a core algorithm team advancing scalable and efficient LLM training and inference methods. He manages a high-caliber research group, pioneering innovations in quantization, structured sparsity, and hardware-aware modelling and algorithms optimized for AWS Trainium. His algorithmic work spans the full model lifecycle—from efficient large-scale training recipes to low-latency inference deployment—powering foundation models across Amazon Bedrock, AGI, and partners like Anthropic. He has co-authored 30+ papers at ICLR, ICML, AISTATS, and KDD on LLM training, inference, optimization, time-series and reinforcement learning. He regularly organizes tutorials and workshops at top AI conferences, sharing practical insights on deploying foundation models efficiently on AI accelerators.</p>
+  </div>
+</div>
+<!--
+<div style="display: flex; align-items: flex-start; margin: 2em 0 2em 4em; gap: 2em;">
+  <div style="flex: 0 0 200px; margin-top: 4em;">
+    <img src="./images/contributors/yida_wang.png" alt="Yida Wang" style="width: 180px; height: 180px; object-fit: cover; object-position: center 30%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1; text-align: justify; margin-top: 3.5em;">
+    <p><strong>Yida Wang</strong> is a Principal Scientist in the AWS AI Research and Education. His research interest is in systems, high-performance computing, and big data analytics. He works on deep learning systems, with a focus on compiling and optimizing deep learning models for efficient training and inference, especially the large-scale foundation models. The mission is to bridge the high-level models from various frameworks and low-level hardware platforms including CPUs, GPUs, and AI accelerators, so that different models can execute in high-performance on different devices.</p>
+  </div>
+</div>
+-->
+<!--
+<div style="display: flex; align-items: flex-start; margin: 2em 0 2em 4em; gap: 2em;">
+  <div style="flex: 0 0 200px; margin-top: 4em;">
+    <img src="./images/contributors/george_karypis.png" alt="George Karypis" style="width: 180px; height: 180px; object-fit: cover; object-position: center 30%; border-radius: 8px;">
+  </div>
+  <div style="flex: 1; text-align: justify; margin-top: 1.5em;">
+    <p><strong>George Karypis</strong> is a Senior Principal Scientist at AWS AI and a Distinguished McKnight University Professor and William Norris Chair in Large Scale Computing at the Department of Computer Science & Engineering at the University of Minnesota. His research interests span the areas of machine learning, data mining, high performance computing, collaborative filtering, bioinformatics, cheminformatics, and scientific computing. He has coauthored over 350 papers on these topics and two books (“Introduction to Protein Structure Prediction: Methods and Algorithms” (Wiley, 2010) and “Introduction to Parallel Computing” (Publ. Addison Wesley, 2003, 2nd edition)). He is serving on the program committees of many conferences and workshops on these topics, and on the editorial boards of several journals. He is a Fellow of the IEEE.</p>
+  </div>
+</div>
+-->
+<div style="text-align: center; font-weight: bold; font-size: 2em; margin: 2.5em 0 1em 0;">
+Contributors
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2em; margin: 2em 4em; justify-items: center;">
+  <div style="text-align: center;">
+    <img src="./images/contributors/lingfan_yu.jpg" alt="Lingfan Yu" style="width: 200px; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 0.5em;">
+    <p style="margin: 0.3em 0; font-weight: bold;">Lingfan Yu</p>
+    <p style="margin: 0.3em 0; font-size: 0.9em;">Applied Scientist</p>
+    <p style="margin: 0.3em 0; font-size: 0.9em;">AWS AI</p>
+  </div>
+  <div style="text-align: center;">
+    <img src="./images/contributors/kaan_ozkara.jpeg" alt="Kaan Ozkara" style="width: 200px; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 0.5em;">
+    <p style="margin: 0.3em 0; font-weight: bold;">Kaan Ozkara</p>
+    <p style="margin: 0.3em 0; font-size: 0.9em;">Applied Scientist</p>
+    <p style="margin: 0.3em 0; font-size: 0.9em;">AWS AI</p>
+  </div>
+  <div style="text-align: center;">
+    <img src="./images/contributors/wei_tang.jpg" alt="Wei Tang" style="width: 200px; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 0.5em;">
+    <p style="margin: 0.3em 0; font-weight: bold;">Wei Tang</p>
+    <p style="margin: 0.3em 0; font-size: 0.9em;">Applied Scientist</p>
+    <p style="margin: 0.3em 0; font-size: 0.9em;">AWS AI</p>
+  </div>
+  <div style="text-align: center;">
+    <img src="./images/contributors/tao_yu.png" alt="Tao Yu" style="width: 200px; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 0.5em;">
+    <p style="margin: 0.3em 0; font-weight: bold;">Tao Yu</p>
+    <p style="margin: 0.3em 0; font-size: 0.9em;">Applied Scientist</p>
+    <p style="margin: 0.3em 0; font-size: 0.9em;">AWS AI</p>
+  </div>
+  <div style="text-align: center;">
+    <img src="./images/contributors/jiaji_huang.png" alt="Jiaji Huang" style="width: 200px; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 0.5em;">
+    <p style="margin: 0.3em 0; font-weight: bold;">Jiaji Huang</p>
+    <p style="margin: 0.3em 0; font-size: 0.9em;">Senior Applied Scientist</p>
+    <p style="margin: 0.3em 0; font-size: 0.9em;">AWS AI</p>
+  </div>
+  <div style="text-align: center;">
+    <img src="./images/contributors/liangfu_chen.jpeg" alt="Liangfu chen" style="width: 200px; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 0.5em;">
+    <p style="margin: 0.3em 0; font-weight: bold;">Liangfu Chen</p>
+    <p style="margin: 0.3em 0; font-size: 0.9em;">Senior Software Engineer</p>
+    <p style="margin: 0.3em 0; font-size: 0.9em;">AWS AI</p>
+  </div>
+  <div style="text-align: center;">
+    <img src="./images/contributors/jonas_kubler.png" alt="Jonas Kubler" style="width: 200px; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 0.5em;">
+    <p style="margin: 0.3em 0; font-weight: bold;">Jonas Kübler</p>
+    <p style="margin: 0.3em 0; font-size: 0.9em;">Senior Applied Scientist</p>
+    <p style="margin: 0.3em 0; font-size: 0.9em;">AWS AI</p>
+  </div>
+  <div style="text-align: center;">
+    <img src="./images/contributors/yida_wang.png" alt="Yida Wang" style="width: 200px; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 0.5em;">
+    <p style="margin: 0.3em 0; font-weight: bold;">Yida Wang</p>
+    <p style="margin: 0.3em 0; font-size: 0.9em;">Principal Scientist</p>
+    <p style="margin: 0.3em 0; font-size: 0.9em;">AWS AI</p>
+  </div>
+  <div style="text-align: center;">
+    <img src="./images/contributors/george_karypis.png" alt="George Karypis" style="width: 200px; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 0.5em;">
+    <p style="margin: 0.3em 0; font-weight: bold;">George Karypis</p>
+    <p style="margin: 0.3em 0; font-size: 0.9em;">Senior Principal Scientist</p>
+    <p style="margin: 0.3em 0; font-size: 0.9em;">AWS AI</p>
+  </div>
+</div></article>
  
       
 
@@ -588,6 +771,10 @@ https://github.com/alex-shpak/hugo-book
       </footer>
 
       
+  
+  <div class="book-comments">
+
+</div>
   
  
       <label for="menu-control" class="hidden book-menu-overlay"></label>

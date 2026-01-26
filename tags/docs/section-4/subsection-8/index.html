@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  vLLM: High-Throughput, Memory-Efficient LLM Serving
+  
+  #
+  
+
+
+
+vLLM is an open-source, high-performance inference engine designed to optimize Large Language Model (LLM) deployment. Originally developed by UC Berkeley’s Sky Computing Lab, vLLM addresses critical bottlenecks in traditional LLM serving, i.e. memory fragmentation, low memory throughput, and inefficient GPU utilization, through innovative algorithms and system design.
+
+  Core Features &amp; Innovations
+  
+  #
+  
+
+
+  Continuous Batching
+  
+  #
+  
+
+Unlike static batching, which waits for full batches of requests, vLLM integrates new requests dynamically during decoding. New requests are inserted into ongoing decoding streams without stalling the device on which inference is running. This maximizes device utilization (by overlapping computation and data transfer) and reduces latency, especially under variable request traffic. Consequently, vLLM can achieve response times shorter than one second with over 1000 concurrent users. See Continuous Batching for more details.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/docs/section-4/subsection-8/">
+  <meta property="og:site_name" content="Inference Optimization">
+  <meta property="og:title" content="4.1 vLLM">
+  <meta property="og:description" content="vLLM: High-Throughput, Memory-Efficient LLM Serving # vLLM is an open-source, high-performance inference engine designed to optimize Large Language Model (LLM) deployment. Originally developed by UC Berkeley’s Sky Computing Lab, vLLM addresses critical bottlenecks in traditional LLM serving, i.e. memory fragmentation, low memory throughput, and inefficient GPU utilization, through innovative algorithms and system design.
+Core Features &amp; Innovations # Continuous Batching # Unlike static batching, which waits for full batches of requests, vLLM integrates new requests dynamically during decoding. New requests are inserted into ongoing decoding streams without stalling the device on which inference is running. This maximizes device utilization (by overlapping computation and data transfer) and reduces latency, especially under variable request traffic. Consequently, vLLM can achieve response times shorter than one second with over 1000 concurrent users. See Continuous Batching for more details.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+<title>4.1 vLLM | Inference Optimization</title>
+<link rel="icon" href="../../../favicon.png" >
+<link rel="manifest" href="../../../manifest.json">
+<link rel="canonical" href="http://localhost:1313/docs/section-4/subsection-8/">
+<link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
+  <script defer src="../../../fuse.min.js"></script>
+  <script defer src="../../../en.search.min.3c62f5a27fc04c4a5c5420d70c134672d5ef1510a3729f75a5b9a3eddf3bfc0b.js" integrity="sha256-PGL1on/ATEpcVCDXDBNGctXvFRCjcp91pbmj7d87/As=" crossorigin="anonymous"></script>
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/docs/section-4/subsection-8/index.xml" title="Inference Optimization" />
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr" class="book-kind-section book-type-docs book-layout-">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="../../../"><span>Inference Optimization</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/" class="">Foundations of Generative Inference</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-1/" class="">1.1 Overview of Transformer Architecture</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-2/" class="">1.2 Representative LLM Architectures</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-3/" class="">1.3 Hardware Accelerators for Generative AI</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-4/" class="">1.4 Roofline Analysis</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-5/" class="">1.5 Measuring Inference Efficiency</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-1/subsection-6/" class="">1.6 Parallelism Strategies and Communication Collectives</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/" class="">Algorithmic and Modeling-Level Inference Optimization</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-1/" class="">2.1 Key-Value Caching</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-2/" class="">2.2 Efficient Attention Variants</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-3/" class="">2.3 Mixture of Experts</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-4/" class="">2.4 Model Quantization</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-5/" class="">2.5 Speculative Decoding</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-2/subsection-6/" class="">2.6 Knowledge Distillation</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/" class="">Systems-Level Inference Optimization</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-1/" class="">3.1 Continuous Batching</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-2/" class="">3.2 Paged Attention</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-3/" class="">3.3 Chunked Prefill</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-4/" class="">3.4 Disaggregated Inference</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-5/" class="">3.5 Multi-LoRA Serving</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-6/" class="">3.6 Compute Graph Optimization</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-3/subsection-7/" class="">3.7 Kernel Fusion and Flash Attention</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/" class="">Open-Source Tools, Frameworks, and Deployment Scenarios</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/subsection-8/" class="active">4.1 vLLM</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="../../../docs/section-4/subsection-9/" class="">4.2 Framework Comparison</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="../../../svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>4.1 vLLM</h3>
+
+  <label for="toc-control">
+    
+    <img src="../../../svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#core-features--innovations">Core Features &amp; Innovations</a>
+      <ul>
+        <li><a href="#continuous-batching">Continuous Batching</a></li>
+        <li><a href="#pagedattention">PagedAttention</a></li>
+        <li><a href="#tensor-parallelism">Tensor Parallelism</a></li>
+        <li><a href="#openai-compatible-api">OpenAI-Compatible API</a></li>
+        <li><a href="#quantization">Quantization</a></li>
+        <li><a href="#heterogeneous-batching">Heterogeneous Batching</a></li>
+        <li><a href="#use-cases">Use Cases</a></li>
+      </ul>
+    </li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><h1 id="vllm-high-throughput-memory-efficient-llm-serving">
+  <strong>vLLM: High-Throughput, Memory-Efficient LLM Serving</strong>
+  
+  <a class="anchor" href="#vllm-high-throughput-memory-efficient-llm-serving">#</a>
+  
+</h1>
+
+
+<p>vLLM is an open-source, high-performance inference engine designed to optimize Large Language Model (LLM) deployment. Originally developed by UC Berkeley’s Sky Computing Lab, vLLM addresses critical bottlenecks in traditional LLM serving, i.e. memory fragmentation, low memory throughput, and inefficient GPU utilization, through innovative algorithms and system design.</p>
+<h2 id="core-features--innovations">
+  Core Features &amp; Innovations
+  
+  <a class="anchor" href="#core-features--innovations">#</a>
+  
+</h2>
+<h3 id="continuous-batching">
+  Continuous Batching
+  
+  <a class="anchor" href="#continuous-batching">#</a>
+  
+</h3>
+<p>Unlike static batching, which waits for full batches of requests, vLLM integrates new requests dynamically during decoding. New requests are inserted into ongoing decoding streams without stalling the device on which inference is running. This maximizes device utilization (by overlapping computation and data transfer) and reduces latency, especially under variable request traffic. Consequently, vLLM can achieve response times shorter than one second with over 1000 concurrent users. See <a href="../../../docs/section-3/subsection-1/">Continuous Batching</a> for more details.</p>
+<h3 id="pagedattention">
+  PagedAttention
+  
+  <a class="anchor" href="#pagedattention">#</a>
+  
+</h3>
+<p>Traditional LLM serving suffers from KV cache memory fragmentation due to variable-length sequences, wasting up to 80% of allocated memory.
+Inspired by virtual memory in operating systems, PagedAttention divides KV caches into reusable, fixed-size &ldquo;pages&rdquo; (e.g. 128 tokens/page), enabling dynamic memory allocation, reuse, and sharing across requests with identical prefixes. This reduces memory waste and supports parallel sampling, beam search, and shared prefixes. As a result, PageAttention reduces KV cache memory usage by 60-80% and achieves up to 24$\times$ higher throughput compared to Hugging Face Transformers in high-concurrency workloads. This allows larger models on fewer devices. See <a href="../../../docs/section-3/subsection-2/">PagedAttention</a> for more details.</p>
+<h3 id="tensor-parallelism">
+  Tensor Parallelism
+  
+  <a class="anchor" href="#tensor-parallelism">#</a>
+  
+</h3>
+<p>vLLM supports multi-GPU distributed inference for large models, e.g., Llama-70B. By splitting the model across GPUs and minimizing cross-GPU data transfers during decoding, this technique enables near-linear scaling across devices and supports models that exceed single-GPU memory.</p>
+<h3 id="openai-compatible-api">
+  OpenAI-Compatible API
+  
+  <a class="anchor" href="#openai-compatible-api">#</a>
+  
+</h3>
+<p>vLLM provides a REST API compatible with OpenAI&rsquo;s ChatCompletions and Completions endpoints, simplifying integration into existing applications. This improves ease of adoption as developers can switch between cloud and on-premise LLMs without code changes. Developers who have already built apps using OpenAI&rsquo;s API can switch to vLLM with very few code changes.</p>
+<h3 id="quantization">
+  Quantization
+  
+  <a class="anchor" href="#quantization">#</a>
+  
+</h3>
+<p>vLLM supports FP8, INT4 (GPTQ), AWQ, and other low-bit weight quantization techniques to reduce memory footprint and accelerate inference. It also leverages CUDA/FlashAttention and custom kernels for faster LLM operations. This enables 2-3$\times$ speedups with quantized weights. See <a href="../../../docs/section-2/subsection-3/">Model Quantization</a> for more details.</p>
+<h3 id="heterogeneous-batching">
+  Heterogeneous Batching
+  
+  <a class="anchor" href="#heterogeneous-batching">#</a>
+  
+</h3>
+<p>By processing requests with different lengths, formats, and tasks (e.g. chat, code generation) in a single batch, vLLM can handle mixed workloads. It dynamically groups requests based on shared prefixes or operations and enables higher throughput by avoiding the overhead of isolating homogenous batches.</p>
+<h3 id="use-cases">
+  Use Cases
+  
+  <a class="anchor" href="#use-cases">#</a>
+  
+</h3>
+<p>vLLM excels in:</p>
+<ul>
+<li><strong>Chatbots &amp; AI Assistants:</strong> Handling thousands of concurrent users with low latency.</li>
+<li><strong>Content Generation:</strong> High-throughput tasks, such as code generation or document summarization.</li>
+<li><strong>Multi-Modal Models:</strong> Supports vision-language models (e.g. LLaVA) via extensions.</li>
+</ul>
+<h2 id="references">
+  References
+  
+  <a class="anchor" href="#references">#</a>
+  
+</h2>
+<ol>
+<li>AIMultiple, LLM Inference Engines: vLLM vs LMDeploy vs SGLang, 2025 <a href="">https://research.aimultiple.com/inference-engines/</a></li>
+<li>F22 Labs, What is vLLM? Everything You Should Know, 2025 [https://www.f22labs.com/blogs/what-is-vllm-everything-you-should-know/]</li>
+<li>Gianni Crivello, Deploying vLLM on Google Cloud: A Guide to Scalable Open LLM Inference, 2024 <a href="">https://eigenvalue.medium.com/deploying-vllm-on-google-cloud-a-guide-to-scalable-open-llm-inference-1dde477abc0d</a></li>
+<li>Kolluru et al., Comparative Analysis of Large Language Model Inference Serving Systems: A Performance Study of vLLM and HuggingFace TGI <a href="">https://arxiv.org/html/2511.17593v1</a></li>
+<li>Kwon et al., 2023, Efficient Memory Management for Large Language Model Serving with PagedAttention <a href="">https://arxiv.org/abs/2309.06180</a>
+NVIDIA, vLLM Overview <a href="">https://docs.nvidia.com/deeplearning/frameworks/vllm-release-notes/overview.html</a></li>
+<li>Sandgarden, vLLM: The Fast Lane for Scalable, GPU-Efficient LLM Inference <a href="">https://www.sandgarden.com/learn/vllm</a></li>
+<li>Vikram Singh, The Rise of Multimodal LLMs and Efficient Serving with vLLM, 2025 <a href="">https://pyimagesearch.com/2025/09/15/the-rise-of-multimodal-llms-and-efficient-serving-with-vllm/</a></li>
+<li>Christian Taillon, vLLM Production Guide 2025 <a href="">https://christiant.io/vLLM</a></li>
+<li>Simran Verma, Boost LLM Throughput: vLLM vs. Sglang and Other Serving Frameworks, 2025 <a href="">https://tensorfuse.io/blog/llm-throughput-vllm-vs-sglang</a></li>
+<li>vLLM, vLLM: Easy, fast, and cheap LLM serving for everyone <a href="">https://docs.vllm.ai/en/latest/</a></li>
+</ol>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="../../../docs/section-4/" class="flex align-center book-icon">
+        <img src="../../../svg/backward.svg" class="book-icon" alt="Previous" title="Open-Source Tools, Frameworks, and Deployment Scenarios" />
+        <span>Open-Source Tools, Frameworks, and Deployment Scenarios</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="../../../docs/section-4/subsection-9/" class="flex align-center book-icon">
+        <span>4.2 Framework Comparison</span>
+        <img src="../../../svg/forward.svg" class="book-icon" alt="Next" title="4.2 Framework Comparison" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#core-features--innovations">Core Features &amp; Innovations</a>
+      <ul>
+        <li><a href="#continuous-batching">Continuous Batching</a></li>
+        <li><a href="#pagedattention">PagedAttention</a></li>
+        <li><a href="#tensor-parallelism">Tensor Parallelism</a></li>
+        <li><a href="#openai-compatible-api">OpenAI-Compatible API</a></li>
+        <li><a href="#quantization">Quantization</a></li>
+        <li><a href="#heterogeneous-batching">Heterogeneous Batching</a></li>
+        <li><a href="#use-cases">Use Cases</a></li>
+      </ul>
+    </li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+
+
+
+  </div>
+</aside>
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
