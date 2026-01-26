@@ -31,11 +31,7 @@ With an understanding of the underlying AI infrastructure (from on-chip compute 
 <link rel="canonical" href="https://neuron-science.github.io/docs/section-1/subsection-6/">
 <link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
   <script defer src="../../../fuse.min.js"></script>
-<<<<<<< HEAD
-  <script defer src="../../../en.search.min.a89997399eb08ce35be72f720495fd960093a5c72a25e71d31620435a5e7dcf9.js" integrity="sha256-qJmXOZ6wjONb5y9yBJX9lgCTpccqJecdMWIENaXn3Pk=" crossorigin="anonymous"></script>
-=======
   <script defer src="../../../en.search.min.49d756c3d6fa260a59256ad4058fb4c8e5430a06c3b13d9fe8d00bbcb6a3761a.js" integrity="sha256-SddWw9b6JgpZJWrUBY&#43;0yOVDCgbDsT2f6NALvLajdho=" crossorigin="anonymous"></script>
->>>>>>> 5dde62c (update tutorial slides)
 <link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-1/subsection-6/index.xml" title="Inference Optimization" />
 <!--
 Made with Book Theme
@@ -566,6 +562,15 @@ https://github.com/alex-shpak/hugo-book
   
 <nav id="TableOfContents">
   <ul>
+    <li><a href="#sharding-notation-and-device-meshes"><strong>Sharding Notation and Device Meshes</strong></a>
+      <ul>
+        <li><a href="#device-mesh-and-named-axes">Device Mesh and Named Axes</a></li>
+        <li><a href="#sharding-annotations">Sharding Annotations</a></li>
+        <li><a href="#visualizing-sharding-patterns">Visualizing Sharding Patterns</a></li>
+        <li><a href="#important-constraints">Important Constraints</a></li>
+        <li><a href="#memory-and-communication-implications">Memory and Communication Implications</a></li>
+      </ul>
+    </li>
     <li><a href="#sharded-matrix-multiplication"><strong>Sharded Matrix Multiplication</strong></a>
       <ul>
         <li><a href="#case-1-neither-input-is-sharded-along-the-contraction-dimension">Case 1: Neither Input Is Sharded Along the Contraction Dimension</a></li>
@@ -616,6 +621,98 @@ https://github.com/alex-shpak/hugo-book
 
 <p>With an understanding of the underlying AI infrastructure (from on-chip compute and memory hierarchies to scale-up fabrics within a server and scale-out networks across a datacenter), we can now examine how <strong>parallelism</strong> is used to map LLM computation onto this hardware efficiently. Parallelism determines how model parameters, activations, and requests are partitioned across cores, devices, and servers, and it directly shapes both performance and scalability. In this chapter, we explore the different forms of parallelism used in LLM inference, including data, tensor, pipeline, and expert parallelism, and discuss how each interacts with the hardware stack described in the previous section. By grounding these strategies in the realities of modern AI infrastructure, we can reason about when a particular form of parallelism is beneficial—and when its communication and synchronization costs outweigh its gains.</p>
 <p>When serving or training large LLMs, model parameters and intermediate activations often exceed the memory of a single accelerator and must be sharded across devices. Because inference is dominated by matrix multiplications, the central question becomes <strong>how do we efficiently multiply matrices that are distributed across devices?</strong> Effective scaling depends on choosing sharding strategies that minimize communication overhead while preserving low latency and high throughput. In the first section, we examine how matrix operands can be partitioned across accelerators, what communication primitives are required to combine partial results, and how the choice of sharding strategy affects latency, bandwidth usage, and overall inference efficiency.</p>
+<h2 id="sharding-notation-and-device-meshes">
+  <strong>Sharding Notation and Device Meshes</strong>
+  
+  <a class="anchor" href="#sharding-notation-and-device-meshes">#</a>
+  
+</h2>
+<p>Before diving into the mechanics of sharded matrix multiplication, we need a systematic way to describe how tensors are partitioned across devices. Modern AI accelerators are typically organized into <strong>device meshes</strong>—2D or 3D grids of interconnected devices that form a torus topology. For example, a Trn or TPU pod might arrange devices in a 2D torus where each device can communicate with its neighbors along two mesh axes.</p>
+<h3 id="device-mesh-and-named-axes">
+  Device Mesh and Named Axes
+  
+  <a class="anchor" href="#device-mesh-and-named-axes">#</a>
+  
+</h3>
+<p>A <strong>device mesh</strong> is a structured arrangement of devices with named axes. For instance, a 2D mesh with 4 devices arranged in a $2 \times 2$ grid can be described as:</p>
+<p>$$\text{Mesh}(\text{devices} = ((0, 1), (2, 3)), \text{axis}_{\text{names}} = (&lsquo;X&rsquo;, &lsquo;Y&rsquo;))$$</p>
+<p>This indicates we have 4 devices in a $2 \times 2$ grid, where the first dimension is labeled $X$ and the second dimension is labeled $Y$. Each device has a position $(x, y)$ in this mesh, where $x \in {0, 1}$ and $y \in {0, 1}$.</p>
+<h3 id="sharding-annotations">
+  Sharding Annotations
+  
+  <a class="anchor" href="#sharding-annotations">#</a>
+  
+</h3>
+<p>A common approach is to use the <strong>named-axis notation</strong> (ref: <a href="https://jax-ml.github.io/scaling-book/sharding/">How To Scale Your Model</a>) to specify how tensor dimensions are partitioned across the device mesh. For a matrix $A$ with logical dimensions $I$ and $J$, we can describe its sharding using subscripts that indicate which mesh axes partition which logical dimensions.</p>
+<p><strong>Example 1: Fully Replicated</strong></p>
+<ul>
+<li>Notation: $A[I, J]$ (no subscripts)</li>
+<li>Meaning: Every device holds a complete copy of the entire matrix $A$.</li>
+<li>Local shape per device: $(|I|, |J|)$</li>
+</ul>
+<p><strong>Example 2: Sharded Along One Dimension</strong></p>
+<ul>
+<li>Notation: $A[I_X, J]$</li>
+<li>Meaning: The $I$ dimension is partitioned across the $X$ mesh axis, while the $J$ dimension is replicated (not partitioned).</li>
+<li>Local shape per device: $(|I|/|X|, |J|)$</li>
+<li>Each device holds $1/|X|$ of the rows, but all columns.</li>
+</ul>
+<p><strong>Example 3: Sharded Along Both Dimensions</strong></p>
+<ul>
+<li>Notation: $A[I_X, J_Y]$</li>
+<li>Meaning: The $I$ dimension is partitioned across the $X$ mesh axis, and the $J$ dimension is partitioned across the $Y$ mesh axis.</li>
+<li>Local shape per device: $(|I|/|X|, |J|/|Y|)$</li>
+<li>Each device holds $1/(|X| \cdot |Y|)$ of the total array.</li>
+</ul>
+<p><strong>Example 4: Sharded Across Multiple Mesh Axes</strong></p>
+<ul>
+<li>Notation: $A[I_{XY}, J]$</li>
+<li>Meaning: The $I$ dimension is partitioned across both the $X$ and $Y$ mesh axes (treating them as a flattened dimension), while $J$ remains replicated.</li>
+<li>Local shape per device: $(|I|/(|X| \cdot |Y|), |J|)$</li>
+<li>This allows finer-grained partitioning when needed.</li>
+</ul>
+<h3 id="visualizing-sharding-patterns">
+  Visualizing Sharding Patterns
+  
+  <a class="anchor" href="#visualizing-sharding-patterns">#</a>
+  
+</h3>
+<p>Consider a matrix $A$ with shape $(4, 4)$ sharded across 4 devices in a $2 \times 2$ mesh:</p>
+<ul>
+<li><strong>$A[I, J]$</strong>: Each device holds the full $(4, 4)$ matrix (fully replicated).</li>
+<li><strong>$A[I_X, J]$</strong>: Each device holds $(2, 4)$—half the rows, all columns.</li>
+<li><strong>$A[I, J_Y]$</strong>: Each device holds $(4, 2)$—all rows, half the columns.</li>
+<li><strong>$A[I_X, J_Y]$</strong>: Each device holds $(2, 2)$—both dimensions partitioned, each device holds $1/4$ of the total.</li>
+</ul>
+<p>The different sharding patterns are visualized below:</p>
+<div style="text-align: center; margin: 2rem 0;">
+  <img src="../../../images/parallelism/matrix_sharding_2D_mesh.png" 
+       alt="Sharding patterns for a 4x4 matrix across a 2x2 mesh" 
+       style="width: auto; height: auto; object-fit: contain;" />
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.4rem;">
+    Sharding patterns for a 4x4 matrix across a 2x2 mesh
+  </p>
+</div>
+<h3 id="important-constraints">
+  Important Constraints
+  
+  <a class="anchor" href="#important-constraints">#</a>
+  
+</h3>
+<p>A key constraint in sharding notation is that <strong>multiple logical dimensions cannot be sharded along the same mesh axis</strong>. For example, $A[I_X, J_X]$ is invalid—once the $X$ mesh axis is used to partition dimension $I$, it cannot also partition dimension $J$. This constraint ensures that each mesh axis is used for a single partitioning purpose, maintaining a clear mapping between logical tensor dimensions and physical device layout.</p>
+<h3 id="memory-and-communication-implications">
+  Memory and Communication Implications
+  
+  <a class="anchor" href="#memory-and-communication-implications">#</a>
+  
+</h3>
+<p>The sharding pattern directly determines:</p>
+<ol>
+<li><strong>Memory per device</strong>: The local shape tells us how much data each device stores.</li>
+<li><strong>Communication requirements</strong>: Different shardings require different communication primitives (AllGather, AllReduce, etc.) to perform operations like matrix multiplication.</li>
+<li><strong>Computation locality</strong>: Some sharding patterns allow fully local computation, while others require communication before or after computation.</li>
+</ol>
+<p>Understanding this notation is essential for reasoning about the communication costs and memory footprints of different parallelism strategies, which we explore in detail in the following sections.</p>
 <h2 id="sharded-matrix-multiplication">
   <strong>Sharded Matrix Multiplication</strong>
   
@@ -804,6 +901,15 @@ $$</p>
   
 <nav id="TableOfContents">
   <ul>
+    <li><a href="#sharding-notation-and-device-meshes"><strong>Sharding Notation and Device Meshes</strong></a>
+      <ul>
+        <li><a href="#device-mesh-and-named-axes">Device Mesh and Named Axes</a></li>
+        <li><a href="#sharding-annotations">Sharding Annotations</a></li>
+        <li><a href="#visualizing-sharding-patterns">Visualizing Sharding Patterns</a></li>
+        <li><a href="#important-constraints">Important Constraints</a></li>
+        <li><a href="#memory-and-communication-implications">Memory and Communication Implications</a></li>
+      </ul>
+    </li>
     <li><a href="#sharded-matrix-multiplication"><strong>Sharded Matrix Multiplication</strong></a>
       <ul>
         <li><a href="#case-1-neither-input-is-sharded-along-the-contraction-dimension">Case 1: Neither Input Is Sharded Along the Contraction Dimension</a></li>
