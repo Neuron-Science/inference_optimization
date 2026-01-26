@@ -10,20 +10,26 @@
   
 
 
-  Piecewise CUDA Graph
+  Introduction to Compute Graphs
   
   #
   
 
-Efficiently handling varying input token counts and context lengths across execution steps presents a significant challenge in LLM inference. To address this, vLLM leverages torch.compile to capture CUDA Graphs across multiple bucket sizes, enabling optimized execution paths for different input configurations.
-This graph capture mechanism proves highly effective for token-wise operators—operations that process each token independently, such as RoPE and RMSNorm. These operators exhibit predictable computational patterns that can be captured and replayed efficiently through CUDA Graphs.">
+A compute graph is a directed acyclic graph (DAG) representation of a computation, where nodes represent operations (e.g., matrix multiplications, activations) and edges represent data flow between operations. This graph-based representation enables deep learning frameworks to analyze, optimize, and execute computations more efficiently than traditional imperative programming approaches.
+
+  Eager vs. Compiled Execution
+  
+  #
+  
+
+Deep learning frameworks typically support two execution modes:">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:url" content="https://neuron-science.github.io/docs/section-3/subsection-6/">
   <meta property="og:site_name" content="Inference Optimization">
   <meta property="og:title" content="3.6 Compute Graph Optimization">
-  <meta property="og:description" content="Compute Graph Optimization # Piecewise CUDA Graph # Efficiently handling varying input token counts and context lengths across execution steps presents a significant challenge in LLM inference. To address this, vLLM leverages torch.compile to capture CUDA Graphs across multiple bucket sizes, enabling optimized execution paths for different input configurations.
-This graph capture mechanism proves highly effective for token-wise operators—operations that process each token independently, such as RoPE and RMSNorm. These operators exhibit predictable computational patterns that can be captured and replayed efficiently through CUDA Graphs.">
+  <meta property="og:description" content="Compute Graph Optimization # Introduction to Compute Graphs # A compute graph is a directed acyclic graph (DAG) representation of a computation, where nodes represent operations (e.g., matrix multiplications, activations) and edges represent data flow between operations. This graph-based representation enables deep learning frameworks to analyze, optimize, and execute computations more efficiently than traditional imperative programming approaches.
+Eager vs. Compiled Execution # Deep learning frameworks typically support two execution modes:">
   <meta property="og:locale" content="en_us">
   <meta property="og:type" content="website">
 <title>3.6 Compute Graph Optimization | Inference Optimization</title>
@@ -32,7 +38,11 @@ This graph capture mechanism proves highly effective for token-wise operators—
 <link rel="canonical" href="https://neuron-science.github.io/docs/section-3/subsection-6/">
 <link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
   <script defer src="../../../fuse.min.js"></script>
+<<<<<<< HEAD
   <script defer src="../../../en.search.min.a89997399eb08ce35be72f720495fd960093a5c72a25e71d31620435a5e7dcf9.js" integrity="sha256-qJmXOZ6wjONb5y9yBJX9lgCTpccqJecdMWIENaXn3Pk=" crossorigin="anonymous"></script>
+=======
+  <script defer src="../../../en.search.min.49d756c3d6fa260a59256ad4058fb4c8e5430a06c3b13d9fe8d00bbcb6a3761a.js" integrity="sha256-SddWw9b6JgpZJWrUBY&#43;0yOVDCgbDsT2f6NALvLajdho=" crossorigin="anonymous"></script>
+>>>>>>> 5dde62c (update tutorial slides)
 <link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-3/subsection-6/index.xml" title="Inference Optimization" />
 <!--
 Made with Book Theme
@@ -563,6 +573,13 @@ https://github.com/alex-shpak/hugo-book
   
 <nav id="TableOfContents">
   <ul>
+    <li><a href="#introduction-to-compute-graphs"><strong>Introduction to Compute Graphs</strong></a>
+      <ul>
+        <li><a href="#eager-vs-compiled-execution">Eager vs. Compiled Execution</a></li>
+        <li><a href="#example-a-simple-compute-graph">Example: A Simple Compute Graph</a></li>
+        <li><a href="#types-of-graph-optimizations">Types of Graph Optimizations</a></li>
+      </ul>
+    </li>
     <li><a href="#piecewise-cuda-graph">Piecewise CUDA Graph</a></li>
     <li><a href="#persistent-kernel">Persistent Kernel</a></li>
   </ul>
@@ -583,6 +600,87 @@ https://github.com/alex-shpak/hugo-book
   <a class="anchor" href="#compute-graph-optimization">#</a>
   
 </h1>
+<h2 id="introduction-to-compute-graphs">
+  <strong>Introduction to Compute Graphs</strong>
+  
+  <a class="anchor" href="#introduction-to-compute-graphs">#</a>
+  
+</h2>
+<p>A <strong>compute graph</strong> is a directed acyclic graph (DAG) representation of a computation, where nodes represent operations (e.g., matrix multiplications, activations) and edges represent data flow between operations. This graph-based representation enables deep learning frameworks to analyze, optimize, and execute computations more efficiently than traditional imperative programming approaches.</p>
+<h3 id="eager-vs-compiled-execution">
+  Eager vs. Compiled Execution
+  
+  <a class="anchor" href="#eager-vs-compiled-execution">#</a>
+  
+</h3>
+<p>Deep learning frameworks typically support two execution modes:</p>
+<p><strong>Eager Mode (Imperative Execution)</strong>: Operations execute immediately as they are called, similar to traditional Python code. Each operation dispatches to the appropriate kernel (e.g., CUDA kernel) right away. While this provides flexibility and ease of debugging, it incurs overhead from:</p>
+<ul>
+<li>Repeated kernel launch overhead</li>
+<li>Limited opportunities for cross-operation optimizations</li>
+<li>CPU-GPU synchronization points between operations</li>
+</ul>
+<p><strong>Compiled Mode (Graph Execution)</strong>: The framework first builds a compute graph representing the entire computation, then optimizes and compiles this graph before execution. This approach enables:</p>
+<ul>
+<li><strong>Graph-level optimizations</strong>: The framework can see the entire computation and apply transformations like operator fusion, constant folding, and dead code elimination</li>
+<li><strong>Reduced kernel launch overhead</strong>: Multiple operations can be batched or fused into fewer kernel launches</li>
+<li><strong>Better memory management</strong>: The framework can optimize memory allocation and reuse across operations</li>
+</ul>
+<p>In PyTorch, <code>torch.compile()</code> transforms eager-mode code into a compiled graph representation. When you wrap a function with <code>torch.compile()</code>, PyTorch traces the computation during the first execution, builds a graph, and then optimizes it using techniques like operator fusion and kernel selection. Subsequent executions use this optimized graph, providing significant speedups for many workloads.</p>
+<h3 id="example-a-simple-compute-graph">
+  Example: A Simple Compute Graph
+  
+  <a class="anchor" href="#example-a-simple-compute-graph">#</a>
+  
+</h3>
+<p>Consider a simple transformer layer computation:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">transformer_layer</span>(x, W_q, W_k, W_v, W_o):
+</span></span><span style="display:flex;"><span>    q <span style="color:#f92672">=</span> x <span style="color:#f92672">@</span> W_q  <span style="color:#75715e"># Query projection</span>
+</span></span><span style="display:flex;"><span>    k <span style="color:#f92672">=</span> x <span style="color:#f92672">@</span> W_k  <span style="color:#75715e"># Key projection  </span>
+</span></span><span style="display:flex;"><span>    v <span style="color:#f92672">=</span> x <span style="color:#f92672">@</span> W_v  <span style="color:#75715e"># Value projection</span>
+</span></span><span style="display:flex;"><span>    attn <span style="color:#f92672">=</span> softmax(q <span style="color:#f92672">@</span> k<span style="color:#f92672">.</span>T <span style="color:#f92672">/</span> sqrt(d))  <span style="color:#75715e"># Attention</span>
+</span></span><span style="display:flex;"><span>    out <span style="color:#f92672">=</span> attn <span style="color:#f92672">@</span> v  <span style="color:#75715e"># Attention output</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> out <span style="color:#f92672">@</span> W_o  <span style="color:#75715e"># Output projection</span>
+</span></span></code></pre></div><p>In eager mode, this executes as 6 separate operations, each requiring a kernel launch and potential CPU-GPU synchronization. The compute graph representation would look like:</p>
+<pre tabindex="0"><code>Input (x) ──┬──&gt; MatMul (W_q) ──&gt; Query (q) ──┐
+            │                                 │
+            ├──&gt; MatMul (W_k) ──&gt; Key (k) ────┼──&gt; MatMul ──&gt; Softmax ──&gt; MatMul ──&gt; Output
+            │                                 │
+            └──&gt; MatMul (W_v) ──&gt; Value (v) ──┘
+</code></pre><p>A graph compiler can analyze this structure and apply optimizations such as:</p>
+<ul>
+<li><strong>Fusing the three input projections</strong> (Q, K, V) into a single kernel that computes all three in one pass</li>
+<li><strong>Combining attention operations</strong> to reduce memory traffic</li>
+<li><strong>Eliminating intermediate storage</strong> by keeping data in fast on-chip memory</li>
+</ul>
+<h3 id="types-of-graph-optimizations">
+  Types of Graph Optimizations
+  
+  <a class="anchor" href="#types-of-graph-optimizations">#</a>
+  
+</h3>
+<p>Compute graph optimizations can be broadly categorized into several classes:</p>
+<ol>
+<li>
+<p><strong>Operator Fusion</strong>: Combining multiple sequential operations into a single kernel to reduce kernel launch overhead and improve memory locality. For example, fusing a matrix multiplication followed by an activation function.</p>
+</li>
+<li>
+<p><strong>Constant Folding</strong>: Pre-computing operations on constant values at compile time rather than runtime.</p>
+</li>
+<li>
+<p><strong>Dead Code Elimination</strong>: Removing operations whose outputs are never used.</p>
+</li>
+<li>
+<p><strong>Memory Optimization</strong>: Optimizing memory allocation, reuse, and layout to minimize memory transfers and maximize cache efficiency.</p>
+</li>
+<li>
+<p><strong>Kernel Selection</strong>: Choosing the most efficient kernel implementation for each operation based on input shapes and hardware characteristics.</p>
+</li>
+<li>
+<p><strong>Graph Partitioning</strong>: Splitting the graph into subgraphs that can be executed independently or with different optimization strategies (e.g., CUDA Graphs for static shapes, eager execution for dynamic shapes).</p>
+</li>
+</ol>
+<p>The following sections explore advanced graph optimization techniques specifically tailored for LLM inference workloads, where dynamic input shapes and complex operator dependencies present unique challenges.</p>
 <h2 id="piecewise-cuda-graph">
   Piecewise CUDA Graph
   
@@ -689,6 +787,13 @@ https://github.com/alex-shpak/hugo-book
   
 <nav id="TableOfContents">
   <ul>
+    <li><a href="#introduction-to-compute-graphs"><strong>Introduction to Compute Graphs</strong></a>
+      <ul>
+        <li><a href="#eager-vs-compiled-execution">Eager vs. Compiled Execution</a></li>
+        <li><a href="#example-a-simple-compute-graph">Example: A Simple Compute Graph</a></li>
+        <li><a href="#types-of-graph-optimizations">Types of Graph Optimizations</a></li>
+      </ul>
+    </li>
     <li><a href="#piecewise-cuda-graph">Piecewise CUDA Graph</a></li>
     <li><a href="#persistent-kernel">Persistent Kernel</a></li>
   </ul>
