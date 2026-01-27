@@ -31,7 +31,7 @@ vLLM is an open-source, high-performance inference engine designed to optimize L
 <link rel="canonical" href="https://neuron-science.github.io/docs/section-4/subsection-1/">
 <link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
   <script defer src="../../../fuse.min.js"></script>
-  <script defer src="../../../en.search.min.747b04cf9613d759cde6d16f7bb772394cc917d9fc9927a5871ca79a92367672.js" integrity="sha256-dHsEz5YT11nN5tFve7dyOUzJF9n8mSelhxynmpI2dnI=" crossorigin="anonymous"></script>
+  <script defer src="../../../en.search.min.999bb67420e74e372b57d9ae86942678aa448521dc5084db6130e99e4f095cc7.js" integrity="sha256-mZu2dCDnTjcrV9muhpQmeKpEhSHcUITbYTDpnk8JXMc=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-4/subsection-1/index.xml" title="Inference Optimization" />
 <!--
 Made with Book Theme
@@ -671,7 +671,7 @@ Inspired by virtual memory in operating systems, PagedAttention divides KV cache
   <a class="anchor" href="#tensor-parallelism">#</a>
   
 </h3>
-<p>vLLM supports multi-GPU distributed inference for large models, e.g., Llama-70B. By splitting the model across GPUs and minimizing cross-GPU data transfers during decoding, this technique enables near-linear scaling across devices and supports models that exceed single-GPU memory.</p>
+<p>vLLM supports multi-GPU distributed inference for large models, e.g., Llama-70B. By splitting the model across GPUs and minimizing cross-GPU data transfers during decoding, this technique enables near-linear scaling across devices and supports models that exceed single-GPU memory. See <a href="../../../docs/section-1/subsection-6/">Parallelism Strategies and Communication Collectives</a> for more details on parallelism strategies.</p>
 <h3 id="openai-compatible-api">
   OpenAI-Compatible API
   
@@ -715,6 +715,7 @@ Inspired by virtual memory in operating systems, PagedAttention divides KV cache
 <li>AIMultiple, LLM Inference Engines: vLLM vs LMDeploy vs SGLang, 2025 <a href="">https://research.aimultiple.com/inference-engines/</a></li>
 <li>F22 Labs, What is vLLM? Everything You Should Know, 2025 [https://www.f22labs.com/blogs/what-is-vllm-everything-you-should-know/]</li>
 <li>Gianni Crivello, Deploying vLLM on Google Cloud: A Guide to Scalable Open LLM Inference, 2024 <a href="">https://eigenvalue.medium.com/deploying-vllm-on-google-cloud-a-guide-to-scalable-open-llm-inference-1dde477abc0d</a></li>
+<li>GitHub, vLLM <a href="">https://github.com/vllm-project/vllm</a></li>
 <li>Kolluru et al., Comparative Analysis of Large Language Model Inference Serving Systems: A Performance Study of vLLM and HuggingFace TGI <a href="">https://arxiv.org/html/2511.17593v1</a></li>
 <li>Kwon et al., 2023, Efficient Memory Management for Large Language Model Serving with PagedAttention <a href="">https://arxiv.org/abs/2309.06180</a>
 NVIDIA, vLLM Overview <a href="">https://docs.nvidia.com/deeplearning/frameworks/vllm-release-notes/overview.html</a></li>

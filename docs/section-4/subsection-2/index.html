@@ -4,17 +4,25 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="
-  SGLang
+  SGLang: A High-Performance Serving Framework for Large Language Models and Multimodal Models
   
   #
   
-">
+
+
+
+
+
+  
+
+
+SGLang (Structured Generation Language) is an open source framework developed by the LMSYS team that provides both a serving backend and a frontend language for efficient LLM inference. Its design philosophy centers on co-optimizing the programming interface and runtime system to achieve high performance for complex LLM workloads.">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:url" content="https://neuron-science.github.io/docs/section-4/subsection-2/">
   <meta property="og:site_name" content="Inference Optimization">
   <meta property="og:title" content="4.2 SGLang">
-  <meta property="og:description" content="SGLang #">
+  <meta property="og:description" content="SGLang: A High-Performance Serving Framework for Large Language Models and Multimodal Models # SGLang (Structured Generation Language) is an open source framework developed by the LMSYS team that provides both a serving backend and a frontend language for efficient LLM inference. Its design philosophy centers on co-optimizing the programming interface and runtime system to achieve high performance for complex LLM workloads.">
   <meta property="og:locale" content="en_us">
   <meta property="og:type" content="website">
 <title>4.2 SGLang | Inference Optimization</title>
@@ -23,7 +31,7 @@
 <link rel="canonical" href="https://neuron-science.github.io/docs/section-4/subsection-2/">
 <link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
   <script defer src="../../../fuse.min.js"></script>
-  <script defer src="../../../en.search.min.747b04cf9613d759cde6d16f7bb772394cc917d9fc9927a5871ca79a92367672.js" integrity="sha256-dHsEz5YT11nN5tFve7dyOUzJF9n8mSelhxynmpI2dnI=" crossorigin="anonymous"></script>
+  <script defer src="../../../en.search.min.999bb67420e74e372b57d9ae86942678aa448521dc5084db6130e99e4f095cc7.js" integrity="sha256-mZu2dCDnTjcrV9muhpQmeKpEhSHcUITbYTDpnk8JXMc=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-4/subsection-2/index.xml" title="Inference Optimization" />
 <!--
 Made with Book Theme
@@ -578,6 +586,8 @@ https://github.com/alex-shpak/hugo-book
 
   <label for="toc-control">
     
+    <img src="../../../svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
   </label>
 </div>
 
@@ -586,7 +596,22 @@ https://github.com/alex-shpak/hugo-book
   <aside class="hidden clearfix">
     
   
-<nav id="TableOfContents"></nav>
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#core-features--innovations">Core Features &amp; Innovations</a>
+      <ul>
+        <li><a href="#radixattention-for-automatic-kv-cache-reuse">RadixAttention for Automatic KV Cache Reuse</a></li>
+        <li><a href="#optimized-structured-output-generation">Optimized Structured Output Generation</a></li>
+        <li><a href="#frontend-domain-specific-language-dsl">Frontend Domain-Specific Language (DSL)</a></li>
+        <li><a href="#high-performance-serving-backend">High-Performance Serving Backend</a></li>
+        <li><a href="#overlap-based-parallelism">Overlap-Based Parallelism</a></li>
+        <li><a href="#efficient-memory-management">Efficient Memory Management</a></li>
+        <li><a href="#use-cases">Use Cases</a></li>
+      </ul>
+    </li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
 
 
 
@@ -597,12 +622,143 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown book-article"><h1 id="sglang">
-  <strong>SGLang</strong>
+  <article class="markdown book-article"><h1 id="sglang-a-high-performance-serving-framework-for-large-language-models-and-multimodal-models">
+  <strong>SGLang: A High-Performance Serving Framework for Large Language Models and Multimodal Models</strong>
   
-  <a class="anchor" href="#sglang">#</a>
+  <a class="anchor" href="#sglang-a-high-performance-serving-framework-for-large-language-models-and-multimodal-models">#</a>
   
 </h1>
+
+<link rel="stylesheet" href="../../../katex/katex.min.css" />
+<script defer src="../../../katex/katex.min.js"></script>
+
+  <script defer src="../../../katex/auto-render.min.js" onload="renderMathInElement(document.body, {
+  &#34;delimiters&#34;: [
+    {&#34;left&#34;: &#34;$$&#34;, &#34;right&#34;: &#34;$$&#34;, &#34;display&#34;: true},
+    {&#34;left&#34;: &#34;$&#34;, &#34;right&#34;: &#34;$&#34;, &#34;display&#34;: false},
+    {&#34;left&#34;: &#34;\\(&#34;, &#34;right&#34;: &#34;\\)&#34;, &#34;display&#34;: false},
+    {&#34;left&#34;: &#34;\\[&#34;, &#34;right&#34;: &#34;\\]&#34;, &#34;display&#34;: true}
+  ]
+}
+);"></script>
+
+
+<p>SGLang (Structured Generation Language) is an open source framework developed by the LMSYS team that provides both a serving backend and a frontend language for efficient LLM inference. Its design philosophy centers on co-optimizing the programming interface and runtime system to achieve high performance for complex LLM workloads.</p>
+<h2 id="core-features--innovations">
+  Core Features &amp; Innovations
+  
+  <a class="anchor" href="#core-features--innovations">#</a>
+  
+</h2>
+<h3 id="radixattention-for-automatic-kv-cache-reuse">
+  RadixAttention for Automatic KV Cache Reuse
+  
+  <a class="anchor" href="#radixattention-for-automatic-kv-cache-reuse">#</a>
+  
+</h3>
+<p>SGLang&rsquo;s most distinctive architectural contribution is RadixAttention, a technique that automatically identifies and reuses KV cache entries across requests sharing common prefixes. The system maintains a radix tree (prefix tree) data structure that tracks cached key-value tensors, enabling efficient lookup and sharing without explicit user annotation. This results in reduced redundant computations, improved cache hit rates by 3–5$\times$, and significantly lower latency in interactive scenarios.</p>
+<p>This approach provides substantial benefits for workloads with prefix commonality:</p>
+<ul>
+<li><strong>Multi-turn conversations</strong> where dialogue history accumulates across exchanges</li>
+<li><strong>Few-shot prompting</strong> where example demonstrations are prepended to varying queries</li>
+<li><strong>Branching generation patterns</strong> such as tree-of-thought reasoning or beam search variants</li>
+<li><strong>Batch processing</strong> of requests against shared system prompts or document contexts</li>
+</ul>
+<p>Unlike simpler prompt caching mechanisms that require exact prefix matches, RadixAttention manages partial overlaps and dynamic eviction policies, maximizing cache utilization under memory constraints.</p>
+<h3 id="optimized-structured-output-generation">
+  Optimized Structured Output Generation
+  
+  <a class="anchor" href="#optimized-structured-output-generation">#</a>
+  
+</h3>
+<p>SGLang places particular emphasis on constrained decoding performance, recognizing that production applications frequently require outputs conforming to specific formats. The framework supports multiple constraint types:</p>
+<ul>
+<li><strong>JSON schema enforcement</strong> for API response generation</li>
+<li><strong>Regular expression constraints</strong> for pattern-matched outputs</li>
+<li><strong>Context-free grammar guidance</strong> for complex structural requirements</li>
+</ul>
+<p>The implementation employs jump-forward decoding, which skips token-by-token generation when constraint structure determines subsequent tokens deterministically. For JSON generation with fixed keys, this technique can bypass multiple decoding steps, significantly accelerating structured output production compared to naïve constrained decoding approaches.</p>
+<h3 id="frontend-domain-specific-language-dsl">
+  Frontend Domain-Specific Language (DSL)
+  
+  <a class="anchor" href="#frontend-domain-specific-language-dsl">#</a>
+  
+</h3>
+<p>Beyond the serving backend, SGLang provides an embedded Python DSL for expressing complex LLM programs. This frontend exposes primitives that map naturally to common patterns:</p>
+<pre tabindex="0"><code>@function
+def multi_step_reasoning(s, question):
+    s += system(&#34;You are a helpful assistant.&#34;)
+    s += user(question)
+    s += assistant(gen(&#34;initial_thought&#34;, max_tokens=256))
+    s += user(&#34;Please verify your reasoning.&#34;)
+    s += assistant(gen(&#34;verification&#34;, max_tokens=256))
+    s += user(&#34;Now provide your final answer.&#34;)
+    s += assistant(gen(&#34;final_answer&#34;, max_tokens=128))
+</code></pre><p>The DSL supports forking and parallelism for concurrent generation branches, selection primitives for choosing among discrete options, nested function calls for modular prompt composition, and control flow integration with native Python constructs. The frontend and backend are co-designed so that the runtime can analyze program structure and optimize execution—for instance, by identifying prefix sharing opportunities across parallel branches.</p>
+<h3 id="high-performance-serving-backend">
+  High-Performance Serving Backend
+  
+  <a class="anchor" href="#high-performance-serving-backend">#</a>
+  
+</h3>
+<p>The SGLang runtime incorporates standard modern serving optimizations alongside its unique contributions:</p>
+<p>Continuous batching with iteration-level scheduling for dynamic request handling</p>
+<ul>
+<li><strong>Chunked prefill</strong> that segments long prompt processing to maintain decode latency</li>
+<li><strong>Tensor parallelism</strong> for distributing large models across multiple GPUs</li>
+<li><strong>Quantization support</strong> including FP8, AWQ, GPTQ, and Marlin formats</li>
+<li><strong>Speculative decoding</strong> with draft model integration</li>
+<li><strong>FlashInfer attention backend</strong> providing optimized kernels for diverse attention patterns</li>
+<li><strong>Multi-modal model support</strong> for vision-language architectures</li>
+</ul>
+<p>Benchmarks show SGLang outperforms vLLM by up to 3.1$\times$ in throughput for large models (e.g. Llama-70B) and matches/exceeds TensorRT-LLM in many scenarios. It achieves ~16,200 tokens/second on H100 GPUs, leveraging RadixAttention and kernel fusion.</p>
+<h3 id="overlap-based-parallelism">
+  Overlap-Based Parallelism
+  
+  <a class="anchor" href="#overlap-based-parallelism">#</a>
+  
+</h3>
+<p>SGLang implements aggressive overlap of computation and communication phases. During tensor-parallel execution, the system pipelines attention computation with all-reduce operations, hiding communication latency behind useful work. Similar overlap strategies apply to CPU-GPU data transfers and disk I/O for model loading.</p>
+<h3 id="efficient-memory-management">
+  Efficient Memory Management
+  
+  <a class="anchor" href="#efficient-memory-management">#</a>
+  
+</h3>
+<p>The framework employs sophisticated memory management beyond RadixAttention, including token-level memory allocation to avoid fixed sequence length assumptions, hierarchical caching policies to balance recency and frequency of access, and memory-aware scheduling that considers KV cache pressure when admitting requests.</p>
+<h3 id="use-cases">
+  Use Cases
+  
+  <a class="anchor" href="#use-cases">#</a>
+  
+</h3>
+<p>SGLang excels in:</p>
+<ul>
+<li><strong>High Prefix Sharing Workloads:</strong> Multi-turn conversation serving, few-shot prompting at scale, document question-answering.</li>
+<li><strong>Structured Output Generation:</strong> JSON API responses, code generation with syntactic constraints, form filling and extraction tasks.</li>
+<li><strong>Complex LLMs Programs</strong>: multi-step reasoning pipelines, branching generation, agentic worflows.</li>
+<li><strong>Batch Processing with Shared Context:</strong> bulk evaluation, A/B testing of prompts, ensemble methods.</li>
+</ul>
+<h2 id="references">
+  References
+  
+  <a class="anchor" href="#references">#</a>
+  
+</h2>
+<ol>
+<li>Alex Razvant, How to add structure to your LLM Applications using SGLang, 2025 <a href="https://read.theaimerge.com/p/how-to-add-structure-to-your-llm">https://read.theaimerge.com/p/how-to-add-structure-to-your-llm</a></li>
+<li>Clarifai, Comparing SGLANG, vLLM, and TensorRT-LLM with GPT-OSS-120B, 2025 <a href="https://www.clarifai.com/blog/comparing-sglang-vllm-and-tensorrt-llm-with-gpt-oss-120b">https://www.clarifai.com/blog/comparing-sglang-vllm-and-tensorrt-llm-with-gpt-oss-120b</a></li>
+<li>Cohorte, SGLang in Production: Fast Serving + Structured Generation for Agentic Workloads., <a href="https://www.cohorte.co/blog/sglang-in-production-fast-serving-structured-generation-for-agentic-workloads">https://www.cohorte.co/blog/sglang-in-production-fast-serving-structured-generation-for-agentic-workloads</a></li>
+<li>Dilmegani et al., LLM Inference Engines: vLLM vs LMDeploy vs SGLang [&lsquo;26], 2026 <a href="https://research.aimultiple.com/inference-engines/">https://research.aimultiple.com/inference-engines/</a></li>
+<li>GitHub, SGLang <a href="https://github.com/sgl-project/sglang">https://github.com/sgl-project/sglang</a></li>
+<li>GPU Mart, SGLang vs vLLM: A Comprehensive Comparison <a href="https://www.gpu-mart.com/blog/sglang-vs-vllm">https://www.gpu-mart.com/blog/sglang-vs-vllm</a></li>
+<li>LMSYS, Achieving Faster Open-Source Llama3 Serving with SGLang Runtime (vs. TensorRT-LLM, vLLM), 2024 <a href="https://lmsys.org/blog/2024-07-25-sglang-llama3/">https://lmsys.org/blog/2024-07-25-sglang-llama3/</a></li>
+<li>SGLang, SGLang Documentation <a href="https://docs.sglang.io/">https://docs.sglang.io/</a></li>
+<li>Stable Learn, AI Model Tools Comparison How to Choose Between SGLang, Ollama, VLLM, and LLaMA.cpp?, 2025 <a href="https://www.stable-learn.com/en/ai-model-tools-comparison/">https://www.stable-learn.com/en/ai-model-tools-comparison/</a></li>
+<li>Marina Temkin, Sources: Project SGLang spins out as RadixArk with $400M valuation as inference market explodes, 2026 <a href="https://techcrunch.com/2026/01/21/sources-project-sglang-spins-out-as-radixark-with-400m-valuation-as-inference-market-explodes/">https://techcrunch.com/2026/01/21/sources-project-sglang-spins-out-as-radixark-with-400m-valuation-as-inference-market-explodes/</a></li>
+<li>Uplatz, The SGLang Paradigm: Architectural Analysis of Next-Generation Large Language Model Serving Infrastructure, 2025 <a href="https://uplatz.com/blog/the-sglang-paradigm-architectural-analysis-of-next-generation-large-language-model-serving-infrastructure/">https://uplatz.com/blog/the-sglang-paradigm-architectural-analysis-of-next-generation-large-language-model-serving-infrastructure/</a></li>
+<li>Zhang et al., SGLang: Fast Serving Framework for Large Language and Vision-Language Models on AMD Instinct GPUs, 2024 <a href="https://rocm.blogs.amd.com/artificial-intelligence/sglang/README.html">https://rocm.blogs.amd.com/artificial-intelligence/sglang/README.html</a></li>
+</ol>
 </article>
  
       
@@ -665,6 +821,32 @@ https://github.com/alex-shpak/hugo-book
     </div>
 
     
+
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#core-features--innovations">Core Features &amp; Innovations</a>
+      <ul>
+        <li><a href="#radixattention-for-automatic-kv-cache-reuse">RadixAttention for Automatic KV Cache Reuse</a></li>
+        <li><a href="#optimized-structured-output-generation">Optimized Structured Output Generation</a></li>
+        <li><a href="#frontend-domain-specific-language-dsl">Frontend Domain-Specific Language (DSL)</a></li>
+        <li><a href="#high-performance-serving-backend">High-Performance Serving Backend</a></li>
+        <li><a href="#overlap-based-parallelism">Overlap-Based Parallelism</a></li>
+        <li><a href="#efficient-memory-management">Efficient Memory Management</a></li>
+        <li><a href="#use-cases">Use Cases</a></li>
+      </ul>
+    </li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+
+
+
+  </div>
+</aside>
 
  
   </main>
