@@ -30,7 +30,7 @@ In the previous section, we explored chunked prefill as a practical solution to 
 <link rel="canonical" href="https://neuron-science.github.io/docs/section-3/subsection-4/">
 <link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
   <script defer src="../../../fuse.min.js"></script>
-  <script defer src="../../../en.search.min.999bb67420e74e372b57d9ae86942678aa448521dc5084db6130e99e4f095cc7.js" integrity="sha256-mZu2dCDnTjcrV9muhpQmeKpEhSHcUITbYTDpnk8JXMc=" crossorigin="anonymous"></script>
+  <script defer src="../../../en.search.min.1fc821d1849dfd747702c932195da8ac0cd4a94cbc99b1122be952f3fa5f47ef.js" integrity="sha256-H8gh0YSd/XR3AskyGV2orAzUqUy8mbESK&#43;lS8/pfR&#43;8=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-3/subsection-4/index.xml" title="Inference Optimization" />
 <!--
 Made with Book Theme
@@ -606,27 +606,27 @@ https://github.com/alex-shpak/hugo-book
     <li><a href="#disaggregated-inference-the-key-idea"><strong>Disaggregated Inference: The Key Idea</strong></a></li>
     <li><a href="#how-disaggregated-inference-works"><strong>How Disaggregated Inference Works</strong></a>
       <ul>
-        <li><a href="#1-separate-prefill-and-decode-clusters">1. Separate Prefill and Decode Clusters</a></li>
-        <li><a href="#2-request-lifecycle">2. Request Lifecycle</a></li>
-        <li><a href="#3-independent-scheduling">3. Independent Scheduling</a></li>
-        <li><a href="#4-dynamic-load-balancing">4. Dynamic Load Balancing</a></li>
+        <li><a href="#separate-prefill-and-decode-clusters">Separate Prefill and Decode Clusters</a></li>
+        <li><a href="#request-lifecycle">Request Lifecycle</a></li>
+        <li><a href="#independent-scheduling">Independent Scheduling</a></li>
+        <li><a href="#dynamic-load-balancing">Dynamic Load Balancing</a></li>
       </ul>
     </li>
     <li><a href="#performance-advantages"><strong>Performance Advantages</strong></a>
       <ul>
-        <li><a href="#1-eliminates-scheduling-tension">1. Eliminates Scheduling Tension</a></li>
-        <li><a href="#2-enables-specialized-hardware">2. Enables Specialized Hardware</a></li>
-        <li><a href="#3-improves-resource-utilization">3. Improves Resource Utilization</a></li>
-        <li><a href="#4-better-performance-isolation">4. Better Performance Isolation</a></li>
-        <li><a href="#5-independent-scaling">5. Independent Scaling</a></li>
+        <li><a href="#eliminates-scheduling-tension">Eliminates Scheduling Tension</a></li>
+        <li><a href="#enables-specialized-hardware">Enables Specialized Hardware</a></li>
+        <li><a href="#improves-resource-utilization">Improves Resource Utilization</a></li>
+        <li><a href="#better-performance-isolation">Better Performance Isolation</a></li>
+        <li><a href="#independent-scaling">Independent Scaling</a></li>
       </ul>
     </li>
     <li><a href="#challenges-and-tradeoffs"><strong>Challenges and Tradeoffs</strong></a>
       <ul>
-        <li><a href="#1-state-transfer-overhead">1. State Transfer Overhead</a></li>
-        <li><a href="#2-system-complexity">2. System Complexity</a></li>
-        <li><a href="#3-resource-fragmentation">3. Resource Fragmentation</a></li>
-        <li><a href="#4-cost-considerations">4. Cost Considerations</a></li>
+        <li><a href="#state-transfer-overhead">State Transfer Overhead</a></li>
+        <li><a href="#system-complexity">System Complexity</a></li>
+        <li><a href="#resource-fragmentation">Resource Fragmentation</a></li>
+        <li><a href="#cost-considerations">Cost Considerations</a></li>
       </ul>
     </li>
     <li><a href="#when-disaggregation-makes-sense"><strong>When Disaggregation Makes Sense</strong></a></li>
@@ -738,10 +738,10 @@ to be optimized for its specific workload characteristics.
     Disaggregated serving separates prefill and decode on different devices (credits:  NVIDIA Dynamo blog)
   </p>
 </div>
-<h3 id="1-separate-prefill-and-decode-clusters">
-  1. Separate Prefill and Decode Clusters
+<h3 id="separate-prefill-and-decode-clusters">
+  Separate Prefill and Decode Clusters
   
-  <a class="anchor" href="#1-separate-prefill-and-decode-clusters">#</a>
+  <a class="anchor" href="#separate-prefill-and-decode-clusters">#</a>
   
 </h3>
 <p>The system is divided into two logical clusters:</p>
@@ -750,10 +750,10 @@ to be optimized for its specific workload characteristics.
 <li><strong>Decode cluster</strong>: Dedicated devices optimized for memory-bandwidth-bound decode operations</li>
 </ul>
 <p>Each cluster can have different hardware configurations, scheduling policies, and optimization strategies.</p>
-<h3 id="2-request-lifecycle">
-  2. Request Lifecycle
+<h3 id="request-lifecycle">
+  Request Lifecycle
   
-  <a class="anchor" href="#2-request-lifecycle">#</a>
+  <a class="anchor" href="#request-lifecycle">#</a>
   
 </h3>
 <p>When a new request arrives:</p>
@@ -763,10 +763,10 @@ to be optimized for its specific workload characteristics.
 <li><strong>Decode execution</strong>: The request joins the decode cluster&rsquo;s continuous batching system, generating tokens one at a time</li>
 <li><strong>Completion</strong>: When generation finishes, the decode device releases resources</li>
 </ol>
-<h3 id="3-independent-scheduling">
-  3. Independent Scheduling
+<h3 id="independent-scheduling">
+  Independent Scheduling
   
-  <a class="anchor" href="#3-independent-scheduling">#</a>
+  <a class="anchor" href="#independent-scheduling">#</a>
   
 </h3>
 <p>Each cluster operates its own scheduler optimized for its workload:</p>
@@ -774,10 +774,10 @@ to be optimized for its specific workload characteristics.
 <li><strong>Prefill scheduler</strong>: Can batch multiple long prompts together, maximizing GPU utilization without worrying about decode latency</li>
 <li><strong>Decode scheduler</strong>: Can prioritize low-latency token generation, using continuous batching without interference from prefill operations</li>
 </ul>
-<h3 id="4-dynamic-load-balancing">
-  4. Dynamic Load Balancing
+<h3 id="dynamic-load-balancing">
+  Dynamic Load Balancing
   
-  <a class="anchor" href="#4-dynamic-load-balancing">#</a>
+  <a class="anchor" href="#dynamic-load-balancing">#</a>
   
 </h3>
 <p>The system must balance load across both clusters:</p>
@@ -793,10 +793,10 @@ to be optimized for its specific workload characteristics.
   
 </h2>
 <p>Disaggregated inference provides several key benefits over unified systems:</p>
-<h3 id="1-eliminates-scheduling-tension">
-  1. Eliminates Scheduling Tension
+<h3 id="eliminates-scheduling-tension">
+  Eliminates Scheduling Tension
   
-  <a class="anchor" href="#1-eliminates-scheduling-tension">#</a>
+  <a class="anchor" href="#eliminates-scheduling-tension">#</a>
   
 </h3>
 <p>By physically separating prefill and decode, the fundamental tradeoff between prefill efficiency and decode responsiveness is eliminated. Each phase can be optimized independently:</p>
@@ -804,10 +804,10 @@ to be optimized for its specific workload characteristics.
 <li>Prefill devices can run large, uninterrupted batches without impacting decode latency</li>
 <li>Decode devices can prioritize low-latency token generation without waiting for prefill operations</li>
 </ul>
-<h3 id="2-enables-specialized-hardware">
-  2. Enables Specialized Hardware
+<h3 id="enables-specialized-hardware">
+  Enables Specialized Hardware
   
-  <a class="anchor" href="#2-enables-specialized-hardware">#</a>
+  <a class="anchor" href="#enables-specialized-hardware">#</a>
   
 </h3>
 <p>Different phases can leverage hardware optimized for their specific needs:</p>
@@ -816,10 +816,10 @@ to be optimized for its specific workload characteristics.
 <li><strong>Decode devices</strong>: Memory-bandwidth-optimized GPUs or specialized inference accelerators designed for low-latency, high-throughput token generation</li>
 </ul>
 <p>This specialization can significantly improve cost efficiency compared to using general-purpose hardware for both phases.</p>
-<h3 id="3-improves-resource-utilization">
-  3. Improves Resource Utilization
+<h3 id="improves-resource-utilization">
+  Improves Resource Utilization
   
-  <a class="anchor" href="#3-improves-resource-utilization">#</a>
+  <a class="anchor" href="#improves-resource-utilization">#</a>
   
 </h3>
 <p>Each device type operates at peak efficiency for its intended workload:</p>
@@ -828,10 +828,10 @@ to be optimized for its specific workload characteristics.
 <li>Decode devices maintain high memory bandwidth utilization through continuous batching of many concurrent requests</li>
 </ul>
 <p>This eliminates the efficiency losses that occur when trying to optimize for both workloads simultaneously.</p>
-<h3 id="4-better-performance-isolation">
-  4. Better Performance Isolation
+<h3 id="better-performance-isolation">
+  Better Performance Isolation
   
-  <a class="anchor" href="#4-better-performance-isolation">#</a>
+  <a class="anchor" href="#better-performance-isolation">#</a>
   
 </h3>
 <p>Long prefill operations no longer block decode requests:</p>
@@ -839,10 +839,10 @@ to be optimized for its specific workload characteristics.
 <li>Users generating long outputs don&rsquo;t impact interactive users expecting low latency</li>
 <li>System performance becomes more predictable and stable under diverse workload patterns</li>
 </ul>
-<h3 id="5-independent-scaling">
-  5. Independent Scaling
+<h3 id="independent-scaling">
+  Independent Scaling
   
-  <a class="anchor" href="#5-independent-scaling">#</a>
+  <a class="anchor" href="#independent-scaling">#</a>
   
 </h3>
 <p>Each cluster can be scaled independently based on workload characteristics:</p>
@@ -858,10 +858,10 @@ to be optimized for its specific workload characteristics.
   
 </h2>
 <p>While disaggregated inference offers significant benefits, it also introduces new challenges:</p>
-<h3 id="1-state-transfer-overhead">
-  1. State Transfer Overhead
+<h3 id="state-transfer-overhead">
+  State Transfer Overhead
   
-  <a class="anchor" href="#1-state-transfer-overhead">#</a>
+  <a class="anchor" href="#state-transfer-overhead">#</a>
   
 </h3>
 <p>After prefill completes, the KV cache must be transferred from prefill devices to decode devices. This transfer:</p>
@@ -871,10 +871,10 @@ to be optimized for its specific workload characteristics.
 <li><strong>Requires coordination</strong>: The system must manage state transfer without blocking either cluster</li>
 </ul>
 <p>Optimizations such as compression, pipelining, and efficient serialization can mitigate but not eliminate this overhead.</p>
-<h3 id="2-system-complexity">
-  2. System Complexity
+<h3 id="system-complexity">
+  System Complexity
   
-  <a class="anchor" href="#2-system-complexity">#</a>
+  <a class="anchor" href="#system-complexity">#</a>
   
 </h3>
 <p>Disaggregated systems are more complex to design and operate:</p>
@@ -885,10 +885,10 @@ to be optimized for its specific workload characteristics.
 <li><strong>State management</strong>: Must track request state across cluster boundaries</li>
 </ul>
 <p>This complexity increases development and operational costs compared to unified systems.</p>
-<h3 id="3-resource-fragmentation">
-  3. Resource Fragmentation
+<h3 id="resource-fragmentation">
+  Resource Fragmentation
   
-  <a class="anchor" href="#3-resource-fragmentation">#</a>
+  <a class="anchor" href="#resource-fragmentation">#</a>
   
 </h3>
 <p>Separating resources into two clusters can lead to fragmentation:</p>
@@ -897,10 +897,10 @@ to be optimized for its specific workload characteristics.
 <li><strong>Fixed allocation</strong>: Resources allocated to one cluster cannot be easily repurposed for the other</li>
 </ul>
 <p>Dynamic resource allocation and autoscaling can help, but perfect balance is difficult to achieve.</p>
-<h3 id="4-cost-considerations">
-  4. Cost Considerations
+<h3 id="cost-considerations">
+  Cost Considerations
   
-  <a class="anchor" href="#4-cost-considerations">#</a>
+  <a class="anchor" href="#cost-considerations">#</a>
   
 </h3>
 <p>While disaggregation can improve efficiency, it may also increase costs:</p>
@@ -1027,27 +1027,27 @@ to be optimized for its specific workload characteristics.
     <li><a href="#disaggregated-inference-the-key-idea"><strong>Disaggregated Inference: The Key Idea</strong></a></li>
     <li><a href="#how-disaggregated-inference-works"><strong>How Disaggregated Inference Works</strong></a>
       <ul>
-        <li><a href="#1-separate-prefill-and-decode-clusters">1. Separate Prefill and Decode Clusters</a></li>
-        <li><a href="#2-request-lifecycle">2. Request Lifecycle</a></li>
-        <li><a href="#3-independent-scheduling">3. Independent Scheduling</a></li>
-        <li><a href="#4-dynamic-load-balancing">4. Dynamic Load Balancing</a></li>
+        <li><a href="#separate-prefill-and-decode-clusters">Separate Prefill and Decode Clusters</a></li>
+        <li><a href="#request-lifecycle">Request Lifecycle</a></li>
+        <li><a href="#independent-scheduling">Independent Scheduling</a></li>
+        <li><a href="#dynamic-load-balancing">Dynamic Load Balancing</a></li>
       </ul>
     </li>
     <li><a href="#performance-advantages"><strong>Performance Advantages</strong></a>
       <ul>
-        <li><a href="#1-eliminates-scheduling-tension">1. Eliminates Scheduling Tension</a></li>
-        <li><a href="#2-enables-specialized-hardware">2. Enables Specialized Hardware</a></li>
-        <li><a href="#3-improves-resource-utilization">3. Improves Resource Utilization</a></li>
-        <li><a href="#4-better-performance-isolation">4. Better Performance Isolation</a></li>
-        <li><a href="#5-independent-scaling">5. Independent Scaling</a></li>
+        <li><a href="#eliminates-scheduling-tension">Eliminates Scheduling Tension</a></li>
+        <li><a href="#enables-specialized-hardware">Enables Specialized Hardware</a></li>
+        <li><a href="#improves-resource-utilization">Improves Resource Utilization</a></li>
+        <li><a href="#better-performance-isolation">Better Performance Isolation</a></li>
+        <li><a href="#independent-scaling">Independent Scaling</a></li>
       </ul>
     </li>
     <li><a href="#challenges-and-tradeoffs"><strong>Challenges and Tradeoffs</strong></a>
       <ul>
-        <li><a href="#1-state-transfer-overhead">1. State Transfer Overhead</a></li>
-        <li><a href="#2-system-complexity">2. System Complexity</a></li>
-        <li><a href="#3-resource-fragmentation">3. Resource Fragmentation</a></li>
-        <li><a href="#4-cost-considerations">4. Cost Considerations</a></li>
+        <li><a href="#state-transfer-overhead">State Transfer Overhead</a></li>
+        <li><a href="#system-complexity">System Complexity</a></li>
+        <li><a href="#resource-fragmentation">Resource Fragmentation</a></li>
+        <li><a href="#cost-considerations">Cost Considerations</a></li>
       </ul>
     </li>
     <li><a href="#when-disaggregation-makes-sense"><strong>When Disaggregation Makes Sense</strong></a></li>

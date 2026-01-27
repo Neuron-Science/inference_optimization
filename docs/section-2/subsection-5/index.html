@@ -31,7 +31,7 @@ By default, LLM decoding generates one token at a time. During each decoding ste
 <link rel="canonical" href="https://neuron-science.github.io/docs/section-2/subsection-5/">
 <link rel="stylesheet" href="../../../book.min.27cffe658670f57112663ed746a421db277c2dd6549965c27f9ad0103cccd990.css" integrity="sha256-J8/&#43;ZYZw9XESZj7XRqQh2yd8LdZUmWXCf5rQEDzM2ZA=" crossorigin="anonymous">
   <script defer src="../../../fuse.min.js"></script>
-  <script defer src="../../../en.search.min.999bb67420e74e372b57d9ae86942678aa448521dc5084db6130e99e4f095cc7.js" integrity="sha256-mZu2dCDnTjcrV9muhpQmeKpEhSHcUITbYTDpnk8JXMc=" crossorigin="anonymous"></script>
+  <script defer src="../../../en.search.min.1fc821d1849dfd747702c932195da8ac0cd4a94cbc99b1122be952f3fa5f47ef.js" integrity="sha256-H8gh0YSd/XR3AskyGV2orAzUqUy8mbESK&#43;lS8/pfR&#43;8=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://neuron-science.github.io/docs/section-2/subsection-5/index.xml" title="Inference Optimization" />
 <!--
 Made with Book Theme
@@ -601,18 +601,18 @@ https://github.com/alex-shpak/hugo-book
     <li><a href="#the-verification-process"><strong>The Verification Process</strong></a></li>
     <li><a href="#acceptance-and-rejection-mechanism"><strong>Acceptance and Rejection Mechanism</strong></a></li>
     <li><a href="#speedup-analysis"><strong>Speedup Analysis</strong></a></li>
-    <li><a href="#251-eagle-drafter"><strong>2.5.1 Eagle Drafter</strong></a>
+    <li><a href="#eagle-drafter"><strong>Eagle Drafter</strong></a>
       <ul>
         <li><a href="#architecture">Architecture</a></li>
         <li><a href="#training">Training</a></li>
       </ul>
     </li>
-    <li><a href="#252-tree-structured-draft"><strong>2.5.2 Tree-structured Draft</strong></a>
+    <li><a href="#tree-structured-draft"><strong>Tree-structured Draft</strong></a>
       <ul>
         <li><a href="#token-tree-structure">Token Tree Structure</a></li>
       </ul>
     </li>
-    <li><a href="#253-practical-considerations-and-limitations"><strong>2.5.3 Practical Considerations and Limitations</strong></a>
+    <li><a href="#practical-considerations-and-limitations"><strong>Practical Considerations and Limitations</strong></a>
       <ul>
         <li><a href="#when-speculative-decoding-is-most-beneficial">When Speculative Decoding is Most Beneficial</a></li>
         <li><a href="#trade-offs">Trade-offs</a></li>
@@ -708,10 +708,10 @@ $$\text{Speedup} = \frac{1 + \alpha}{1 + \frac{\text{DrafterTime}(\gamma)}{\text
 </li>
 </ol>
 <p>A good drafter should be both fast (small $\text{DrafterTime}$) and accurate (high $\alpha$), generating continuations that closely match the target model&rsquo;s distribution.</p>
-<h2 id="251-eagle-drafter">
-  <strong>2.5.1 Eagle Drafter</strong>
+<h2 id="eagle-drafter">
+  <strong>Eagle Drafter</strong>
   
-  <a class="anchor" href="#251-eagle-drafter">#</a>
+  <a class="anchor" href="#eagle-drafter">#</a>
   
 </h2>
 <p>One approach to creating a drafter is to train a separate smaller model from scratch such that its generations match the target model&rsquo;s (e.g., <a href="https://arxiv.org/abs/2310.08461">DistillSpec</a>). However, training such a separate drafter requires significant computational overhead and may not fully leverage the target model&rsquo;s learned representations.</p>
@@ -751,10 +751,10 @@ $$\text{Speedup} = \frac{1 + \alpha}{1 + \frac{\text{DrafterTime}(\gamma)}{\text
 <p>Another option is to use a more sophisticated <strong>distillation-based loss</strong> that minimizes the KL divergence between the drafter&rsquo;s and target model&rsquo;s logit distributions:</p>
 <p>$$\mathcal{L} = \text{KL}(p_{\text{target}} || p_{\text{drafter}}) + \lambda \cdot \mathcal{L}_{\text{CE}}$$</p>
 <p>where $\mathcal{L}_{\text{CE}}$ is the cross-entropy loss on target model generations, and $\lambda$ is a weighting factor. This approach ensures the drafter learns not just to predict the most likely tokens, but to match the entire probability distribution of the target model, leading to higher acceptance rates during verification.</p>
-<h2 id="252-tree-structured-draft">
-  <strong>2.5.2 Tree-structured Draft</strong>
+<h2 id="tree-structured-draft">
+  <strong>Tree-structured Draft</strong>
   
-  <a class="anchor" href="#252-tree-structured-draft">#</a>
+  <a class="anchor" href="#tree-structured-draft">#</a>
   
 </h2>
 <p>As an orthogonal approach to improve acceptance rates, one can draft <strong>multiple continuations</strong> simultaneously. This strategy increases the probability that at least one continuation will have high acceptance, while also better utilizing available compute resources.</p>
@@ -785,10 +785,10 @@ This approach can significantly improve acceptance rates because:
 - The tree structure allows efficient reuse of shared computations
 
 Tree-structured drafting is particularly effective when combined with sampling strategies that explore diverse continuations, as it increases the likelihood of finding sequences that the target model would generate with high probability. -->
-<h2 id="253-practical-considerations-and-limitations">
-  <strong>2.5.3 Practical Considerations and Limitations</strong>
+<h2 id="practical-considerations-and-limitations">
+  <strong>Practical Considerations and Limitations</strong>
   
-  <a class="anchor" href="#253-practical-considerations-and-limitations">#</a>
+  <a class="anchor" href="#practical-considerations-and-limitations">#</a>
   
 </h2>
 <h3 id="when-speculative-decoding-is-most-beneficial">
@@ -927,18 +927,18 @@ The Eagle drafter has been integrated into the NeuronX Distributed Inference (NX
     <li><a href="#the-verification-process"><strong>The Verification Process</strong></a></li>
     <li><a href="#acceptance-and-rejection-mechanism"><strong>Acceptance and Rejection Mechanism</strong></a></li>
     <li><a href="#speedup-analysis"><strong>Speedup Analysis</strong></a></li>
-    <li><a href="#251-eagle-drafter"><strong>2.5.1 Eagle Drafter</strong></a>
+    <li><a href="#eagle-drafter"><strong>Eagle Drafter</strong></a>
       <ul>
         <li><a href="#architecture">Architecture</a></li>
         <li><a href="#training">Training</a></li>
       </ul>
     </li>
-    <li><a href="#252-tree-structured-draft"><strong>2.5.2 Tree-structured Draft</strong></a>
+    <li><a href="#tree-structured-draft"><strong>Tree-structured Draft</strong></a>
       <ul>
         <li><a href="#token-tree-structure">Token Tree Structure</a></li>
       </ul>
     </li>
-    <li><a href="#253-practical-considerations-and-limitations"><strong>2.5.3 Practical Considerations and Limitations</strong></a>
+    <li><a href="#practical-considerations-and-limitations"><strong>Practical Considerations and Limitations</strong></a>
       <ul>
         <li><a href="#when-speculative-decoding-is-most-beneficial">When Speculative Decoding is Most Beneficial</a></li>
         <li><a href="#trade-offs">Trade-offs</a></li>
